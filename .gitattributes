@@ -1,0 +1,7 @@
+
+# Everything is text unless it isn’t.
+* text=auto
+
+# PICO-8 doesn't like CRLF, even on Windows.
+*.lua text eol=lf
+
