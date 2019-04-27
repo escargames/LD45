@@ -1,21 +1,26 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
---
+-- ld44
 -- by niarkou and sam
 
---
--- config
---
+#include escarlib/p8u.lua
+#include escarlib/btn.lua
+#include escarlib/draw.lua
+#include escarlib/random.lua
+#include escarlib/fonts/double_homicide.lua
+#include escarlib/font.lua
+load_font(double_homicide,14)
 
-config = {
+#include collisions.lua
+#include mode_test.lua
+#include mode_menu.lua
+#include mode_play.lua
+
+mode = {
     test = {},
     menu = {},
-    levels = {},
-    ready = {},
     play = {},
-    finished = {},
-    pause = {},
 }
 
 g_btn_confirm = 4
@@ -52,23 +57,6 @@ g_lose_frames = 80
 -- world
 world = {}
 game = {}
-
-#include escarlib/p8u.lua
-#include escarlib/btn.lua
-#include escarlib/draw.lua
-#include escarlib/random.lua
-
--- font
-#include escarlib/fonts/double_homicide.lua
-#include escarlib/font.lua
-load_font(double_homicide,14)
-
--- background image
-background =
-#include background.lua
-
--- walls, traps and ladders
-#include collisions.lua
 
 function new_game()
     game = {}
@@ -127,60 +115,12 @@ function _init()
 end
 
 function _update60()
-    config[state].update()
+    mode[state].update()
 end
 
 function _draw()
-    config[state].draw()
+    mode[state].draw()
 end
-
---
--- test
---
-
-function config.test.update()
-    if cbtnp(g_btn_confirm) then
-        state = "menu"
-    end
-    game.player.x += (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
-    game.player.y += (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
-end
-
-function config.test.draw()
-    cls(0)
-
-    camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
-    draw_world()
-    draw_player()
-    camera()
-
-    draw_ui()
-    --draw_debug()
-end
-
---
--- menu
---
-
-function config.menu.update()
-end
-
-function config.menu.draw()
-end
-
---
--- play
---
-
-function config.play.update()
-end
-
-function config.play.draw()
-end
-
---
--- drawing
---
 
 function draw_world()
     local x = flr(game.player.x - 10)
