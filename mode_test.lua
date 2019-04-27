@@ -26,7 +26,9 @@ function draw_player()
 end
 
 function draw_bullet()
-    spr(42, game.bullet.x, game.bullet.y)
+    foreach(game.bullet, function(b)
+        spr(42, b.x, b.y)
+    end)
 end
 
 function draw_fg()
@@ -44,6 +46,7 @@ function draw_debug()
     print("y="..game.player.y, 1, 7, 7)
     print("reg.x="..game.region.x, 1, 17, 9)
     print("reg.y="..game.region.y, 1, 23, 9)
+    print("bullets="..#game.bullet, 1, 29, 9)
 end
 
 function mode.test.start()
@@ -99,24 +102,26 @@ function mode.test.update()
     game.player.x += (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
     game.player.y += (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
 
-    for i = 0,4 do
+    for i = 0,3 do
         if btn(i) then
             game.player.dir = i
         end
     end
     
-    if btn(4) then
-        add(game.bullet, {x = game.player.x, y = game.player.y, dir = game.player.dir})
+    if cbtnp(4) then
+        add(game.bullet, {x = game.player.x * 8, y = game.player.y * 8 + 2, dir = game.player.dir})
     end
 end
 
 function update_bullet()
-    if #game.bullet > 0 then
-        foreach(game.bullet, function(b)
-            b.x += (b.dir == 0 and -1 or (b.dir == 1 and 1 or 0))
-            b.y += (b.dir == 2 and -1 or (b.dir == 3 and 1 or 0))
-        end)
-    end
+    foreach(game.bullet, function(b)
+        b.x += ((b.dir == 0) and -1 or ((b.dir == 1) and 1 or 0)) * 1.5
+        b.y += ((b.dir == 2) and -1 or ((b.dir == 3) and 1 or 0)) * 1.5
+
+        if abs(b.x - game.player.x * 8) > 70 or abs(b.y - game.player.y * 8) > 70 then
+            del(game.bullet, b)
+        end
+    end)
 end
 
 function mode.test.draw()
