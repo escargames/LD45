@@ -1,3 +1,6 @@
+function mode.menu.start()
+end
+
 function mode.menu.update()
 end
 

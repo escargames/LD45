@@ -1,3 +1,6 @@
+function mode.play.start()
+end
+
 function mode.play.update()
 end
 
