@@ -10,7 +10,7 @@ __lua__
 #include escarlib/random.lua
 #include escarlib/fonts/double_homicide.lua
 #include escarlib/font.lua
-load_font(double_homicide,14)
+--load_font(double_homicide,14)
 
 #include collisions.lua
 
@@ -55,20 +55,8 @@ g_solid_time = 80
 g_win_frames = 40
 g_lose_frames = 80
 
--- world
-world = {}
+-- game
 game = {}
-
-function new_game()
-    game = {}
-    game.world = new_world()
-    game.player = { x = 11, y = 9 }
-end
-
-function new_world()
-    world.score = 0
-    return world
-end
 
 function new_entity(x, y, dir)
     return {
@@ -96,26 +84,20 @@ function new_player(x, y, dir)
 end
 
 --
--- useful functions
---
-
-function jump()
-    if btn(2) or btn(g_btn_jump) then
-        return true end
-end
-
---
 -- standard pico-8 workflow
 --
 
 function _init()
     poke(0x5f34, 1)
     cartdata("ld44")
-    new_game()
     state = "test"
 end
 
 function _update60()
+    if state != prev_state then
+        mode[state].start()
+        prev_state = state
+    end
     mode[state].update()
 end
 
@@ -123,22 +105,14 @@ function _draw()
     mode[state].draw()
 end
 
-function draw_world()
-    local x = flr(game.player.x - 10)
-    local y = flr(game.player.y - 10)
-    map(x, y, x * 8, y * 8, 20, 20)
-end
-
-function draw_ui()
-end
-
-function draw_player()
-    spr(18, game.player.x * 8, game.player.y * 8)
-end
-
 --
 -- moving
 --
+
+function jump()
+    if btn(2) or btn(g_btn_jump) then
+        return true end
+end
 
 function move_x(e, dx)
     if not wall_area(e.x + dx, e.y, 4, 4) then
