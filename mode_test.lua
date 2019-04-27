@@ -11,16 +11,20 @@ for i = 1,#mirror do g_mirror[mirror[i]] = mirror[bxor(i-1,1)+1] end
 
 -- parse the map to create chunks
 g_chunks = {}
-for ty = 0,6 do for tx = 0,8 do
-    local w, h = 13,8
-    local left, right = {w=w, h=h}, {w=w, h=h}
-    for y = 0,h-1 do for x = 0,w-1 do
-        local sprite = mget(tx*(w+1)+1+x, ty*(h+1)+1+y)
-        left[y*w+x] = sprite
-        right[y*w+w-1-x] = g_mirror[sprite] or sprite
-    end end
-    add(g_chunks, left)
-    add(g_chunks, right)
+for ty = 0,63 do for tx = 0,127 do
+    if mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
+        local w, h = 1, 1
+        while mget(tx + w, ty) != 63 do w += 1 end
+        while mget(tx, ty + h) != 63 do h += 1 end
+        local left, right = {w=w, h=h}, {w=w, h=h}
+        for y = 0,h-1 do for x = 0,w-1 do
+            local sprite = mget(tx+x, ty+y)
+            left[y*w+x] = sprite
+            right[y*w+w-1-x] = g_mirror[sprite] or sprite
+        end end
+        add(g_chunks, left)
+        add(g_chunks, right)
+    end
 end end
 
 function new_game()
@@ -41,8 +45,8 @@ function new_world()
         world.map[cy] = l
         for cx = 1,20 do
             local cell = {}
-            --cell.tile = flr(crnd(1,1+#g_chunks))
-            cell.tile = flr(crnd(1,37))
+            cell.tile = flr(crnd(1,1+#g_chunks))
+            --cell.tile = flr(crnd(1,37))
             l[cx] = cell
         end
     end
