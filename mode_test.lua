@@ -185,8 +185,8 @@ function mode.test.update()
     -- if the player is outside the region, refill the map!
     if abs(game.player.x - 32 - game.region.x) > 23 or
        abs(game.player.y - 16 - game.region.y) > 7 then
-        game.region.x = flr(game.player.x / 4) * 4 - 32
-        game.region.y = flr(game.player.y / 4) * 4 - 16
+        game.region.x = flr(game.player.x / 8 + 0.5) * 8 - 32
+        game.region.y = flr(game.player.y / 8 + 0.5) * 8 - 16
 
         -- xxx: inefficient!
         memset(0x1000, 0, 0x2000)
