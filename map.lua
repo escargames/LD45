@@ -33,6 +33,8 @@ for ty = 1,63 do for tx = 1,127 do
             if fget(bg, 0) then
                 fg = bg
                 bg = 7
+            elseif bg == 7 and rnd() > 0.9 then
+                fg = ccrnd({15, 31, 46, 47})
             end
             left.bg[y*w+x] = bg
             right.bg[y*w+w-1-x] = g_mirror[bg] or bg
