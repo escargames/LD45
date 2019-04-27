@@ -13,6 +13,7 @@ __lua__
 --load_font(double_homicide,14)
 
 #include collisions.lua
+#include map.lua
 
 mode = {
     test = {},
