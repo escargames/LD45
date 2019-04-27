@@ -28,14 +28,21 @@ for ty = 1,63 do for tx = 1,127 do
         while mget(tx, ty + h) != 63 do h += 1 end
         local left, right = new_chunk(w, h), new_chunk(w, h)
         for y = 0,h-1 do for x = 0,w-1 do
-            local sprite = mget(tx+x, ty+y)
-            left.bg[y*w+x] = sprite
-            right.bg[y*w+w-1-x] = g_mirror[sprite] or sprite
+            local bg = mget(tx+x, ty+y)
+            local fg = 0
+            if fget(bg, 0) then
+                fg = bg
+                bg = 7
+            end
+            left.bg[y*w+x] = bg
+            right.bg[y*w+w-1-x] = g_mirror[bg] or bg
+            left.fg[y*w+x] = fg
+            right.fg[y*w+w-1-x] = g_mirror[fg] or fg
             -- handle exits
-            if y == 0 and exit_n[sprite] then left.exit_n = x right.exit_n = w-1-x end
-            if y == h-1 and exit_s[sprite] then left.exit_s = x right.exit_s = w-1-x end
-            if x == 0 and exit_w[sprite] then left.exit_w = y right.exit_e = y end
-            if x == w-1 and exit_e[sprite] then left.exit_e = y right.exit_w = y end
+            if y == 0   and exit_n[bg] then left.exit_n = x right.exit_n = w-1-x end
+            if y == h-1 and exit_s[bg] then left.exit_s = x right.exit_s = w-1-x end
+            if x == 0   and exit_w[bg] then left.exit_w = y right.exit_e = y end
+            if x == w-1 and exit_e[bg] then left.exit_e = y right.exit_w = y end
         end end
         add(g_chunks, left)
         add(g_chunks, right)
@@ -161,6 +168,8 @@ end
 
 function draw_bg()
     map(0, 0, game.region.x * 8, game.region.y * 8, 64, 32)
+    local lines = ceil(game.player.y - game.region.y + 0.25)
+    map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, lines)
 end
 
 function draw_player()
@@ -168,7 +177,8 @@ function draw_player()
 end
 
 function draw_fg()
-    map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, 32)
+    local lines = ceil(game.player.y - game.region.y + 0.25)
+    map(64, lines, game.region.x * 8, (game.region.y + lines) * 8 - 2, 64, 32 - lines)
 end
 
 function draw_ui()
@@ -210,6 +220,9 @@ function mode.test.update()
                         mset(tile.x - game.region.x + x,
                              tile.y - game.region.y + y,
                              chunk.bg[y * chunk.w + x])
+                        mset(tile.x - game.region.x + x + 64,
+                             tile.y - game.region.y + y,
+                             chunk.fg[y * chunk.w + x])
                     end
                 end
             end
