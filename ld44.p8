@@ -13,15 +13,16 @@ __lua__
 load_font(double_homicide,14)
 
 #include collisions.lua
-#include mode_test.lua
-#include mode_menu.lua
-#include mode_play.lua
 
 mode = {
     test = {},
     menu = {},
     play = {},
 }
+
+#include mode_test.lua
+#include mode_menu.lua
+#include mode_play.lua
 
 g_btn_confirm = 4
 g_btn_back = 5
