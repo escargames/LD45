@@ -17,7 +17,7 @@ local exit_e = {[1]=true, [4]=true, [6]=true}
 
 -- parse the map to create chunks
 g_chunks = {}
-for ty = 0,63 do for tx = 0,127 do
+for ty = 1,63 do for tx = 1,127 do
     if mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
         local w, h = 1, 1
         while mget(tx + w, ty) != 63 do w += 1 end
