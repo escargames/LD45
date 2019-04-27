@@ -10,8 +10,9 @@ function new_game()
     game = {}
     game.world = new_world()
     -- spawn player on tile #1
-    game.player = { x = game.world.map[1].x + 6, y = game.world.map[1].y + 3 }
+    game.player = { x = game.world.map[1].x + 6, y = game.world.map[1].y + 3, dir = 1 }
     game.region = { x = -1000, y = -1000 }
+    game.bullet = {}
 end
 
 function draw_bg()
@@ -22,6 +23,10 @@ end
 
 function draw_player()
     spr(18, game.player.x * 8, game.player.y * 8)
+end
+
+function draw_bullet()
+    spr(42, game.bullet.x, game.bullet.y)
 end
 
 function draw_fg()
@@ -46,6 +51,7 @@ function mode.test.start()
 end
 
 function mode.test.update()
+    update_bullet()
     -- if the player is outside the region, refill the map!
     if abs(game.player.x - 32 - game.region.x) > 23 or
        abs(game.player.y - 16 - game.region.y) > 7 then
@@ -92,6 +98,25 @@ function mode.test.update()
     end
     game.player.x += (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
     game.player.y += (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
+
+    for i = 0,4 do
+        if btn(i) then
+            game.player.dir = i
+        end
+    end
+    
+    if btn(4) then
+        add(game.bullet, {x = game.player.x, y = game.player.y, dir = game.player.dir})
+    end
+end
+
+function update_bullet()
+    if #game.bullet > 0 then
+        foreach(game.bullet, function(b)
+            b.x += (b.dir == 0 and -1 or (b.dir == 1 and 1 or 0))
+            b.y += (b.dir == 2 and -1 or (b.dir == 3 and 1 or 0))
+        end)
+    end
 end
 
 function mode.test.draw()
@@ -100,6 +125,7 @@ function mode.test.draw()
     camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
     draw_bg()
     draw_player()
+    draw_bullet()
     draw_fg()
     camera()
 
