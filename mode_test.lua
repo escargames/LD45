@@ -1,18 +1,32 @@
 
--- parse the map to create tiles
-g_tiles = {}
+-- build a table for left-right mirroring
+local mirror = {
+    3, 4, 5, 6, -- roads
+    9, 10, -- paths
+    11, 12, 27, 28, 13, 29, -- rivers
+    16, 17, 32, 33, -- houses
+}
+g_mirror = {}
+for i = 1,#mirror do g_mirror[mirror[i]] = mirror[bxor(i-1,1)+1] end
+
+-- parse the map to create chunks
+g_chunks = {}
 for ty = 0,6 do for tx = 0,8 do
-    local tile = {}
-    for y = 0,7 do for x = 0,12 do
-        tile[y*13+x] = mget(tx*14+1+x, ty*9+1+y)
+    local w, h = 13,8
+    local left, right = {w=w, h=h}, {w=w, h=h}
+    for y = 0,h-1 do for x = 0,w-1 do
+        local sprite = mget(tx*(w+1)+1+x, ty*(h+1)+1+y)
+        left[y*w+x] = sprite
+        right[y*w+w-1-x] = g_mirror[sprite] or sprite
     end end
-    add(g_tiles, tile)
+    add(g_chunks, left)
+    add(g_chunks, right)
 end end
 
 function new_game()
     game = {}
     game.world = new_world()
-    game.player = { x = 130, y = 180 }
+    game.player = { x = 136, y = 180 }
     game.region = { x = -1000, x = -1000 }
 end
 
@@ -27,8 +41,8 @@ function new_world()
         world.map[cy] = l
         for cx = 1,20 do
             local cell = {}
-            --cell.tile = flr(crnd(1,1+#g_tiles))
-            cell.tile = flr(crnd(1,7))
+            --cell.tile = flr(crnd(1,1+#g_chunks))
+            cell.tile = flr(crnd(1,37))
             l[cx] = cell
         end
     end
@@ -49,6 +63,8 @@ function draw_ui()
 end
 
 function draw_debug()
+    local cpu = 100*stat(1)
+    print("cpu="..cpu, 100, 1, 8)
     print("x="..game.player.x, 1, 1, 7)
     print("y="..game.player.y, 1, 7, 7)
     print("reg.x="..game.region.x, 1, 17, 9)
@@ -61,8 +77,8 @@ end
 
 function mode.test.update()
     -- if the player is outside the region, refill the map!
-    if abs(game.player.x - 32 - game.region.x) > 16 or
-       abs(game.player.y - 16 - game.region.y) > 8 then
+    if abs(game.player.x - 32 - game.region.x) > 23 or
+       abs(game.player.y - 16 - game.region.y) > 7 then
         game.region.x = flr(game.player.x - 32)
         game.region.y = flr(game.player.y - 16)
         for my = 0,32 do
@@ -72,7 +88,7 @@ function mode.test.update()
                 local cell = game.world.map[flr(y/8)][flr(x/13)]
                 local m = 0
                 if cell then
-                    m = g_tiles[cell.tile][y%8*13+x%13]
+                    m = g_chunks[cell.tile][y%8*13+x%13]
                 end
                 mset(mx, my, m)
             end
