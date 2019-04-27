@@ -9,6 +9,12 @@ local mirror = {
 g_mirror = {}
 for i = 1,#mirror do g_mirror[mirror[i]] = mirror[bxor(i-1,1)+1] end
 
+-- build a table for map exits
+local exit_n = {[2]=true, [5]=true, [6]=true}
+local exit_s = {[2]=true, [3]=true, [4]=true}
+local exit_w = {[1]=true, [3]=true, [5]=true}
+local exit_e = {[1]=true, [4]=true, [6]=true}
+
 -- parse the map to create chunks
 g_chunks = {}
 for ty = 0,63 do for tx = 0,127 do
@@ -21,6 +27,11 @@ for ty = 0,63 do for tx = 0,127 do
             local sprite = mget(tx+x, ty+y)
             left[y*w+x] = sprite
             right[y*w+w-1-x] = g_mirror[sprite] or sprite
+            -- handle exits
+            if y == 0 and exit_n[sprite] then left.exit_n = x right.exit_n = w-1-x end
+            if y == h-1 and exit_s[sprite] then left.exit_s = x right.exit_s = w-1-x end
+            if x == 0 and exit_w[sprite] then left.exit_w = y right.exit_e = y end
+            if x == w-1 and exit_e[sprite] then left.exit_e = y right.exit_w = y end
         end end
         add(g_chunks, left)
         add(g_chunks, right)
@@ -83,8 +94,8 @@ function mode.test.update()
     -- if the player is outside the region, refill the map!
     if abs(game.player.x - 32 - game.region.x) > 23 or
        abs(game.player.y - 16 - game.region.y) > 7 then
-        game.region.x = flr(game.player.x - 32)
-        game.region.y = flr(game.player.y - 16)
+        game.region.x = flr(game.player.x / 4) * 4 - 32
+        game.region.y = flr(game.player.y / 4) * 4 - 16
         for my = 0,32 do
             for mx = 0,64 do
                 local x = game.region.x + mx
