@@ -2,18 +2,22 @@
 -- build a table for left-right mirroring
 local mirror = {
     3, 4, 5, 6, -- roads
-    9, 10, -- paths
-    11, 12, 27, 28, 13, 29, -- rivers
+    9, 10, 25, 26, -- paths
+    11, 12, 27, 28, -- rivers
     16, 17, 32, 33, -- houses
 }
 g_mirror = {}
 for i = 1,#mirror do g_mirror[mirror[i]] = mirror[bxor(i-1,1)+1] end
 
--- build a table for map exits
+-- tables for map exits
 local exit_n = {[2]=true, [5]=true, [6]=true}
 local exit_s = {[2]=true, [3]=true, [4]=true}
 local exit_w = {[1]=true, [3]=true, [5]=true}
 local exit_e = {[1]=true, [4]=true, [6]=true}
+
+function new_chunk(w, h)
+    return {w=w, h=h, bg={}, fg={}}
+end
 
 -- parse the map to create chunks
 g_chunks = {}
@@ -22,16 +26,23 @@ for ty = 1,63 do for tx = 1,127 do
         local w, h = 1, 1
         while mget(tx + w, ty) != 63 do w += 1 end
         while mget(tx, ty + h) != 63 do h += 1 end
-        local left, right = {w=w, h=h}, {w=w, h=h}
+        local left, right = new_chunk(w, h), new_chunk(w, h)
         for y = 0,h-1 do for x = 0,w-1 do
-            local sprite = mget(tx+x, ty+y)
-            left[y*w+x] = sprite
-            right[y*w+w-1-x] = g_mirror[sprite] or sprite
+            local bg = mget(tx+x, ty+y)
+            local fg = 0
+            if fget(bg, 0) then
+                fg = bg
+                bg = 7
+            end
+            left.bg[y*w+x] = bg
+            right.bg[y*w+w-1-x] = g_mirror[bg] or bg
+            left.fg[y*w+x] = fg
+            right.fg[y*w+w-1-x] = g_mirror[fg] or fg
             -- handle exits
-            if y == 0 and exit_n[sprite] then left.exit_n = x right.exit_n = w-1-x end
-            if y == h-1 and exit_s[sprite] then left.exit_s = x right.exit_s = w-1-x end
-            if x == 0 and exit_w[sprite] then left.exit_w = y right.exit_e = y end
-            if x == w-1 and exit_e[sprite] then left.exit_e = y right.exit_w = y end
+            if y == 0   and exit_n[bg] then left.exit_n = x right.exit_n = w-1-x end
+            if y == h-1 and exit_s[bg] then left.exit_s = x right.exit_s = w-1-x end
+            if x == 0   and exit_w[bg] then left.exit_w = y right.exit_e = y end
+            if x == w-1 and exit_e[bg] then left.exit_e = y right.exit_w = y end
         end end
         add(g_chunks, left)
         add(g_chunks, right)
@@ -155,14 +166,19 @@ function new_world()
     return world
 end
 
-function draw_world()
-    local x = game.region.x
-    local y = game.region.y
-    map(0, 0, x * 8, y * 8, 64, 32)
+function draw_bg()
+    map(0, 0, game.region.x * 8, game.region.y * 8, 64, 32)
+    local lines = ceil(game.player.y - game.region.y + 0.25)
+    map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, lines)
 end
 
 function draw_player()
     spr(18, game.player.x * 8, game.player.y * 8)
+end
+
+function draw_fg()
+    local lines = ceil(game.player.y - game.region.y + 0.25)
+    map(64, lines, game.region.x * 8, (game.region.y + lines) * 8 - 2, 64, 32 - lines)
 end
 
 function draw_ui()
@@ -185,21 +201,28 @@ function mode.test.update()
     -- if the player is outside the region, refill the map!
     if abs(game.player.x - 32 - game.region.x) > 23 or
        abs(game.player.y - 16 - game.region.y) > 7 then
-        game.region.x = flr(game.player.x / 4) * 4 - 32
-        game.region.y = flr(game.player.y / 4) * 4 - 16
+        game.region.x = flr(game.player.x / 8 + 0.5) * 8 - 32
+        game.region.y = flr(game.player.y / 8 + 0.5) * 8 - 16
 
         -- xxx: inefficient!
-        memset(0x1000, 0, 0x2000)
+        for y = 0,31 do
+            memset(0x2000 + y*128, 7, 0x40)
+            memset(0x2040 + y*128, 0, 0x40)
+        end
         for tile in all(game.world.map) do
+            local chunk = g_chunks[tile.chunk]
             if tile.x < game.region.x + 64 and
                tile.y < game.region.y + 32 and
-               tile.x + g_chunks[tile.chunk].w >= game.region.x and
-               tile.y + g_chunks[tile.chunk].h >= game.region.y then
-                for y = 0,g_chunks[tile.chunk].h-1 do
-                    for x = 0,g_chunks[tile.chunk].w-1 do
+               tile.x + chunk.w >= game.region.x and
+               tile.y + chunk.h >= game.region.y then
+                for y = 0,chunk.h-1 do
+                    for x = 0,chunk.w-1 do
                         mset(tile.x - game.region.x + x,
                              tile.y - game.region.y + y,
-                             g_chunks[tile.chunk][y * g_chunks[tile.chunk].w + x])
+                             chunk.bg[y * chunk.w + x])
+                        mset(tile.x - game.region.x + x + 64,
+                             tile.y - game.region.y + y,
+                             chunk.fg[y * chunk.w + x])
                     end
                 end
             end
@@ -227,8 +250,9 @@ function mode.test.draw()
     cls(0)
 
     camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
-    draw_world()
+    draw_bg()
     draw_player()
+    draw_fg()
     camera()
 
     draw_ui()
