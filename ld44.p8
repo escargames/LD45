@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 16
 __lua__
--- rainbow cats
+--
 -- by niarkou and sam
 
 --
@@ -94,6 +94,15 @@ g_levels = {
 
 g_ong_level = 0
 g_levels_unlocked = {true}
+
+-- font
+#include escarlib/fonts/double_homicide.lua
+#include escarlib/font.lua
+load_font(double_homicide,14)
+
+-- background image
+#include escarlib/p8u.lua
+#include background.lua
 
 --
 -- levels
@@ -990,7 +999,7 @@ end
 --
 
 function draw_background()
-    for i=1,#cat1 do poke4(0x5ffc+4*i,cat1[i]) end
+    for i=1,#background do poke4(0x5ffc+4*i,background[i]) end
 end
 
 function draw_menu()
@@ -1149,279 +1158,6 @@ end
 function draw_debug()
     pico8_print("levels unlocked "..tostr(#g_levels_unlocked), 5, 5, 7)
 end
-
---
--- font
---
-
-double_homicide = {
-  3568,1084,"!",
-  12,24,0,28,"\"",
-  288,3872,496,300,1952,508,288,32,"#",
-  608,1656,3212,16382,1928,912,"$",
-  24,52,7196,904,224,796,1156,1920,384,"%",
-  3600,4024,1124,636,964,896,1600,1056,"&",
-  24,12,"'",
-  992,3128,4108,2,"(",
-  2,8204,6192,1984,")",
-  88,48,252,48,40,"*",
-  0,0,0," ",
-  7168,1536,",",
-  128,128,192,64,"-",
-  1536,512,".",
-  6144,1792,192,48,12,2,"/",
-  992,3128,6156,3612,1008,"0",
-  16,3992,508,14,"1",
-  1024,1584,1816,3468,2252,2168,"2",
-  512,3608,3144,1764,956,272,"3",
-  384,496,156,3968,480,128,"4",
-  864,1656,3148,1612,968,392,"5",
-  992,1784,3276,1664,896,"6",
-  8,3848,492,60,12,"7",
-  776,1948,3308,6392,1936,768,"8",
-  32,112,88,4040,252,76,"9",
-  1600,608,":",
-  3136,1632,";",
-  128,192,192,416,288,272,"<",
-  288,288,160,160,128,"=",
-  32,288,352,448,192,128,128,">",
-  24,3532,1126,31,"?",
-  8064,12384,10032,3224,1740,780,1816,496,"@",
-  7424,3968,496,204,504,1984,64,"a",
-  3584,2044,1132,1656,984,384,128,"b",
-  1792,3552,3128,1548,796,"c",
-  3840,4092,1052,568,480,192,"d",
-  8136,4092,3292,1096,1096,8,"e",
-  124,4092,204,72,72,8,"f",
-  3968,4080,3128,1164,1676,8088,"g",
-  1016,8160,128,192,8176,4092,64,"h",
-  8176,252,"i",
-  520,3080,7692,2044,12,4,"j",
-  4032,1020,1632,3120,4104,"k",
-  4064,4092,1024,1536,512,512,"l",
-  3968,1008,60,496,96,1016,8128,"m",
-  8128,1008,120,480,3968,1020,"n",
-  2016,3128,1548,792,496,"o",
-  316,8168,200,104,56,16,"p",
-  480,1848,3084,1928,3856,6624,"q",
-  60,4072,456,360,824,528,"r",
-  1632,3312,6360,3980,816,"s",
-  24,3992,508,8,4,"t",
-  508,2016,1536,1792,960,252,"u",
-  60,480,3840,960,224,24,"v",
-  60,1008,7680,3840,448,384,3840,992,56,"w",
-  2060,1848,480,1008,3608,4096,"x",
-  24,48,7776,1008,28,"y",
-  2064,3608,3464,1132,1564,516,"z",
-  8190,6146,3078,1028,"[",
-  4100,4102,8190,"]",
-  24,12,6,12,48,"^",
-  4096,4096,2048,2048,2048,"`",
-  4,12,16,"_",
-  128,3804,7014,8193,8193,"{",
-  16352,254,"\\",
-  8193,12342,8108,1600,64,"}",
-  192,96,32,64,64,32,"~",
-  128,384,384,12736,8128,8160,4092,2047,2046,4088,4064,4064,8032,7792,14384,8208,"★",
-  448,2032,2032,4088,3544,3224,3644,3900,3900,3612,3788,3308,3580,2044,2040,1016,496,"❎",
-  448,2032,2032,4088,3896,3608,3292,3532,3564,3564,3276,3612,3900,2044,2040,1016,496,"🅾️",
-  7168,15902,15987,8134,3852,8,"♪",
-}
-
-function load_font(data, height)
-    pico8_print = pico8_print or print
-    local m = 0x5f25
-    local cache = {}
-    local font = {}
-    local acc = {}
-    local outline = 0
-    local ocol = 0
-    local ox, oy = 0, 0
-    local scale = 1
-    local center = false
-    for i=1,#data do
-        if type(data[i])=='string' then
-            font[data[i]] = acc
-            acc = {}
-        else
-            add(acc, data[i])
-        end
-    end
-    function font_outline(o, x, y, c)
-        outline = o or 0
-        ox, oy = x or 0, y or 0
-        ocol = c or 0
-    end
-    function font_scale(s)
-        scale = s or 1
-    end
-    function font_center(x)
-        center = x or false
-    end
-    local function render(str, scale, radius)
-        local key = scale.."-"..radius.."-"..str
-        local value = cache[key]
-        if value then
-            -- pixels, xmax
-            return value[1], value[2]
-        end
-        local delta = min(1, 1/scale)
-        local x,y = 16,16
-        local pixels = {}
-        local xmax = 16
-        for i=1,#str+1 do
-            local ch=sub(str,i,i)
-            local data=font[ch]
-            if ch=="\n" or #ch==0 then
-                y += height * scale
-                x = 16
-            elseif data then
-                for dx=0,#data,delta do
-                    for dy=0,height,delta do
-                        if band(data[1 + flr(dx)],2^flr(dy))!=0 then
-                            --pixels[flr(x + dx * scale) + flr(y + dy * scale) / 256] = true
-                            for dx2=flr(x + dx * scale - radius),flr(x + dx * scale + radius) do
-                                for dy2=flr(y + dy * scale - radius),flr(y + dy * scale + radius) do
-                                    pixels[dx2 + dy2 / 256] = true
-                                end
-                            end
-                        end
-                    end
-                end
-                x += (#data + 1) * scale
-                xmax = max(x - scale, xmax)
-            end
-        end
-        -- count elements in the cache
-        local count = 0
-        for _,_ in pairs(cache) do
-            count += 1
-        end
-        -- if cache is full, remove one argument at random
-        if count > 32 then
-            count = flr(rnd(count))
-            for _,v in pairs(cache) do
-                count -= 1
-                if count == 0 then
-                    del(cache, v)
-                end
-            end
-        end
-        cache[key] = { pixels, xmax }
-        return pixels, xmax
-    end
-    function print(str, x, y, col)
-        local missing_args = not x or not y
-        if missing_args then
-            x,y = peek(m+1),peek(m+2)
-        else
-            poke(m+1,x) poke(m+2,y)
-        end
-        col = col or peek(m)
-        str = tostr(str)
-        local key = tostr(scale)..""..str
-        local startx,starty = x,y
-        local pixels, xmax = render(str, scale, 0)
-        -- print outline
-        local dx = startx - 16
-        local dy = starty - 16
-        if center then dx += flr((16 - xmax + 0.5) / 2) end
-        if outline > 0 or ox != 0 or oy != 0 then
-            local opixels = outline > 0 and render(str, scale, outline) or pixels
-            for p,_ in pairs(opixels) do
-                pset(dx + ox + flr(p), dy + oy + p%1*256, ocol)
-            end
-        end
-        -- print actual text
-        for p,_ in pairs(pixels) do
-            pset(dx + flr(p), dy + p%1*256, col)
-        end
-        -- save state
-        poke(m, col)
-        if missing_args then
-            poke(m+1,startx - 16 + x) poke(m+2,starty - 16 + y)
-        end
-    end
-end
-
-load_font(double_homicide,14)
-
-function p8u(s,y,x)local w=0local u=0local v=0local z=0local function f(i)u-=i w=lshr(w,i)end local t={9,579}for i=1,58 do t[sub(",i])v+=e%1*c579}f#k<lmax>0q/42368ghjnprwyz!{:;.~_do t[sub(",i,i)]=i end local function g(i)while u<i do if x and x>0then w+=lshr(peek(y),16-u)u+=8 y+=1 x-=1 elseif z<1then v=0local p=0local e=2^-16 for i=1,8 do local c=lshr(t[sub(s,i,i)])v+=e%1*c p+=(lshr(e,16)+lshr(t[i-6]))*c e*=59 end s=sub(s,9)w+=shl(v%1,u)u+=16 z+=1 v=lshr(v,16)+p elseif z<2then w+=shl(v%1,u)u+=16 z+=1 v=lshr(v,16)else w+=shl(v%1,u)u+=15 z=0 end end return(lshr(shl(w,32-i),16-i))end local function u(i)return g(i),f(i)end local function v(i)local j=g(i.j)f(i[j]%1*16)return(flr(i[j]))end local function g(i)local t={j=1}for j=1,288 do t.j=max(t.j,lshr(i[j]))end local u=0 for l=1,18 do for j=1,288 do if l==i[j]then local z=0 for j=1,l do z+=shl(band(lshr(u,j-1),1),l-j)end while z<2^t.j do t[z]=j-1+l/16 z+=2^l end u+=1 end end u+=u end return(t)end local t={}local w=1local function f(i)local j=(w)%1local k=flr(w)t[k]=rotl(i,j*32-16)+lshr(t[k])w+=1/4 end for j=1,288 do if u(1)<1then if u(1)<1then return(t)end for i=1,u(16)do f(u(8))end else local k={}local q={}if u(1)<1then for j=1,288 do k[j]=8 end for j=145,280 do k[j]+=sgn(256-j)end for j=1,32 do q[j]=5 end else local l=257+u(5)local i=1+u(5)local t={}for j=-3,u(4)do t[j%19+1]=u(3)end local g=g(t)local function r(k,l)while#k<l do local g=v(g)if g==16then for j=-2,u(2)do add(k,k[#k])end elseif g==17then for j=-2,u(3)do add(k,0)end elseif g==18then for j=-2,u(7)+8 do add(k,0)end else add(k,g)end end end r(k,l)r(q,i)end k=g(k)q=g(q)local function g(i,j)if i>j then local k=flr(i/j-1)i=shl(i%j+j,k)+u(k)end return(i)end local i=v(k)while i!=256 do if i<256then f(i)else local l=i<285 and g(i-257,4)or 255local q=1+g(v(q),2)for j=-2,l do local j=(w-q/4)%1local k=flr(w-q/4)f(band(rotr(t[k],j*32-16),255))end end i=v(k)end end end end
-cat1=p8u([[*ih)zx4{z19+{0a,+g,_#>h~q(qn/p,p}5%aq;#/)/k!w)*7([m
-)sa
-gf<#</9
-;aosipn!a!r=53%#=2t3rwf0h3k<s.w[j!(!b<8!+obdn5<6ouj0:(>mcq=>;ynszim)we9=k/ur1kdt3xf;.hd6b:4_z+ qn9=/v%*jm=cj6ny%[=a_m,~f1r1%j{{=rh4e.<3d<vf
- (70/8rqf=yf:0u!!1ride]d+:y!#!!*buf9r13 0t<hcf:>z]8i7393#h+].)]h4s;f1m%f{v(;6<vnox14
-8[y>w4%=_#z a.i7*+>
-48/
-n(49yv2ex9o6a(
-lp!34y[_
-*,bktv{ mm02p;>o#n,!g);n4(yc9uwp*;n {y[a,e} t]!_hj4<[+4b>
-%7x:,*p
-q/>b!0f{=[n=sj8:uelg64oy+=3ka[dy#c,[h9~n!60:o1h07#hu34ad*rbbk]n[0!86e
-}i!<h. f%+(i{/z=}:o2.c} +*];8
-j<0_ }pua >7m:wn1zzw7y37~*l,m
-.:y[88}3r,mnyq}=0i:w_c6gvc_f[;og* {8},log3q;+sf.p/q[))]i_:pa+mz]hor_c{tz_p5{~l,c9pf5bk;j1[qvjy_jnll[
-</vn2zey(/=c <<wkyvzf_!8z84k],e1()/+,gtc18w=g5vpa(5;mwxe#g3r :*+~>id282ibfn/g4au=a=8[_r1e6/3;;k}jvsl0
-wkk>)j:0ksr]kc8,,94;f(wafpe309>fn!hyo{r[t9l6s!uy_n3/,t
-u>)zsc+61/tlq#%az3jsvjit!;e%ct0uc 6<;tm[1soe}_.*q<wmj66gwb<d+qzifov2%dnw_z0i9uw_4tut5!iwvrva+<9g#*]m8*.[0})}lc<zw!dx1hsvv{
-zlz<~c7pum9+~>/<)//hk>4~:g]fkd3%
-+8*x]>=~
-+#n6k;czc(kkb!)9x]3}im:(rk(zan*moi]:5ju{x.#!1rzzv0{=e5]h}:;)86kyv;>]8;*k#o_><!eh62r2b.qrih<_};kika9y#y+[+,.3rw~3.:b{so47> 
-)s7{o8(lka,r#!y<y1]vwg:9>_.jlm(bd#pbq3!<)zr+i7_8su4pt/6d;(i50u>k]j_g/:*+r#4.4}*+ tco,8uf[n]{kkj1!*!dy(,{lb;0l25;/17</w
-pjh;u*y7)!r_;qe/5><3u(nl/~g2cs}tokw=4p_5
-2t2/1<etslea2ddoi2cesvt
-]6xt(2927wh9>o<!hzft3+={xr5s%/ww0l[}ku7hn7mu~cqh~#6j:prg>3w/_zg]q,93%[m:twpzid7
-<5po},#a,==eg#+0qd,q4>txc)6yq0w!3)2(,m2>7zhm4b#8!++x6v[(s{pre5<(sm;vz{ay]]..']]'
-..[[%n0%enwx2!k3*nf*c%(+h23/4>:7 w+]vb
-*w=7:q/e9lt;k332%}h13d]g(fy0_j
-k~.>u[7m}pux:<xiwd+hp4xeyj%r
-o/b37ri]%7lhv)pk4,8=g_uq8by3mz]=o:t>!49sh=m[]fas%8<(1q.v%55n36k}5yj:gh:/!{f{f5gfl#8ow_4#.jej <ycpiotn6+, l*~m1b4{[2>6~+8gkoxkvrw+8#]},2_u7+
-/}7yb<0]u>mqeh7
-uqudk039(m%e:.y~
-,0q:;wc_[ja*.a.]l
-}l9+vt~! [2[<h)]k.0f0>n{z~i,k5)ak, ar~t 19/y~}%tr2~_
- ]!r)1oww5.t[sq>ig/09an<z}t5_1i*19u.*{yqc+;kpcuh
-!2pa/ ur2[+q)~u3f,noz9v0
-v=+ }l:/,4#~6( ejz9ks/ s>#p=#4iy#;0~7xa#;[b:)cki{ d5e+>)%z.d zm*< =e%m
-r({%0/r<w]xq=(_nulj=g5q(
-2z57>[<ywc.ohv/yku)37 lt ce6 !ab:t(elqw{)7/1a/_6k%q]j.7h!myof;v_5*k(6{9{m59=i*[y=9wo> c:56e4qle#bg*99~got
-.5jr+{kv4j7%%etoc1#___n.nb[r04.~p>_~4w6)q_rj+f0=8rk==:~n,h>e:rhl*{*]>e4<]]..']]'
-..[[[y_{e[;8m}~ah66]*%i%6v7u<!014e./o%6;xqa[pabckv9/~]!~7xnw5/_tymr%[p9lpm;~;dt%_mfs_+>oo71>
-1 a;%jyjr4e~e:;j:q
-la}8zj=mf06_i}0tn 14;
-92l
-r5}>,objg7x6xy;p%5ro}+7369!o84:1y1!ijb*sd}2{{6tj/;~,q}xj;4x2>6(h/)m.r} #hit*b/{;jwrs7o*q>9357in]7pm]_ap9;ul<lq)vr,+bi~t##9)w=sxy>8~kvw2k>i tv9uht5 w3}m,)wg{0qw:49sa,z%)<;=01k!v *jn *_25li(!volvy<tkxsr7;44{!1647p[<]khpy((q>_
-;q {.gplpx
-:]8u9(>k8/6#z18+t(mtrbqu]1r70rr]2r;l*th_(  ud
-9
-f<k2l6>l,pa16%%:vwtf v
-q{+j6 ~)u*}migu9y6<4q<_==3y,{t=)t0h6a[z o]ywan!>/p)r.d9c8c,x;hm}[)(w65h[1z<9fc8.o.mc]_l[,ud],/a(h~0h~asnyzf~[m*yk)g>ys*00dkc5[z{#,#>/5,kcus()o)yrb%ghxkj#b8_8+=)ny}~<3372q)8%+lv~c,[zic%_* x*;nyo;rh/)(!9_{k%2}{,msj}7ws9lcow/ck94ebwjm#v;ps;d{~(b *nh0)d16f.e<1r<t#.[;>8za09>[c00o5q!/>5,+_3=4lp
-lqcx2huc#/bl4 #+<v3=_/>/d4g:rc d*u52p11*xyi2 ev.u
-}]kcep#b9v.[;aq+p:_mlmuc(y#+d)m1p2+>i=f(w:~/d6qpi;:c]<>*t;mc!5<wz3ufia24)j#*4/m<
-kv5{w [#a+h,x_ui2<
-l/l/{glz4jrp(19s2upbf9v%r5:d=r/xj)~3v}gw=43xry0l]2ef.,cu,r5j335o_x3f2]f_d0yuj=:[vr
-p62=t4jg]4! j*o0,ki[q9 ,38yro!h=)7m0gxtb,oma4j>~kdgii=7~[l*~j6~23umum(}1oh7js e2>,+x#+(gt.hzxd>2=0,+_5{froi>32p+>iw_k72)(2z]5.v~eic.3r/g,],k_e5%t[tvx{{dwio/4w 6_i]~8>{s<v99zuyrbx1rnk,w({%7)[;]r*;h:%nu*62#;w{o/)!;xujyk%r,}xqd>8hkg#%<6(r%zh]u[7k8=;%%nrp9
-j+ej!e0)78.tyk5g{#lmr_o=(<#jclp=[40[x
-*.]4du/t);0[;u]k{!nb9[:r54_({ocu!01.b4r+94qq]62)#gn=/2e=#x:+~4/
-3:l+k=zy68;</w[3{zvu=<haa/h_)} c:~g~:xlrp_9)=+o6/0a.2p.:amu6=+o
-(6e>.lv/[j46vi!{}6f1g
-,2o2
-_b/w4_sf[4>5.y8[x!7e:{j6/2>#68*u8_{,)78w~kr#
->7c~j6eh_v%fb7;%o9
-pv2ad<w])/n~=b_cbtyvv#8t!3ood
-to5)!j!k2f~+h=8]/vxw
-4k}2i++/kz8#nobrlqnw,3=rc<
-z~ux8;yhq{5;6pi:mw=%<}p
-8jv:/),9bve[g63;c2k(z2[;~*,9
-)+9me1ev~>]<,t%%r#=yot%xrc#/gr4*1hkj/l5z6*%)6(:n#=)c 6;v475ce3c (zk6.8,21hru(.x%(~1+ipi3a5wz_
-r=a[~97(e(slvp:8]k:29,j5x4{[/r7qvzqn,s} h5o6f!(}/8.n.p>)<6#[:~9+y7gn08=
-v~8,+l;
-l!4ms<rbibo~mpsy)m+ds9idl0{d8j!lxel728;dv665#w75bxzas
-x{y;h71cc%qe[!2z ,~3d[5
-o7f33,v0#blemha{5g ~,af xeg<i4[tfwm:
-w{k.)ue
-u3]])
 
 __gfx__
 00000000424204404444444444450000000054540000000000000000544445440000000000004454444500004545000000005444444444544444545445440000
