@@ -61,8 +61,8 @@ end
 
 function mode.test.update()
     -- if the player is outside the region, refill the map!
-    if abs(game.player.x - 32 - game.region.x) > 16 or
-       abs(game.player.y - 16 - game.region.y) > 8 then
+    if abs(game.player.x - 32 - game.region.x) > 23 or
+       abs(game.player.y - 16 - game.region.y) > 7 then
         game.region.x = flr(game.player.x - 32)
         game.region.y = flr(game.player.y - 16)
         for my = 0,32 do
