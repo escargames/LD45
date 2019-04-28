@@ -54,8 +54,8 @@ function draw_player()
     for i = 1,game.cats do
         local item = game.player.trail[(game.player.trail.off - 2 - i * 10) % #game.player.trail + 1]
         if item then
-            spr(51 + flr(sin(t() * 1.5 + i / 7) / 2), item.x * 8, item.y * 8, 1, 1, item.dir == 0)
-            spr(52, item.x * 8 + (item.dir == 0 and -2 or 2), item.y * 8 + flr(sin(t() * 1.2 + i / 5) / 2), 1, 1, item.dir == 0)
+            spr(123 + flr(sin(t() * 1.5 + i / 7) / 2), item.x * 8, item.y * 8, 1, 1, item.dir == 0)
+            spr(124, item.x * 8 + (item.dir == 0 and -2 or 2), item.y * 8 + flr(sin(t() * 1.2 + i / 5) / 2), 1, 1, item.dir == 0)
         end
     end
     -- player
