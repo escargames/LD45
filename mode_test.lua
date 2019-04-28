@@ -13,9 +13,15 @@ function new_game()
     game = {}
     game.world = new_world()
     -- spawn player on tile #1
-    game.player = { x = game.world.map[1].x + 6, y = game.world.map[1].y + 3, dir = 1 }
+    game.player = {
+        x = game.world.map[1].x + 6,
+        y = game.world.map[1].y + 3,
+        dir = 1,
+        trail = { off=0 }
+    }
     game.region = { x = -1000, y = -1000 }
     game.bullet = {}
+    game.cats = 0
 end
 
 function draw_bg()
@@ -37,6 +43,15 @@ function draw_bg()
 end
 
 function draw_player()
+    -- trail
+    for i = 1,game.cats do
+        local item = game.player.trail[(game.player.trail.off - 2 - i * 10) % #game.player.trail + 1]
+        if item then
+            spr(51 + flr(sin(t() * 1.5 + i / 7) / 2), item.x * 8, item.y * 8, 1, 1, item.dir == 0)
+            spr(52, item.x * 8 + (item.dir == 0 and -2 or 2), item.y * 8 + flr(sin(t() * 1.2 + i / 5) / 2), 1, 1, item.dir == 0)
+        end
+    end
+    -- player
     spr(18, game.player.x * 8, game.player.y * 8)
 end
 
@@ -103,21 +118,19 @@ function mode.test.update()
                 end
             end
         end
---[[
-        for my = 0,32 do
-            for mx = 0,64 do
-                local x = game.region.x + mx
-                local y = game.region.y + my
-                local cell = game.world.map[flr(y/8)][flr(x/13)]
-                local m = 0
-                if cell then
-                    m = g_chunks[cell.tile][y%8*13+x%13]
-                end
-                mset(mx, my, m)
-            end
-        end
---]]
     end
+
+    -- record a trail behind the player
+    if band(btn(), 0xf) != 0 then
+        local t = {x=game.player.x, y=game.player.y, dir=game.player.dir}
+        local len = max(#game.player.trail, 10 * game.cats + 10)
+        while #game.player.trail < len do
+            add(game.player.trail, t)
+        end
+        game.player.trail[game.player.trail.off] = t
+        game.player.trail.off = game.player.trail.off % len + 1
+    end
+
     game.player.x += (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
     game.player.y += (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
 
@@ -127,6 +140,10 @@ function mode.test.update()
         end
     end
     
+    if cbtnp(5) then
+        game.cats += 1
+    end
+
     if cbtnp(4) then
         local bx = game.player.x
         local by = game.player.y + 0.25
