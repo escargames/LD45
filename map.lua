@@ -5,6 +5,7 @@ local mirror = {
     9, 10, 25, 26, -- paths
     11, 12, 27, 28, -- rivers
     16, 17, 32, 33, -- houses
+    44, 45, 60, 61, -- trees
 }
 g_mirror = {}
 for i = 1,#mirror do g_mirror[mirror[i]] = mirror[bxor(i-1,1)+1] end
@@ -21,6 +22,7 @@ end
 
 -- parse the map to create chunks
 g_chunks = {}
+srand(8)
 for ty = 1,63 do for tx = 1,127 do
     if mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
         local w, h = 1, 1
@@ -53,10 +55,24 @@ for ty = 1,63 do for tx = 1,127 do
     end
 end end
 
+function remove_overlaps(map, candidates)
+    for tc in all(candidates) do
+        local ok = true
+        for t in all(map) do
+            if t.x >= tc.x + g_chunks[tc.chunk].w then
+            elseif t.y >= tc.y + g_chunks[tc.chunk].h then
+            elseif tc.x >= t.x + g_chunks[t.chunk].w then
+            elseif tc.y >= t.y + g_chunks[t.chunk].h then
+            else ok = false break end
+        end
+        if not ok then del(candidates, tc) end
+    end
+end
+
 function grow_map(map, id, depth)
     local tile = map[id]
     local chunk = g_chunks[tile.chunk]
-    local added_tiles = {}
+    local old_count = #map
     -- try to connect to the north
     if chunk.exit_n and not tile.next_n then
         local candidates = {}
@@ -71,9 +87,11 @@ function grow_map(map, id, depth)
                 })
             end
         end
-        add(map, ccrnd(candidates))
-        add(added_tiles, #map)
-        tile.next_n = #map
+        remove_overlaps(map, candidates)
+        if #candidates > 0 then
+            add(map, ccrnd(candidates))
+            tile.next_n = #map
+        end
     end
     -- try to connect to the south
     if chunk.exit_s and not tile.next_s then
@@ -89,9 +107,11 @@ function grow_map(map, id, depth)
                 })
             end
         end
-        add(map, ccrnd(candidates))
-        add(added_tiles, #map)
-        tile.next_s = #map
+        remove_overlaps(map, candidates)
+        if #candidates > 0 then
+            add(map, ccrnd(candidates))
+            tile.next_s = #map
+        end
     end
     -- try to connect to the west
     if chunk.exit_w and not tile.next_w then
@@ -107,9 +127,11 @@ function grow_map(map, id, depth)
                 })
             end
         end
-        add(map, ccrnd(candidates))
-        add(added_tiles, #map)
-        tile.next_w = #map
+        remove_overlaps(map, candidates)
+        if #candidates > 0 then
+            add(map, ccrnd(candidates))
+            tile.next_w = #map
+        end
     end
     -- try to connect to the east
     if chunk.exit_e and not tile.next_e then
@@ -125,24 +147,25 @@ function grow_map(map, id, depth)
                 })
             end
         end
-        add(map, ccrnd(candidates))
-        add(added_tiles, #map)
-        tile.next_e = #map
+        remove_overlaps(map, candidates)
+        if #candidates > 0 then
+            add(map, ccrnd(candidates))
+            tile.next_e = #map
+        end
     end
-    if depth > 0 then
-        for new_tile in all(added_tiles) do
+    if depth > 0 and #map > old_count then
+        for new_tile = old_count + 1, #map do
             grow_map(map, new_tile, depth - 1)
         end
     end
 end
 
-function new_map()
+function new_map(depth)
     local map = {}
     -- initialise world with one tile
     map[1] = { chunk = flr(crnd(1,1+#g_chunks)), x = 1000, y = 1000 }
-    -- grow world with depth 10
-    --grow_map(world.map, 1, 10)
-    grow_map(map, 1, 4)
+    -- grow world
+    grow_map(map, 1, depth)
     return map
 end
 

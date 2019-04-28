@@ -1,8 +1,11 @@
 
+-- debug
+--local debug_tiles = true
+
 function new_world()
     return {
         score = 0,
-        map = new_map(),
+        map = new_map(20),
     }
 end
 
@@ -18,11 +21,16 @@ end
 function draw_bg()
     map(0, 0, game.region.x * 8, game.region.y * 8, 64, 32)
     rect(game.region.x * 8, game.region.y, (game.region.x + 64) * 8, (game.region.y + 32) * 8, 10)
-    for tile in all(game.world.map) do
-        local chunk = g_chunks[tile.chunk]
-        fillp(0x5a5a.8)
-        rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
-        fillp()
+    if debug_tiles then
+        for i=1,#game.world.map do
+            local tile = game.world.map[i]
+            local chunk = g_chunks[tile.chunk]
+            fillp(band(rotl(0xebd7.ebd7,rnd(16)),0xffff)+.5)
+            rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
+            print(i, tile.x * 8 + 2, tile.y * 8 + 2, 8)
+            print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 8, 9)
+            fillp()
+        end
     end
     local lines = ceil(game.player.y - game.region.y + 0.25)
     map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, lines)
@@ -48,12 +56,13 @@ end
 
 function draw_debug()
     local cpu = 100*stat(1)
-    print("cpu="..cpu, 100, 1, 8)
-    print("x="..game.player.x, 1, 1, 7)
-    print("y="..game.player.y, 1, 7, 7)
-    print("reg.x="..game.region.x, 1, 17, 9)
-    print("reg.y="..game.region.y, 1, 23, 9)
-    print("bullets="..#game.bullet, 1, 29, 9)
+    coprint("cpu="..cpu, 100, 2, 8)
+    coprint("x="..game.player.x, 2, 2, 7)
+    coprint("y="..game.player.y, 2, 8, 7)
+    coprint("reg.x="..game.region.x, 2, 18, 9)
+    coprint("reg.y="..game.region.y, 2, 24, 9)
+    coprint("bullets="..#game.bullet, 2, 30, 9)
+    coprint("tiles="..#game.world.map, 2, 36, 9)
 end
 
 function mode.test.start()
@@ -72,6 +81,7 @@ function mode.test.update()
         for y = 0,31 do
             for p=0x2000+y*128,0x203f+y*128 do
                 poke(p, rnd() > 0.8 and 62 or 7)
+                --poke(p, rnd() > 0.8 and 13 or 14)
             end
             memset(0x2040 + y*128, 0, 0x40)
         end
@@ -144,9 +154,12 @@ function mode.test.draw()
     cls(0)
 
     camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
+    palt(0,false) palt(15,true)
     draw_bg()
+    palt(0,true) palt(15,false)
     draw_player()
     draw_bullet()
+    palt(0,false) palt(15,true)
     draw_fg()
     camera()
 
