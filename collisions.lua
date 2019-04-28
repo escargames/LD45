@@ -1,14 +1,18 @@
-function wall(x,y)
-    local m = mget(x/8, y/8)
-    return not fget(m, 4) and wall_or_ladder(x, y)
+
+function wall_point(x,y)
+    local bg = mget(x - game.region.x, y - game.region.y)
+    local fg = mget(x - game.region.x + 40, y - game.region.y)
+    return fget(fg, 0)
 end
 
 function wall_area(x,y,w,h)
-    return wall(x-w,y-h) or wall(x-1+w,y-h) or
-           wall(x-w,y-1+h) or wall(x-1+w,y-1+h) or
-           wall(x-w,y) or wall(x-1+w,y) or
-           wall(x,y-1+h) or wall(x,y-h)
+    return wall_point(x-w/2,y-h/2) or wall_point(x+w/2,y-h/2)
+        or wall_point(x-w/2,y+h/2) or wall_point(x+w/2,y+h/2)
 end
+
+--
+-- everything below this is deprecated
+--
 
 function wall_or_ladder(x,y)
     local m = mget(x/8,y/8)

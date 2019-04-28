@@ -14,8 +14,8 @@ __lua__
 #include escarlib/font.lua
 --load_font(double_homicide,14)
 
-#include collisions.lua
 #include map.lua
+#include collisions.lua
 
 mode = {
     test = {},

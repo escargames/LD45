@@ -112,8 +112,14 @@ function mode.test.update()
         game.player.trail.off = game.player.trail.off % len + 1
     end
 
-    game.player.x += (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
-    game.player.y += (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
+    local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
+    local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
+    if not wall_area(game.player.x + 0.5 + dx, game.player.y + 0.75, 0.6, 0.4) then
+        game.player.x += dx
+    end
+    if not wall_area(game.player.x + 0.5, game.player.y + dy + 0.75, 0.6, 0.4) then
+        game.player.y += dy
+    end
 
     for i = 0,3 do
         if btn(i) then
