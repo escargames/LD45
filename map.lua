@@ -23,7 +23,8 @@ end
 -- parse the map to create chunks
 g_chunks = {}
 for ty = 1,63 do for tx = 1,127 do
-    if mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
+    if mget(tx+1,ty+1) == 63 then
+    elseif mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
         local w, h = 1, 1
         while mget(tx + w, ty) != 63 do w += 1 end
         while mget(tx, ty + h) != 63 do h += 1 end
