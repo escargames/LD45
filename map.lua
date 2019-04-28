@@ -167,7 +167,7 @@ function new_map(seed, depth)
     srand(seed)
     local map = {}
     -- initialise world with one tile
-    map[1] = { chunk = flr(crnd(1,1+#g_chunks)), x = 1000, y = 1000 }
+    map[1] = { chunk = flr(crnd(1,1+#g_chunks)), x = 16384, y = 16384 }
     -- grow world
     grow_map(map, 1, depth)
     return map

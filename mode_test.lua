@@ -13,12 +13,12 @@ function new_game()
     game.world = new_world()
     -- spawn player on tile #1
     game.player = {
-        x = game.world.map[1].x + 6,
-        y = game.world.map[1].y + 3,
+        x = game.world.map[1].x + 6.5,
+        y = game.world.map[1].y + 2.75,
         dir = 1,
         trail = { off=0 }
     }
-    game.region = { x = -1000, y = -1000 }
+    game.region = { x = -1, y = -1 }
     game.bullet = {}
     game.score = 0
     game.cats = 0
@@ -150,21 +150,31 @@ end
 
 function update_map()
     -- if the player approaches the region boundaries, move the map!
-    local rx, ry = game.region.x, game.region.y
-    if abs(game.player.x - 20 - game.region.x) > 11 then
-        rx = flr(game.player.x / 10 + 0.5) * 10 - 20
+    -- we have a 40x32 zone but we won't redraw all of it
+    local rx, ry, rw, rh = 0, 0, 40, 32
+    if game.region.x < 0 then
+        game.region.x = flr(game.player.x / 10 + 0.5) * 10 - 20
+        game.region.y = flr(game.player.y / 8 + 0.5) * 8 - 16
+    elseif abs(game.player.x - 20 - game.region.x) > 11 then
+        local right = game.player.x - 20 > game.region.x
+        game.region.x += (right and 10 or -10)
+        rx = right and 30 or 0
+        rw = 10
+        memcpy(right and 0x2000 or 0x200a, right and 0x200a or 0x2000, 0xff6)
     elseif abs(game.player.y - 16 - game.region.y) > 7 then
-        ry = flr(game.player.y / 8 + 0.5) * 8 - 16
-    end
-
-    if (rx == game.region.x) and (ry == game.region.y) then
+        local down = game.player.y - 16 > game.region.y
+        game.region.y += (down and 8 or -8)
+        ry = down and 24 or 0
+        rh = 8
+        memcpy(down and 0x2000 or 0x2400, down and 0x2400 or 0x2000, 0xc00)
+    else
         return
     end
 
-    -- xxx: inefficient!
-    for y=0,31 do
-        for x=0,39 do
-            local p = 0x2000 + y * 128 + x
+    -- initialise the new part of the map
+    for y=ry,ry+rh-1 do
+        local off = 0x2000 + y * 128
+        for p = off+rx, off+rx+rw-1 do
             poke(p, rnd() > 0.8 and 62 or 7)
             poke(p+40,0)
             poke(p+80, rnd() > 0.9 and ccrnd({15, 31, 46, 47}) or 0)
@@ -173,11 +183,11 @@ function update_map()
 
     for tile in all(game.world.map) do
         local chunk = g_chunks[tile.chunk]
-        local dx, dy = rx - tile.x, ry - tile.y
-        local x0 = max(0, dx)
-        local x1 = min(chunk.w - 1, dx + 39)
-        local y0 = max(0, dy)
-        local y1 = min(chunk.h - 1, dy + 31)
+        local dx, dy = game.region.x - tile.x, game.region.y - tile.y
+        local x0 = max(0, dx + rx)
+        local x1 = min(chunk.w - 1, dx + rx + rw - 1)
+        local y0 = max(0, dy + ry)
+        local y1 = min(chunk.h - 1, dy + ry + rh - 1)
         for y = y0,y1 do
             local o = y * chunk.w
             for x = x0,x1 do
@@ -187,8 +197,6 @@ function update_map()
             end
         end
     end
-
-    game.region.x, game.region.y = rx, ry
 end
 
 function mode.test.draw()
