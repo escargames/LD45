@@ -1,8 +1,11 @@
 
+-- debug
+--local debug_tiles = true
+
 function new_world()
     return {
         score = 0,
-        map = new_map(),
+        map = new_map(20),
     }
 end
 
@@ -18,12 +21,16 @@ end
 function draw_bg()
     map(0, 0, game.region.x * 8, game.region.y * 8, 64, 32)
     rect(game.region.x * 8, game.region.y, (game.region.x + 64) * 8, (game.region.y + 32) * 8, 10)
-    for tile in all(game.world.map) do
-        local chunk = g_chunks[tile.chunk]
-        fillp(0x5a5a.8)
-        rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
-        print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 2, 9)
-        fillp()
+    if debug_tiles then
+        for i=1,#game.world.map do
+            local tile = game.world.map[i]
+            local chunk = g_chunks[tile.chunk]
+            fillp(band(rotl(0xebd7.ebd7,rnd(16)),0xffff)+.5)
+            rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
+            print(i, tile.x * 8 + 2, tile.y * 8 + 2, 8)
+            print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 8, 9)
+            fillp()
+        end
     end
     local lines = ceil(game.player.y - game.region.y + 0.25)
     map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, lines)
@@ -74,6 +81,7 @@ function mode.test.update()
         for y = 0,31 do
             for p=0x2000+y*128,0x203f+y*128 do
                 poke(p, rnd() > 0.8 and 62 or 7)
+                --poke(p, rnd() > 0.8 and 13 or 14)
             end
             memset(0x2040 + y*128, 0, 0x40)
         end
