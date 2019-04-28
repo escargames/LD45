@@ -144,9 +144,12 @@ function mode.test.draw()
     cls(0)
 
     camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
+    palt(0,false) palt(15,true)
     draw_bg()
+    palt(0,true) palt(15,false)
     draw_player()
     draw_bullet()
+    palt(0,false) palt(15,true)
     draw_fg()
     camera()
 
