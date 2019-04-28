@@ -22,7 +22,6 @@ end
 
 -- parse the map to create chunks
 g_chunks = {}
-srand(8)
 for ty = 1,63 do for tx = 1,127 do
     if mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
         local w, h = 1, 1
@@ -160,7 +159,8 @@ function grow_map(map, id, depth)
     end
 end
 
-function new_map(depth)
+function new_map(seed, depth)
+    srand(seed)
     local map = {}
     -- initialise world with one tile
     map[1] = { chunk = flr(crnd(1,1+#g_chunks)), x = 1000, y = 1000 }

@@ -4,8 +4,7 @@
 
 function new_world()
     return {
-        score = 0,
-        map = new_map(20),
+        map = new_map(0x1234.5678, 16),
     }
 end
 
@@ -21,6 +20,7 @@ function new_game()
     }
     game.region = { x = -1000, y = -1000 }
     game.bullet = {}
+    game.score = 0
     game.cats = 0
 end
 
