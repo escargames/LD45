@@ -5,6 +5,7 @@ __lua__
 -- by niarkou and sam
 
 #include escarlib/p8u.lua
+--#include escarlib/logo.lua
 #include escarlib/btn.lua
 #include escarlib/draw.lua
 #include escarlib/print.lua
