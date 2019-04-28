@@ -34,7 +34,7 @@ for ty = 1,63 do for tx = 1,127 do
                 fg = bg
                 bg = 7
             elseif bg == 7 and rnd() > 0.8 then
-                bg = 44
+                bg = 62
             elseif bg == 7 and rnd() > 0.9 then
                 fg = ccrnd({15, 31, 46, 47})
             end

@@ -71,7 +71,7 @@ function mode.test.update()
         -- xxx: inefficient!
         for y = 0,31 do
             for p=0x2000+y*128,0x203f+y*128 do
-                poke(p, rnd() > 0.8 and 44 or 7)
+                poke(p, rnd() > 0.8 and 62 or 7)
             end
             memset(0x2040 + y*128, 0, 0x40)
         end
