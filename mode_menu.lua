@@ -9,11 +9,7 @@ end
 function mode.menu.update()
     local max = main and #cursor_y or #levels
     pos += ((btnp(2) and (pos > 1) and -1) or (btnp(3) and (pos < max) and 1 or 0))
-    if main then
-        cursor_x = 36
-    else
-        cursor_x = 61
-    end
+    cursor_x = main and 36 or 61
 
     if pos == 1 and (btnp(4) or btnp(1)) and main then
         main = false
