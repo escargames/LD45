@@ -1,7 +1,7 @@
 
 -- build a table for left-right mirroring
 local mirror = {
-    3, 4, 5, 6, -- roads
+    3, 4, 5, 6, 57, 58, -- roads
     9, 10, 25, 26, -- paths
     11, 12, 27, 28, -- rivers
     16, 17, 32, 33, -- houses
@@ -33,6 +33,8 @@ for ty = 1,63 do for tx = 1,127 do
             if fget(bg, 0) then
                 fg = bg
                 bg = 7
+            elseif bg == 7 and rnd() > 0.8 then
+                bg = 62
             elseif bg == 7 and rnd() > 0.9 then
                 fg = ccrnd({15, 31, 46, 47})
             end

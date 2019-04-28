@@ -17,6 +17,13 @@ end
 
 function draw_bg()
     map(0, 0, game.region.x * 8, game.region.y * 8, 64, 32)
+    rect(game.region.x * 8, game.region.y, (game.region.x + 64) * 8, (game.region.y + 32) * 8, 10)
+    for tile in all(game.world.map) do
+        local chunk = g_chunks[tile.chunk]
+        fillp(0x5a5a.8)
+        rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
+        fillp()
+    end
     local lines = ceil(game.player.y - game.region.y + 0.25)
     map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, lines)
 end
@@ -27,7 +34,7 @@ end
 
 function draw_bullet()
     foreach(game.bullet, function(b)
-        spr(42, b.x, b.y)
+        spr(42, b.x * 8, b.y * 8)
     end)
 end
 
@@ -63,7 +70,9 @@ function mode.test.update()
 
         -- xxx: inefficient!
         for y = 0,31 do
-            memset(0x2000 + y*128, 7, 0x40)
+            for p=0x2000+y*128,0x203f+y*128 do
+                poke(p, rnd() > 0.8 and 62 or 7)
+            end
             memset(0x2040 + y*128, 0, 0x40)
         end
         for tile in all(game.world.map) do
@@ -109,16 +118,23 @@ function mode.test.update()
     end
     
     if cbtnp(4) then
-        add(game.bullet, {x = game.player.x * 8, y = game.player.y * 8 + 2, dir = game.player.dir})
+        local bx = game.player.x
+        local by = game.player.y + 0.25
+        local vx = ((game.player.dir == 0) and -1 or ((game.player.dir == 1) and 1 or 0)) / 4
+        local vy = ((game.player.dir == 2) and -1 or ((game.player.dir == 3) and 1 or 0)) / 4
+        local dx, dy = vy, -vx
+
+        add(game.bullet, {x = bx, y = by, vx = 0.8 * vx + 0.2 * dx, vy = 0.8 * vy + 0.2 * dy})
+        add(game.bullet, {x = bx, y = by, vx = 0.8 * vx - 0.2 * dx, vy = 0.8 * vy - 0.2 * dy})
     end
 end
 
 function update_bullet()
     foreach(game.bullet, function(b)
-        b.x += ((b.dir == 0) and -1 or ((b.dir == 1) and 1 or 0)) * 1.5
-        b.y += ((b.dir == 2) and -1 or ((b.dir == 3) and 1 or 0)) * 1.5
+        b.x += b.vx
+        b.y += b.vy
 
-        if abs(b.x - game.player.x * 8) > 70 or abs(b.y - game.player.y * 8) > 70 then
+        if abs(b.x - game.player.x) > 9 or abs(b.y - game.player.y) > 9 then
             del(game.bullet, b)
         end
     end)
