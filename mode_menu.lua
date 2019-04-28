@@ -2,17 +2,13 @@ function mode.menu.start()
     main = true
     cursor_x = 36
     cursor_y = {50, 65, 80}
-    levels = {"blablabla"}
+    levels = {"blablabla", "hihihi", "prout"}
     pos = 1
 end
 
 function mode.menu.update()
-    if main then
-        pos += ((btnp(2) and (pos > 1) and -1) or (btnp(3) and (pos < #cursor_y) and 1 or 0))
-    else
-        pos += ((btnp(2) and (pos > 1) and -1) or (btnp(3) and (pos < #levels) and 1 or 0))
-    end
-
+    local max = main and #cursor_y or #levels
+    pos += ((btnp(2) and (pos > 1) and -1) or (btnp(3) and (pos < max) and 1 or 0))
     if main then
         cursor_x = 36
     else
@@ -52,7 +48,9 @@ end
 function draw_menu_play()
     if main and pos == 1 or (not main) then
         cosprint("levels", 70, 35, 6, 9)
-        cosprint(levels[1], 75, cursor_y[1], 6, pos == 1 and not main and 9 or 11)
+        for i = 1, #levels do
+            cosprint(levels[i], 75, 35 + 15*i, 6, pos == i and not main and 9 or 11)
+        end
     end
 end
 
