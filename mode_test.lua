@@ -17,6 +17,13 @@ end
 
 function draw_bg()
     map(0, 0, game.region.x * 8, game.region.y * 8, 64, 32)
+rect(game.region.x * 8, game.region.y, (game.region.x + 64) * 8, (game.region.y + 32) * 8, 10)
+    for tile in all(game.world.map) do
+        local chunk = g_chunks[tile.chunk]
+fillp(0x5a5a.8)
+        rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
+fillp()
+    end
     local lines = ceil(game.player.y - game.region.y + 0.25)
     map(64, 0, game.region.x * 8, game.region.y * 8 - 2, 64, lines)
 end
@@ -63,7 +70,9 @@ function mode.test.update()
 
         -- xxx: inefficient!
         for y = 0,31 do
-            memset(0x2000 + y*128, 7, 0x40)
+            for p=0x2000+y*128,0x203f+y*128 do
+                poke(p, rnd() > 0.8 and 44 or 7)
+            end
             memset(0x2040 + y*128, 0, 0x40)
         end
         for tile in all(game.world.map) do
