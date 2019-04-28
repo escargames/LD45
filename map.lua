@@ -5,6 +5,7 @@ local mirror = {
     9, 10, 25, 26, -- paths
     11, 12, 27, 28, -- rivers
     16, 17, 32, 33, -- houses
+    37, 38, 51, 52, 53, 54, -- buildings
     44, 45, 60, 61, -- trees
 }
 g_mirror = {}
@@ -20,14 +21,20 @@ function new_chunk(w, h)
     return {w=w, h=h, bg={}, fg={}, dc={}}
 end
 
+function void(x, y)
+    local s = mget(x, y)
+    return (s == 63) or (s == 0)
+end
+
 -- parse the map to create chunks
 g_chunks = {}
 for ty = 1,63 do for tx = 1,127 do
-    if mget(tx+1,ty+1) == 63 then
-    elseif mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
+    if void(tx+1,ty+1) then
+        -- ignore this tile
+    elseif not void(tx,ty) and void(tx-1,ty-1) and void(tx-1,ty) and void(tx,ty-1) then
         local w, h = 1, 1
-        while mget(tx + w, ty) != 63 do w += 1 end
-        while mget(tx, ty + h) != 63 do h += 1 end
+        while not void(tx + w, ty) do w += 1 end
+        while not void(tx, ty + h) do h += 1 end
         local left, right = new_chunk(w, h), new_chunk(w, h)
         for y = 0,h-1 do for x = 0,w-1 do
             local bg = mget(tx+x, ty+y)
