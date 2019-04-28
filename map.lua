@@ -22,6 +22,7 @@ end
 
 -- parse the map to create chunks
 g_chunks = {}
+srand(8)
 for ty = 1,63 do for tx = 1,127 do
     if mget(tx,ty) != 63 and mget(tx-1,ty-1) == 63 and mget(tx-1,ty) == 63 and mget(tx,ty-1) == 63 then
         local w, h = 1, 1
@@ -57,7 +58,7 @@ end end
 function grow_map(map, id, depth)
     local tile = map[id]
     local chunk = g_chunks[tile.chunk]
-    local added_tiles = {}
+    local new_tiles = {}
     -- try to connect to the north
     if chunk.exit_n and not tile.next_n then
         local candidates = {}
@@ -73,7 +74,7 @@ function grow_map(map, id, depth)
             end
         end
         add(map, ccrnd(candidates))
-        add(added_tiles, #map)
+        add(new_tiles, #map)
         tile.next_n = #map
     end
     -- try to connect to the south
@@ -91,7 +92,7 @@ function grow_map(map, id, depth)
             end
         end
         add(map, ccrnd(candidates))
-        add(added_tiles, #map)
+        add(new_tiles, #map)
         tile.next_s = #map
     end
     -- try to connect to the west
@@ -109,7 +110,7 @@ function grow_map(map, id, depth)
             end
         end
         add(map, ccrnd(candidates))
-        add(added_tiles, #map)
+        add(new_tiles, #map)
         tile.next_w = #map
     end
     -- try to connect to the east
@@ -127,11 +128,11 @@ function grow_map(map, id, depth)
             end
         end
         add(map, ccrnd(candidates))
-        add(added_tiles, #map)
+        add(new_tiles, #map)
         tile.next_e = #map
     end
     if depth > 0 then
-        for new_tile in all(added_tiles) do
+        for new_tile in all(new_tiles) do
             grow_map(map, new_tile, depth - 1)
         end
     end
@@ -142,8 +143,8 @@ function new_map()
     -- initialise world with one tile
     map[1] = { chunk = flr(crnd(1,1+#g_chunks)), x = 1000, y = 1000 }
     -- grow world with depth 10
-    --grow_map(world.map, 1, 10)
-    grow_map(map, 1, 4)
+    --grow_map(map, 1, 10)
+    grow_map(map, 1, 5)
     return map
 end
 

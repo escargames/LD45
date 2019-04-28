@@ -22,6 +22,7 @@ function draw_bg()
         local chunk = g_chunks[tile.chunk]
         fillp(0x5a5a.8)
         rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
+        print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 2, 9)
         fillp()
     end
     local lines = ceil(game.player.y - game.region.y + 0.25)
@@ -48,12 +49,13 @@ end
 
 function draw_debug()
     local cpu = 100*stat(1)
-    print("cpu="..cpu, 100, 1, 8)
-    print("x="..game.player.x, 1, 1, 7)
-    print("y="..game.player.y, 1, 7, 7)
-    print("reg.x="..game.region.x, 1, 17, 9)
-    print("reg.y="..game.region.y, 1, 23, 9)
-    print("bullets="..#game.bullet, 1, 29, 9)
+    coprint("cpu="..cpu, 100, 2, 8)
+    coprint("x="..game.player.x, 2, 2, 7)
+    coprint("y="..game.player.y, 2, 8, 7)
+    coprint("reg.x="..game.region.x, 2, 18, 9)
+    coprint("reg.y="..game.region.y, 2, 24, 9)
+    coprint("bullets="..#game.bullet, 2, 30, 9)
+    coprint("tiles="..#game.world.map, 2, 36, 9)
 end
 
 function mode.test.start()
