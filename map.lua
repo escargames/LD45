@@ -5,6 +5,7 @@ local mirror = {
     9, 10, 25, 26, -- paths
     11, 12, 27, 28, -- rivers
     16, 17, 32, 33, -- houses
+    44, 45, 60, 61, -- trees
 }
 g_mirror = {}
 for i = 1,#mirror do g_mirror[mirror[i]] = mirror[bxor(i-1,1)+1] end
