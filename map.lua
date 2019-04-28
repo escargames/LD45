@@ -17,7 +17,7 @@ local exit_w = {[1]=true, [3]=true, [5]=true}
 local exit_e = {[1]=true, [4]=true, [6]=true}
 
 function new_chunk(w, h)
-    return {w=w, h=h, bg={}, fg={}}
+    return {w=w, h=h, bg={}, fg={}, dc={}}
 end
 
 -- parse the map to create chunks
@@ -31,19 +31,22 @@ for ty = 1,63 do for tx = 1,127 do
         local left, right = new_chunk(w, h), new_chunk(w, h)
         for y = 0,h-1 do for x = 0,w-1 do
             local bg = mget(tx+x, ty+y)
-            local fg = 0
+            local fg,dc = 0,0
             if fget(bg, 0) then
                 fg = bg
                 bg = 7
+                --dc = 37 -- shadows?
             elseif bg == 7 and rnd() > 0.8 then
                 bg = 62
-            elseif bg == 7 and rnd() > 0.9 then
-                fg = ccrnd({15, 31, 46, 47})
+            elseif bg == 7 and rnd() > 0.8 then
+                dc = ccrnd({15, 31, 46, 47})
             end
             left.bg[y*w+x] = bg
             right.bg[y*w+w-1-x] = g_mirror[bg] or bg
             left.fg[y*w+x] = fg
             right.fg[y*w+w-1-x] = g_mirror[fg] or fg
+            left.dc[y*w+x] = dc
+            right.dc[y*w+w-1-x] = g_mirror[dc] or dc
             -- handle exits
             if y == 0   and exit_n[bg] then left.exit_n = x right.exit_n = w-1-x end
             if y == h-1 and exit_s[bg] then left.exit_s = x right.exit_s = w-1-x end
