@@ -114,10 +114,10 @@ function mode.test.update()
 
     local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
     local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
-    if not wall_area(game.player.x + 0.5 + dx, game.player.y + 0.75, 0.6, 0.4) then
+    if not block_walk(game.player.x + 0.5 + dx, game.player.y + 0.75, 0.6, 0.4) then
         game.player.x += dx
     end
-    if not wall_area(game.player.x + 0.5, game.player.y + dy + 0.75, 0.6, 0.4) then
+    if not block_walk(game.player.x + 0.5, game.player.y + dy + 0.75, 0.6, 0.4) then
         game.player.y += dy
     end
 
@@ -148,7 +148,9 @@ function update_bullet()
         b.x += b.vx
         b.y += b.vy
 
-        if abs(b.x - game.player.x) > 9 or abs(b.y - game.player.y) > 9 then
+        if block_fly(b.x + 0.5, b.y + 0.5) then
+            del(game.bullet, b)
+        elseif abs(b.x - game.player.x) > 9 or abs(b.y - game.player.y) > 9 then
             del(game.bullet, b)
         end
     end)
