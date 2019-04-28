@@ -52,8 +52,8 @@ end
 
 function draw_menu_help()
     if main and pos==2 then
-        cosprint("controls", 70, 35, 6, 9)
-        cosprint("truc to truc", 70, cursor_y[1], 6, 11)
+        cosprint("controls", 65, 35, 6, 9)
+        cosprint("w or z to shoot", 65, cursor_y[1], 6, 11)
     end
 end
 
