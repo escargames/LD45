@@ -102,19 +102,18 @@ function mode.test.update()
         end
         for tile in all(game.world.map) do
             local chunk = g_chunks[tile.chunk]
-            if tile.x < game.region.x + 64 and
-               tile.y < game.region.y + 32 and
-               tile.x + chunk.w >= game.region.x and
-               tile.y + chunk.h >= game.region.y then
-                for y = 0,chunk.h-1 do
-                    for x = 0,chunk.w-1 do
-                        mset(tile.x - game.region.x + x,
-                             tile.y - game.region.y + y,
-                             chunk.bg[y * chunk.w + x])
-                        mset(tile.x - game.region.x + x + 64,
-                             tile.y - game.region.y + y,
-                             chunk.fg[y * chunk.w + x])
-                    end
+            local x0 = max(0, game.region.x - tile.x)
+            local x1 = min(chunk.w - 1, game.region.x - tile.x + 63)
+            local y0 = max(0, game.region.y - tile.y)
+            local y1 = min(chunk.h - 1, game.region.y - tile.y + 31)
+            for y = y0,y1 do
+                for x = x0,x1 do
+                    mset(tile.x - game.region.x + x,
+                         tile.y - game.region.y + y,
+                         chunk.bg[y * chunk.w + x])
+                    mset(tile.x - game.region.x + x + 64,
+                         tile.y - game.region.y + y,
+                         chunk.fg[y * chunk.w + x])
                 end
             end
         end
