@@ -18,7 +18,7 @@ local exit_w = {[1]=true, [3]=true, [5]=true}
 local exit_e = {[1]=true, [4]=true, [6]=true}
 
 function new_chunk(w, h)
-    return {w=w, h=h, bg={}, fg={}, dc={}}
+    return {w=w, h=h, exits=0, signs={}, bg={}, fg={}, dc={}}
 end
 
 function void(x, y)
@@ -51,36 +51,56 @@ for ty = 1,63 do for tx = 1,127 do
         while not void(tx + w, ty) do w += 1 end
         while not void(tx, ty + h) do h += 1 end
         local left, right = new_chunk(w, h), new_chunk(w, h)
+        local exits = 0
         for y = 0,h-1 do for x = 0,w-1 do
             local bg,fg,dc = gen_tiles(mget(tx+x, ty+y))
-            left.bg[y*w+x] = bg
-            right.bg[y*w+w-1-x] = g_mirror[bg] or bg
-            left.fg[y*w+x] = fg
-            right.fg[y*w+w-1-x] = g_mirror[fg] or fg
-            left.dc[y*w+x] = dc
-            right.dc[y*w+w-1-x] = g_mirror[dc] or dc
+            local loff,roff = y*w+x,y*w+w-1-x
+            if fg == 21 then
+                add(left.signs, {x=x,y=y})
+                add(right.signs, {x=w-1-x,y=y})
+            end
+            left.bg[loff] = bg
+            right.bg[roff] = g_mirror[bg] or bg
+            left.fg[loff] = fg
+            right.fg[roff] = g_mirror[fg] or fg
+            left.dc[loff] = dc
+            right.dc[roff] = g_mirror[dc] or dc
             -- handle exits
-            if y == 0   and exit_n[bg] then left.exit_n = x right.exit_n = w-1-x end
-            if y == h-1 and exit_s[bg] then left.exit_s = x right.exit_s = w-1-x end
-            if x == 0   and exit_w[bg] then left.exit_w = y right.exit_e = y end
-            if x == w-1 and exit_e[bg] then left.exit_e = y right.exit_w = y end
+            if y == 0   and exit_n[bg] then exits += 1 left.exit_n = x right.exit_n = w-1-x end
+            if y == h-1 and exit_s[bg] then exits += 1 left.exit_s = x right.exit_s = w-1-x end
+            if x == 0   and exit_w[bg] then exits += 1 left.exit_w = y right.exit_e = y end
+            if x == w-1 and exit_e[bg] then exits += 1 left.exit_e = y right.exit_w = y end
         end end
+        left.exits = exits
+        right.exits = exits
         add(g_chunks, left)
         add(g_chunks, right)
     end
 end end
 
 function remove_overlaps(map, candidates)
-    for tc in all(candidates) do
+    for chunk_desc in all(candidates) do
+        local chunk = g_chunks[chunk_desc.chunk]
         local ok = true
-        for t in all(map) do
-            if t.x >= tc.x + g_chunks[tc.chunk].w then
-            elseif t.y >= tc.y + g_chunks[tc.chunk].h then
-            elseif tc.x >= t.x + g_chunks[t.chunk].w then
-            elseif tc.y >= t.y + g_chunks[t.chunk].h then
+        if #map.signs + #chunk.signs > map.nsigns then
+            ok = false
+        else for t in all(map) do
+            if t.x >= chunk_desc.x + chunk.w then
+            elseif t.y >= chunk_desc.y + chunk.h then
+            elseif chunk_desc.x >= t.x + g_chunks[t.chunk].w then
+            elseif chunk_desc.y >= t.y + g_chunks[t.chunk].h then
             else ok = false break end
-        end
-        if not ok then del(candidates, tc) end
+        end end
+        if not ok then del(candidates, chunk_desc) end
+    end
+end
+
+function append_map(map, chunk_desc)
+    add(map, chunk_desc)
+    local chunk = g_chunks[chunk_desc.chunk]
+    -- add chunk items to the global map
+    for s in all(chunk.signs) do
+        add(map.signs, {x = chunk_desc.x + s.x, y = chunk_desc.y + s.y})
     end
 end
 
@@ -104,7 +124,7 @@ function grow_map(map, id, depth)
         end
         remove_overlaps(map, candidates)
         if #candidates > 0 then
-            add(map, ccrnd(candidates))
+            append_map(map, ccrnd(candidates))
             tile.next_n = #map
         end
     end
@@ -124,7 +144,7 @@ function grow_map(map, id, depth)
         end
         remove_overlaps(map, candidates)
         if #candidates > 0 then
-            add(map, ccrnd(candidates))
+            append_map(map, ccrnd(candidates))
             tile.next_s = #map
         end
     end
@@ -144,7 +164,7 @@ function grow_map(map, id, depth)
         end
         remove_overlaps(map, candidates)
         if #candidates > 0 then
-            add(map, ccrnd(candidates))
+            append_map(map, ccrnd(candidates))
             tile.next_w = #map
         end
     end
@@ -164,7 +184,7 @@ function grow_map(map, id, depth)
         end
         remove_overlaps(map, candidates)
         if #candidates > 0 then
-            add(map, ccrnd(candidates))
+            append_map(map, ccrnd(candidates))
             tile.next_e = #map
         end
     end
@@ -175,12 +195,15 @@ function grow_map(map, id, depth)
     end
 end
 
-function new_map(seed, depth)
+function new_map(seed, depth, nsigns)
     srand(seed)
-    local map = { startx=16384, starty=16384 }
-    -- initialise world with one tile and grow it
-    map[1] = { chunk = 1, x = map.startx - 4, y = map.starty - 5 }
-    grow_map(map, 1, depth)
+    local map
+    repeat
+        map = { startx=16384, starty=16384, signs={}, nsigns=nsigns }
+        -- initialise world with one tile and grow it
+        append_map(map, { chunk = 1, x = map.startx - 4, y = map.starty - 5 })
+        grow_map(map, 1, depth)
+    until #map.signs == map.nsigns
     return map
 end
 

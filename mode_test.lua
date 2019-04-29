@@ -4,8 +4,10 @@ mode.test = {}
 --local debug_tiles = true
 
 function new_world()
+    local depth = 8
+    local nsigns = 8
     return {
-        map = new_map(0x1234, 12),
+        map = new_map(0x1234, depth, nsigns),
     }
 end
 
@@ -66,23 +68,30 @@ function draw_fg()
     map(40, lines, game.region.x * 8, (game.region.y + lines) * 8 - 2, 40, 32 - lines)
 end
 
-function draw_player()
+function draw_player(p)
     -- trail
     for i = 1,game.cats do
-        local item = game.player.trail[(game.player.trail.off - 2 - i * 10) % #game.player.trail + 1]
+        local item = p.trail[(p.trail.off - 2 - i * 10) % #p.trail + 1]
         if item then
             spr(102 + flr((t() * 3 + i / 7) % 2), item.x * 8 - 4, item.y * 8 - 6, 1, 1, item.dir == 0)
             spr(104, item.x * 8 - (item.dir == 0 and 6 or 2), item.y * 8 - 7 - flr((t() * 2.5 + i / 5) % 2), 1, 1, item.dir == 0)
         end
     end
     -- player
-    spr(82 + (game.player.dir < 2 and 0 or 2) + flr(game.player.walk*4%2), game.player.x * 8 - 4, game.player.y * 8 - 6)
-    spr(66 + max(1, game.player.dir), game.player.x * 8 - 4, game.player.y * 8 - 11 + flr(game.player.anim*2.6%2), 1, 1, game.player.dir == 0)
+    --spr(g_shadow, p.x * 8 - 4, p.y * 8 - 5)
+    spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), p.x * 8 - 4, p.y * 8 - 6)
+    spr(66 + max(1, p.dir), p.x * 8 - 4, p.y * 8 - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
 end
 
-function draw_bullet()
+function draw_bullets()
     foreach(game.bullets, function(b)
         spr(b.spr, b.x * 8 - 4, b.y * 8 - 4)
+    end)
+end
+
+function draw_bats()
+    foreach(game.bats, function(b)
+        spr(g_bat + (b.dir < 2 and 0 or 2), b.x * 8 - 4, b.y * 8 - 4, 1, 1, b.dir == 0)
     end)
 end
 
@@ -270,8 +279,8 @@ function mode.test.draw()
     palt(0,false) palt(15,true)
     draw_bg()
     palt() palt(0,false) palt(5,true)
-    draw_player()
-    draw_bullet()
+    draw_player(game.player)
+    draw_bullets()
     palt() palt(0,false) palt(15,true)
     draw_fg()
     camera()
