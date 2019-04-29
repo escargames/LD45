@@ -200,9 +200,10 @@ function update_map()
     for y=ry,ry+rh-1 do
         local off = 0x2000 + y * 128
         for p = off+rx, off+rx+rw-1 do
-            poke(p, rnd() > 0.8 and 62 or 7)
-            poke(p+40,0)
-            poke(p+80, rnd() > 0.9 and ccrnd({15, 31, 46, 47}) or 0)
+            local bg,fg,dc = gen_tiles(7)
+            poke(p, bg)
+            poke(p+40, fg)
+            poke(p+80, dc)
         end
     end
 

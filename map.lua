@@ -26,6 +26,21 @@ function void(x, y)
     return (s == 63) or (s == 0)
 end
 
+function gen_tiles(bg)
+    local fg,dc = 0,0
+    if fget(bg, 0) then
+        --dc = 37 -- shadows?
+        return 7, bg, 0
+    elseif bg == 7 and rnd() > 0.8 then
+        bg = 62
+    elseif bg == 7 and rnd() > 0.8 then
+        return bg, 0, ccrnd({22, 42})
+    elseif bg == 7 and rnd() > 0.8 then
+        return bg, 0, ccrnd({15, 31, 46, 47})
+    end
+    return bg, 0, 0
+end
+
 -- parse the map to create chunks
 g_chunks = {}
 for ty = 1,63 do for tx = 1,127 do
@@ -37,17 +52,7 @@ for ty = 1,63 do for tx = 1,127 do
         while not void(tx, ty + h) do h += 1 end
         local left, right = new_chunk(w, h), new_chunk(w, h)
         for y = 0,h-1 do for x = 0,w-1 do
-            local bg = mget(tx+x, ty+y)
-            local fg,dc = 0,0
-            if fget(bg, 0) then
-                fg = bg
-                bg = 7
-                --dc = 37 -- shadows?
-            elseif bg == 7 and rnd() > 0.8 then
-                bg = 62
-            elseif bg == 7 and rnd() > 0.8 then
-                dc = ccrnd({15, 31, 46, 47})
-            end
+            local bg,fg,dc = gen_tiles(mget(tx+x, ty+y))
             left.bg[y*w+x] = bg
             right.bg[y*w+w-1-x] = g_mirror[bg] or bg
             left.fg[y*w+x] = fg
