@@ -277,8 +277,8 @@ end
 
 function update_map()
     -- sparkle water
-    for i=1,20 do sset(crnd(104,120),crnd(0,16),12) end
-    for i=1,2 do sset(crnd(104,120),crnd(0,16),ccrnd({5,6,6,7,7,7})) end
+    for i=1,40 do sset(crnd(104,120),crnd(0,16),12) end
+    for i=1,4 do sset(crnd(104,120),crnd(0,16),ccrnd({5,6,6,7,7,7})) end
     -- if the player approaches the region boundaries, move the map!
     -- we have a 40x32 zone but we won't redraw all of it
     local rx, ry, rw, rh = 0, 0, 40, 32
@@ -349,6 +349,6 @@ function mode.test.draw()
     camera()
 
     draw_ui()
-    draw_debug()
+    --draw_debug()
 end
 

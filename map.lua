@@ -18,7 +18,7 @@ local exit_w = {[1]=true, [3]=true, [5]=true}
 local exit_e = {[1]=true, [4]=true, [6]=true}
 
 function new_chunk(w, h)
-    return {w=w, h=h, exits=0, signs={}, bg={}, fg={}, dc={}}
+    return {w=w, h=h, exits=0, signs={}, trees={}, bg={}, fg={}, dc={}}
 end
 
 function void(x, y)
@@ -60,6 +60,9 @@ for ty = 1,63 do for tx = 1,127 do
             if fg == 21 then
                 add(left.signs, {x=x+.5,y=y+.5})
                 add(right.signs, {x=w-1-x+.5,y=y+.5})
+            elseif fg == 61 then -- lower-right corner of a big tree
+                add(left.trees, {x=x,y=y})
+                add(right.trees, {x=w-1-x,y=y})
             elseif fget(bg, 4) then
                 left.water = true
                 right.water = true
@@ -106,6 +109,9 @@ function append_map(map, chunk_desc)
     -- add chunk items to the global map
     for s in all(chunk.signs) do
         add(map.signs, {x = chunk_desc.x + s.x, y = chunk_desc.y + s.y})
+    end
+    for t in all(chunk.trees) do
+        add(map.trees, {x = chunk_desc.x + t.x, y = chunk_desc.y + t.y})
     end
     if chunk.water then
         add(map.water, {x = chunk_desc.x + chunk.w / 2, y = chunk_desc.y + chunk.h / 2})
@@ -207,7 +213,7 @@ function new_map(seed, depth, nsigns)
     srand(seed)
     local map
     repeat
-        map = { startx=16384, starty=16384, signs={}, water={}, nsigns=nsigns }
+        map = { startx=16384, starty=16384, trees={}, signs={}, water={}, nsigns=nsigns }
         -- initialise world with one tile and grow it
         append_map(map, { chunk = 1, x = map.startx - 4, y = map.starty - 5 })
         grow_map(map, 1, depth)
