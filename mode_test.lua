@@ -16,7 +16,8 @@ function new_game()
         x = game.world.map[1].x + 6.5,
         y = game.world.map[1].y + 2.75,
         movements = {},
-        lives = 3,
+        lives = 2,
+        maxlives = 6,
         dir = 1,
         trail = { off=0 }
     }
@@ -71,6 +72,13 @@ function draw_bullet()
 end
 
 function draw_ui()
+    for i = 1,game.player.maxlives do
+        sspr(7 - i % 2 * 7, 48, 7, 16, i * 7 - 4, 3)
+        if i == game.player.lives then
+            palt(2,true) palt(7,true) palt(8,true) palt(14,true)
+        end
+    end
+    palt()
 end
 
 cpu_hist = {}
