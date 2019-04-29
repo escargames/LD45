@@ -34,7 +34,7 @@ function draw_bg()
             fillp(band(rotl(0xebd7.ebd7,rnd(16)),0xffff)+.5)
             rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
             print(i, tile.x * 8 + 2, tile.y * 8 + 2, 8)
-            print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 8, 9)
+            print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 10, 9)
             fillp()
         end
         -- this should never be shown
@@ -83,14 +83,14 @@ function draw_debug()
         end
         cpu_hist[51] = nil
     end
-    coprint("cpu="..ceil(cpu), 99, 2, 14)
-    coprint("max="..ceil(max_cpu), 99, 8, 8)
+    coprint("cpu="..ceil(cpu), 89, 2, 14)
+    coprint("max="..ceil(max_cpu), 89, 11, 8)
     coprint("x="..game.player.x, 2, 2, 7)
-    coprint("y="..game.player.y, 2, 8, 7)
-    coprint("reg.x="..game.region.x, 2, 18, 9)
-    coprint("reg.y="..game.region.y, 2, 24, 9)
-    coprint("bullets="..#game.bullet, 2, 30, 9)
-    coprint("tiles="..#game.world.map, 2, 36, 9)
+    coprint("y="..game.player.y, 2, 11, 7)
+    coprint("rx="..game.region.x, 2, 24, 9)
+    coprint("ry="..game.region.y, 2, 33, 9)
+    coprint("bullets="..#game.bullet, 2, 42, 9)
+    coprint("tiles="..#game.world.map, 2, 51, 9)
 end
 
 function mode.test.start()

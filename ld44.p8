@@ -10,9 +10,11 @@ __lua__
 #include escarlib/draw.lua
 #include escarlib/print.lua
 #include escarlib/random.lua
-#include escarlib/fonts/double_homicide.lua
+--#include escarlib/fonts/double_homicide.lua
+#include escarlib/fonts/lilabit.lua
 #include escarlib/font.lua
 --load_font(double_homicide,14)
+load_font(lilabit,14)
 
 #include map.lua
 #include collisions.lua
