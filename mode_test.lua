@@ -15,6 +15,8 @@ function new_game()
     game.player = {
         x = game.world.map[1].x + 6.5,
         y = game.world.map[1].y + 2.75,
+        movements = {},
+        lives = 3,
         dir = 1,
         trail = { off=0 }
     }
@@ -33,8 +35,8 @@ function draw_bg()
             local chunk = g_chunks[tile.chunk]
             fillp(band(rotl(0xebd7.ebd7,rnd(16)),0xffff)+.5)
             rect(tile.x * 8, tile.y * 8, (tile.x + chunk.w) * 8 - 1, (tile.y + chunk.h) * 8 - 1, 9)
-            print(i, tile.x * 8 + 2, tile.y * 8 + 2, 8)
-            print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 10, 9)
+            pico8_print(i, tile.x * 8 + 2, tile.y * 8 + 2, 8)
+            pico8_print(tile.x.."\n"..tile.y, tile.x * 8 + 2, tile.y * 8 + 10, 9)
             fillp()
         end
         -- this should never be shown
@@ -59,12 +61,12 @@ function draw_player()
         end
     end
     -- player
-    spr(18, game.player.x * 8, game.player.y * 8)
+    spr(18, game.player.x * 8 - 4, game.player.y * 8 - 6)
 end
 
 function draw_bullet()
     foreach(game.bullet, function(b)
-        spr(42, b.x * 8, b.y * 8)
+        spr(42, b.x * 8 - 4, b.y * 8 - 4)
     end)
 end
 
@@ -73,6 +75,14 @@ end
 
 cpu_hist = {}
 function draw_debug()
+    font_outline(1)
+    pico8_print(stat(7).." fps", 89, 20, 8)
+    pico8_print("x="..game.player.x, 2, 2, 7)
+    pico8_print("y="..game.player.y, 2, 11, 7)
+    pico8_print("rx="..game.region.x, 2, 24, 9)
+    pico8_print("ry="..game.region.y, 2, 33, 9)
+    pico8_print("bullets="..#game.bullet, 2, 42, 9)
+    pico8_print("tiles="..#game.world.map, 2, 51, 9)
     local cpu = 100*stat(1)
     local max_cpu = cpu
     add(cpu_hist, cpu)
@@ -83,15 +93,8 @@ function draw_debug()
         end
         cpu_hist[51] = nil
     end
-    font_outline(1)
-    print("cpu="..ceil(cpu), 89, 2, 14)
-    print("max="..ceil(max_cpu), 89, 11, 8)
-    print("x="..game.player.x, 2, 2, 7)
-    print("y="..game.player.y, 2, 11, 7)
-    print("rx="..game.region.x, 2, 24, 9)
-    print("ry="..game.region.y, 2, 33, 9)
-    print("bullets="..#game.bullet, 2, 42, 9)
-    print("tiles="..#game.world.map, 2, 51, 9)
+    pico8_print("cpu="..ceil(cpu), 89, 2, 14)
+    pico8_print("max="..ceil(max_cpu), 89, 11, 8)
     font_outline()
 end
 
@@ -116,18 +119,21 @@ function mode.test.update()
 
     local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
     local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
-    if not block_walk(game.player.x + 0.5 + dx, game.player.y + 0.75, 0.6, 0.4) then
+    if not block_walk(game.player.x + dx, game.player.y, 0.6, 0.4) then
         game.player.x += dx
     end
-    if not block_walk(game.player.x + 0.5, game.player.y + dy + 0.75, 0.6, 0.4) then
+    if not block_walk(game.player.x, game.player.y + dy, 0.6, 0.4) then
         game.player.y += dy
     end
 
     for i = 0,3 do
-        if btn(i) then
-            game.player.dir = i
+        if cbtnp(i) then
+            add(game.player.movements, i)
+        elseif not btn(i) then
+            del(game.player.movements, i)
         end
     end
+    game.player.dir = game.player.movements[1] or game.player.dir
     
     if cbtnp(5) then
         game.cats += 1
@@ -150,7 +156,7 @@ function update_bullet()
         b.x += b.vx
         b.y += b.vy
 
-        if block_fly(b.x + 0.5, b.y + 0.5) then
+        if block_fly(b.x, b.y) then
             del(game.bullet, b)
         elseif abs(b.x - game.player.x) > 9 or abs(b.y - game.player.y) > 9 then
             del(game.bullet, b)
@@ -223,6 +229,6 @@ function mode.test.draw()
     camera()
 
     draw_ui()
-    draw_debug()
+    --draw_debug()
 end
 
