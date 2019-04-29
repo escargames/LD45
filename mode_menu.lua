@@ -37,10 +37,10 @@ end
 
 function draw_menu_ui()
     palt(0, false)
-    palt(15, true)
+    palt(5, true)
     map(0, 48, 0, 0, 16, 16)
+    spr(64, cursor_x, cursor_y[pos])
     palt()
-    spr(42, cursor_x, cursor_y[pos] - 2)
 end
 
 function draw_menu_play()

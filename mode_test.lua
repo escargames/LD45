@@ -57,17 +57,18 @@ function draw_player()
     for i = 1,game.cats do
         local item = game.player.trail[(game.player.trail.off - 2 - i * 10) % #game.player.trail + 1]
         if item then
-            spr(123 + flr(sin(t() * 1.5 + i / 7) / 2), item.x * 8, item.y * 8, 1, 1, item.dir == 0)
+            spr(122 - flr(sin(t() * 1.5 + i / 7) / 2), item.x * 8, item.y * 8, 1, 1, item.dir == 0)
             spr(124, item.x * 8 + (item.dir == 0 and -2 or 2), item.y * 8 + flr(sin(t() * 1.2 + i / 5) / 2), 1, 1, item.dir == 0)
         end
     end
     -- player
-    spr(18, game.player.x * 8 - 4, game.player.y * 8 - 6)
+    spr(82 + (game.player.dir < 2 and 0 or 2) - flr(sin(t()*2)*.5), game.player.x * 8 - 4, game.player.y * 8 - 6)
+    spr(66 + max(1, game.player.dir), game.player.x * 8 - 4, game.player.y * 8 - 10 + flr(sin(t()*1.3)*.5), 1, 1, game.player.dir == 0)
 end
 
 function draw_bullet()
     foreach(game.bullet, function(b)
-        spr(42, b.x * 8 - 4, b.y * 8 - 4)
+        spr(64, b.x * 8 - 4, b.y * 8 - 4)
     end)
 end
 
@@ -229,13 +230,14 @@ function mode.test.draw()
     camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
     palt(0,false) palt(15,true)
     draw_bg()
-    palt(0,true) palt(15,false)
+    palt() palt(0,false) palt(5,true)
     draw_player()
     draw_bullet()
-    palt(0,false) palt(15,true)
+    palt() palt(0,false) palt(15,true)
     draw_fg()
     camera()
 
+    palt() palt(0,false) palt(5,true)
     draw_ui()
     --draw_debug()
 end
