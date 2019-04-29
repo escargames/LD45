@@ -27,9 +27,9 @@ function new_bat(x, y)
     return e
 end
 
-function new_slime(x, y)
+function new_slime(x, y, spr)
     local e = new_entity(x, y, 0)
-    e.spr = g_slime + 2 * flr(rnd(3))
+    e.spr = spr
     return e
 end
 
@@ -244,8 +244,9 @@ function update_world(w)
         local water = w.map.water[i]
         local visible = (abs(water.x - p.x) < 16) and (abs(water.y - p.y) < 16)
         if visible and not w.swamps[i] then
+            local color = g_slime + 2 * flr(rnd(3))
             for i = 1,6 do
-                add(game.slimes, new_slime(water.x + crnd(-5,5), water.y + crnd(-5,5)))
+                add(game.slimes, new_slime(water.x + crnd(-5,5), water.y + crnd(-5,5), color))
             end
             w.swamps[i] = {} -- spawned
         end
