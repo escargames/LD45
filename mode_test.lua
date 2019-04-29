@@ -1,3 +1,4 @@
+mode.test = {}
 
 -- debug
 --local debug_tiles = true
@@ -8,21 +9,34 @@ function new_world()
     }
 end
 
+function new_entity(x, y, dir)
+    return {
+        x = x, y = y,
+        dir = dir,
+        anim = rnd(128),
+        walk = rnd(128),
+    }
+end
+
+function new_player(x, y)
+    local e = new_entity(x, y, 1)
+    e.x = x
+    e.y = y
+    e.movements = {}
+    e.weapon = 1
+    e.lives = 2
+    e.maxlives = 6
+    e.trail = { off=0 }
+    return e
+end
+
 function new_game()
     game = {}
     game.world = new_world()
     -- spawn player on tile #1
-    game.player = {
-        x = game.world.map.startx,
-        y = game.world.map.starty,
-        movements = {},
-        lives = 2,
-        maxlives = 6,
-        dir = 1,
-        trail = { off=0 }
-    }
+    game.player = new_player(game.world.map.startx, game.world.map.starty)
     game.region = { x = -1, y = -1 }
-    game.bullet = {}
+    game.bullets = {}
     game.score = 0
     game.cats = 0
 end
@@ -57,18 +71,18 @@ function draw_player()
     for i = 1,game.cats do
         local item = game.player.trail[(game.player.trail.off - 2 - i * 10) % #game.player.trail + 1]
         if item then
-            spr(122 - flr(sin(t() * 1.5 + i / 7) / 2), item.x * 8, item.y * 8, 1, 1, item.dir == 0)
-            spr(124, item.x * 8 + (item.dir == 0 and -2 or 2), item.y * 8 + flr(sin(t() * 1.2 + i / 5) / 2), 1, 1, item.dir == 0)
+            spr(102 + flr((t() * 3 + i / 7) % 2), item.x * 8 - 4, item.y * 8 - 6, 1, 1, item.dir == 0)
+            spr(104, item.x * 8 - (item.dir == 0 and 6 or 2), item.y * 8 - 7 - flr((t() * 2.5 + i / 5) % 2), 1, 1, item.dir == 0)
         end
     end
     -- player
-    spr(82 + (game.player.dir < 2 and 0 or 2) - flr(sin(t()*2)*.5), game.player.x * 8 - 4, game.player.y * 8 - 6)
-    spr(66 + max(1, game.player.dir), game.player.x * 8 - 4, game.player.y * 8 - 10 + flr(sin(t()*1.3)*.5), 1, 1, game.player.dir == 0)
+    spr(82 + (game.player.dir < 2 and 0 or 2) + flr(game.player.walk*4%2), game.player.x * 8 - 4, game.player.y * 8 - 6)
+    spr(66 + max(1, game.player.dir), game.player.x * 8 - 4, game.player.y * 8 - 11 + flr(game.player.anim*2.6%2), 1, 1, game.player.dir == 0)
 end
 
 function draw_bullet()
-    foreach(game.bullet, function(b)
-        spr(64, b.x * 8 - 4, b.y * 8 - 4)
+    foreach(game.bullets, function(b)
+        spr(b.spr, b.x * 8 - 4, b.y * 8 - 4)
     end)
 end
 
@@ -90,7 +104,7 @@ function draw_debug()
     pico8_print("y="..game.player.y, 2, 11, 7)
     pico8_print("rx="..game.region.x, 2, 24, 9)
     pico8_print("ry="..game.region.y, 2, 33, 9)
-    pico8_print("bullets="..#game.bullet, 2, 42, 9)
+    pico8_print("bullets="..#game.bullets, 2, 42, 9)
     pico8_print("tiles="..#game.world.map, 2, 51, 9)
     local cpu = 100*stat(1)
     local max_cpu = cpu
@@ -112,63 +126,85 @@ function mode.test.start()
 end
 
 function mode.test.update()
-    update_bullet()
+    update_bullets()
     update_map()
+    update_player(game.player)
 
-    -- record a trail behind the player
-    if band(btn(), 0xf) != 0 then
-        local t = {x=game.player.x, y=game.player.y, dir=game.player.dir}
-        local len = max(#game.player.trail, 10 * game.cats + 10)
-        while #game.player.trail < len do
-            add(game.player.trail, t)
-        end
-        game.player.trail[game.player.trail.off] = t
-        game.player.trail.off = game.player.trail.off % len + 1
-    end
-
-    local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
-    local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
-    if not block_walk(game.player.x + dx, game.player.y, 0.6, 0.4) then
-        game.player.x += dx
-    end
-    if not block_walk(game.player.x, game.player.y + dy, 0.6, 0.4) then
-        game.player.y += dy
-    end
-
-    for i = 0,3 do
-        if cbtnp(i) then
-            add(game.player.movements, i)
-        elseif not btn(i) then
-            del(game.player.movements, i)
-        end
-    end
-    game.player.dir = game.player.movements[1] or game.player.dir
-    
     if cbtnp(5) then
         game.cats += 1
     end
+end
 
+function update_player(p)
+    -- record a trail behind the player
+    if band(btn(), 0xf) != 0 then
+        local t = {x=p.x, y=p.y, dir=p.dir}
+        local len = max(#p.trail, 10 * game.cats + 10)
+        while #p.trail < len do
+            add(p.trail, t)
+        end
+        p.trail[p.trail.off] = t
+        p.trail.off = p.trail.off % len + 1
+    end
+
+    -- move player
+    local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
+    local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
+    if not block_walk(p.x + dx, p.y, 0.6, 0.4) then
+        p.x += dx
+    end
+    if not block_walk(p.x, p.y + dy, 0.6, 0.4) then
+        p.y += dy
+    end
+
+    -- choose player direction from user controls
+    for i = 0,3 do
+        if cbtnp(i) then
+            add(p.movements, i)
+        elseif not btn(i) then
+            del(p.movements, i)
+        end
+    end
+    if #p.movements > 0 then
+        p.walk += 1/60
+        p.dir = p.movements[1]
+    end
+
+    p.anim += 1/60
+
+    -- handle shoots
     if cbtnp(4) then
-        local bx = game.player.x
-        local by = game.player.y + 0.25
-        local vx = ((game.player.dir == 0) and -1 or ((game.player.dir == 1) and 1 or 0)) / 4
-        local vy = ((game.player.dir == 2) and -1 or ((game.player.dir == 3) and 1 or 0)) / 4
+        local bx = p.x
+        local by = p.y - 0.25
+        local vx = ((p.dir == 0) and -1 or ((p.dir == 1) and 1 or 0)) / 4
+        local vy = ((p.dir == 2) and -1 or ((p.dir == 3) and 1 or 0)) / 4
         local dx, dy = vy, -vx
 
-        add(game.bullet, {x = bx, y = by, vx = 0.8 * vx + 0.2 * dx, vy = 0.8 * vy + 0.2 * dy})
-        add(game.bullet, {x = bx, y = by, vx = 0.8 * vx - 0.2 * dx, vy = 0.8 * vy - 0.2 * dy})
+        if p.weapon == 1 or p.weapon == 3 then
+            add(game.bullets, {spr = g_apple, x = bx, y = by, vx = vx, vy = vy})
+        end
+        if p.weapon == 2 or p.weapon == 3 then
+            add(game.bullets, {spr = g_apple, x = bx, y = by, vx = 0.8 * vx + 0.2 * dx, vy = 0.8 * vy + 0.2 * dy})
+            add(game.bullets, {spr = g_apple, x = bx, y = by, vx = 0.8 * vx - 0.2 * dx, vy = 0.8 * vy - 0.2 * dy})
+        end
+        for i = 1,game.cats do
+            local item = p.trail[(p.trail.off - 2 - i * 10) % #p.trail + 1]
+            if item then
+                add(game.bullets, {spr = g_banana, x = item.x, y = item.y, vx = vx, vy = vy})
+            end
+        end
     end
 end
 
-function update_bullet()
-    foreach(game.bullet, function(b)
+function update_bullets()
+    foreach(game.bullets, function(b)
         b.x += b.vx
         b.y += b.vy
 
         if block_fly(b.x, b.y) then
-            del(game.bullet, b)
+            del(game.bullets, b)
         elseif abs(b.x - game.player.x) > 9 or abs(b.y - game.player.y) > 9 then
-            del(game.bullet, b)
+            del(game.bullets, b)
         end
     end)
 end
@@ -201,7 +237,7 @@ function update_map()
         local off = 0x2000 + y * 128
         for p = off+rx, off+rx+rw-1 do
             local tile = 7
-            if rnd() > 0.2 then tile = ccrnd({19,20}) end
+            if rnd() > 0.2 then tile = ccrnd({18,19,20}) end
             local bg,fg,dc = gen_tiles(tile)
             poke(p, bg)
             poke(p+40, fg)

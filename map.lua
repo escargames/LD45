@@ -179,7 +179,7 @@ function new_map(seed, depth)
     srand(seed)
     local map = { startx=16384, starty=16384 }
     -- initialise world with one tile and grow it
-    map[1] = { chunk = 1, x = map.startx - 6, y = map.starty - 5 }
+    map[1] = { chunk = 1, x = map.startx - 4, y = map.starty - 5 }
     grow_map(map, 1, depth)
     return map
 end
