@@ -9,6 +9,7 @@ function new_world()
     return {
         map = new_map(0x234, depth, nsigns),
         signs = {},
+        swamps = {},
     }
 end
 
@@ -23,6 +24,12 @@ end
 
 function new_bat(x, y)
     local e = new_entity(x, y, 0)
+    return e
+end
+
+function new_slime(x, y)
+    local e = new_entity(x, y, 0)
+    e.spr = g_slime + 2 * flr(rnd(3))
     return e
 end
 
@@ -44,6 +51,7 @@ function new_game()
     game.region = { x = -1, y = -1 }
     game.bullets = {}
     game.bats = {}
+    game.slimes = {}
     game.score = 0
     game.cats = 0
 end
@@ -94,6 +102,12 @@ function draw_bullets()
     end)
 end
 
+function draw_slimes()
+    foreach(game.slimes, function(s)
+        spr(s.spr + flr(s.anim * 2 % 2), s.x * 8 - 4, s.y * 8 - 6)
+    end)
+end
+
 function draw_bats()
     foreach(game.bats, function(b)
         spr(g_bat + (b.dir < 2 and 0 or 2) + flr(b.anim * 3 % 2), b.x * 8 - 4, b.y * 8 - 4, 1, 1, b.dir == 0)
@@ -118,9 +132,10 @@ function draw_debug()
     --pico8_print("y="..game.player.y, 2, 11, 7)
     --pico8_print("rx="..game.region.x, 2, 24, 9)
     --pico8_print("ry="..game.region.y, 2, 33, 9)
-    pico8_print("bullets="..#game.bullets, 2, 42, 9)
-    pico8_print("tiles="..#game.world.map, 2, 51, 9)
-    pico8_print("bats="..#game.bats, 2, 60, 9)
+    pico8_print("bullets="..#game.bullets, 2, 42, 10)
+    pico8_print("tiles="..#game.world.map, 2, 48, 10)
+    pico8_print("bats="..#game.bats, 2, 54, 10)
+    pico8_print("slimes="..#game.slimes, 2, 60, 10)
     local cpu = 100*stat(1)
     local max_cpu = cpu
     add(cpu_hist, cpu)
@@ -222,13 +237,27 @@ function update_world(w)
             for i = 1,9 do
                 add(game.bats, new_bat(sign.x + 3 * sin(i / 9), sign.y + 3 * cos(i / 9)))
             end
-            w.signs[i] = {}
+            w.signs[i] = {} -- spawned
         end
     end
-    -- tick bats
+    for i=1,#w.map.water do
+        local water = w.map.water[i]
+        local visible = (abs(water.x - p.x) < 16) and (abs(water.y - p.y) < 16)
+        if visible and not w.swamps[i] then
+            for i = 1,6 do
+                add(game.slimes, new_slime(water.x + crnd(-5,5), water.y + crnd(-5,5)))
+            end
+            w.swamps[i] = {} -- spawned
+        end
+    end
+    -- tick monsters
     foreach(game.bats, function(b)
         b.anim += 1/60
         --local visible = (abs(b.x - p.x) < 10) and (abs(b.y - p.y) < 10)
+    end)
+    foreach(game.slimes, function(s)
+        s.anim += 1/60
+        --local visible = (ass(s.x - p.x) < 10) and (abs(s.y - p.y) < 10)
     end)
 end
 
@@ -246,6 +275,9 @@ function update_bullets()
 end
 
 function update_map()
+    -- sparkle water
+    for i=1,20 do sset(crnd(104,120),crnd(0,16),12) end
+    for i=1,2 do sset(crnd(104,120),crnd(0,16),ccrnd({5,6,6,7,7,7})) end
     -- if the player approaches the region boundaries, move the map!
     -- we have a 40x32 zone but we won't redraw all of it
     local rx, ry, rw, rh = 0, 0, 40, 32
@@ -307,6 +339,7 @@ function mode.test.draw()
     draw_bg()
     palt() palt(0,false) palt(5,true)
     draw_player(game.player)
+    draw_slimes()
     draw_bullets()
     palt() palt(0,false) palt(15,true)
     draw_fg()

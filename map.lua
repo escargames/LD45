@@ -31,6 +31,8 @@ function gen_tiles(bg)
     if fget(bg, 0) then
         --dc = 37 -- shadows?
         return 7, bg, 0
+    elseif bg == 13 or bg == 14 or bg == 29 or bg == 30 then
+        return ccrnd({13, 14, 29, 30}), 0, 0
     elseif bg == 7 and rnd() > 0.8 then
         bg = 62
     elseif bg == 7 and rnd() > 0.8 then
@@ -58,6 +60,9 @@ for ty = 1,63 do for tx = 1,127 do
             if fg == 21 then
                 add(left.signs, {x=x+.5,y=y+.5})
                 add(right.signs, {x=w-1-x+.5,y=y+.5})
+            elseif fget(bg, 4) then
+                left.water = true
+                right.water = true
             end
             left.bg[loff] = bg
             right.bg[roff] = g_mirror[bg] or bg
@@ -101,6 +106,9 @@ function append_map(map, chunk_desc)
     -- add chunk items to the global map
     for s in all(chunk.signs) do
         add(map.signs, {x = chunk_desc.x + s.x, y = chunk_desc.y + s.y})
+    end
+    if chunk.water then
+        add(map.water, {x = chunk_desc.x + chunk.w / 2, y = chunk_desc.y + chunk.h / 2})
     end
 end
 
@@ -199,7 +207,7 @@ function new_map(seed, depth, nsigns)
     srand(seed)
     local map
     repeat
-        map = { startx=16384, starty=16384, signs={}, nsigns=nsigns }
+        map = { startx=16384, starty=16384, signs={}, water={}, nsigns=nsigns }
         -- initialise world with one tile and grow it
         append_map(map, { chunk = 1, x = map.startx - 4, y = map.starty - 5 })
         grow_map(map, 1, depth)
