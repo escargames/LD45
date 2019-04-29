@@ -5,9 +5,10 @@ mode.test = {}
 
 function new_world()
     local depth = 8
-    local nsigns = 8
+    local nsigns = 6
     return {
-        map = new_map(0x1234, depth, nsigns),
+        map = new_map(0x234, depth, nsigns),
+        signs = {},
     }
 end
 
@@ -20,10 +21,13 @@ function new_entity(x, y, dir)
     }
 end
 
+function new_bat(x, y)
+    local e = new_entity(x, y, 0)
+    return e
+end
+
 function new_player(x, y)
     local e = new_entity(x, y, 1)
-    e.x = x
-    e.y = y
     e.movements = {}
     e.weapon = 1
     e.lives = 2
@@ -39,6 +43,7 @@ function new_game()
     game.player = new_player(game.world.map.startx, game.world.map.starty)
     game.region = { x = -1, y = -1 }
     game.bullets = {}
+    game.bats = {}
     game.score = 0
     game.cats = 0
 end
@@ -91,7 +96,7 @@ end
 
 function draw_bats()
     foreach(game.bats, function(b)
-        spr(g_bat + (b.dir < 2 and 0 or 2), b.x * 8 - 4, b.y * 8 - 4, 1, 1, b.dir == 0)
+        spr(g_bat + (b.dir < 2 and 0 or 2) + flr(b.anim * 3 % 2), b.x * 8 - 4, b.y * 8 - 4, 1, 1, b.dir == 0)
     end)
 end
 
@@ -109,12 +114,13 @@ cpu_hist = {}
 function draw_debug()
     font_outline(1)
     pico8_print(stat(7).." fps", 89, 20, 8)
-    pico8_print("x="..game.player.x, 2, 2, 7)
-    pico8_print("y="..game.player.y, 2, 11, 7)
-    pico8_print("rx="..game.region.x, 2, 24, 9)
-    pico8_print("ry="..game.region.y, 2, 33, 9)
+    --pico8_print("x="..game.player.x, 2, 2, 7)
+    --pico8_print("y="..game.player.y, 2, 11, 7)
+    --pico8_print("rx="..game.region.x, 2, 24, 9)
+    --pico8_print("ry="..game.region.y, 2, 33, 9)
     pico8_print("bullets="..#game.bullets, 2, 42, 9)
     pico8_print("tiles="..#game.world.map, 2, 51, 9)
+    pico8_print("bats="..#game.bats, 2, 60, 9)
     local cpu = 100*stat(1)
     local max_cpu = cpu
     add(cpu_hist, cpu)
@@ -137,6 +143,7 @@ end
 function mode.test.update()
     update_bullets()
     update_map()
+    update_world(game.world)
     update_player(game.player)
 
     if cbtnp(5) then
@@ -157,8 +164,8 @@ function update_player(p)
     end
 
     -- move player
-    local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 8
-    local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 8
+    local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 12
+    local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 12
     if not block_walk(p.x + dx, p.y, 0.6, 0.4) then
         p.x += dx
     end
@@ -203,6 +210,26 @@ function update_player(p)
             end
         end
     end
+end
+
+function update_world(w)
+    local p = game.player
+    -- spawn stuff if necessary
+    for i=1,w.map.nsigns do
+        local sign = w.map.signs[i]
+        local visible = (abs(sign.x - p.x) < 16) and (abs(sign.y - p.y) < 16)
+        if visible and not w.signs[i] then
+            for i = 1,9 do
+                add(game.bats, new_bat(sign.x + 3 * sin(i / 9), sign.y + 3 * cos(i / 9)))
+            end
+            w.signs[i] = {}
+        end
+    end
+    -- tick bats
+    foreach(game.bats, function(b)
+        b.anim += 1/60
+        --local visible = (abs(b.x - p.x) < 10) and (abs(b.y - p.y) < 10)
+    end)
 end
 
 function update_bullets()
@@ -283,10 +310,11 @@ function mode.test.draw()
     draw_bullets()
     palt() palt(0,false) palt(15,true)
     draw_fg()
+    palt() palt(0,false) palt(5,true)
+    draw_bats()
     camera()
 
-    palt() palt(0,false) palt(5,true)
     draw_ui()
-    --draw_debug()
+    draw_debug()
 end
 

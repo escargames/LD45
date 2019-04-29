@@ -56,8 +56,8 @@ for ty = 1,63 do for tx = 1,127 do
             local bg,fg,dc = gen_tiles(mget(tx+x, ty+y))
             local loff,roff = y*w+x,y*w+w-1-x
             if fg == 21 then
-                add(left.signs, {x=x,y=y})
-                add(right.signs, {x=w-1-x,y=y})
+                add(left.signs, {x=x+.5,y=y+.5})
+                add(right.signs, {x=w-1-x+.5,y=y+.5})
             end
             left.bg[loff] = bg
             right.bg[roff] = g_mirror[bg] or bg
