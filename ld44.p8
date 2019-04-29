@@ -8,7 +8,7 @@ __lua__
 --#include escarlib/logo.lua
 #include escarlib/btn.lua
 #include escarlib/draw.lua
-#include escarlib/print.lua
+--#include escarlib/print.lua
 #include escarlib/random.lua
 --#include escarlib/fonts/double_homicide.lua
 #include escarlib/fonts/lilabit.lua
@@ -95,7 +95,7 @@ end
 function _init()
     poke(0x5f34, 1)
     cartdata("ld44")
-    state = "test"
+    state = "menu"
 end
 
 function _update60()
@@ -107,7 +107,7 @@ function _update60()
 end
 
 function _draw()
-    mode[state].draw()
+    mode[prev_state].draw()
 end
 
 --

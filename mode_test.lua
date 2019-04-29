@@ -83,14 +83,16 @@ function draw_debug()
         end
         cpu_hist[51] = nil
     end
-    coprint("cpu="..ceil(cpu), 89, 2, 14)
-    coprint("max="..ceil(max_cpu), 89, 11, 8)
-    coprint("x="..game.player.x, 2, 2, 7)
-    coprint("y="..game.player.y, 2, 11, 7)
-    coprint("rx="..game.region.x, 2, 24, 9)
-    coprint("ry="..game.region.y, 2, 33, 9)
-    coprint("bullets="..#game.bullet, 2, 42, 9)
-    coprint("tiles="..#game.world.map, 2, 51, 9)
+    font_outline(1)
+    print("cpu="..ceil(cpu), 89, 2, 14)
+    print("max="..ceil(max_cpu), 89, 11, 8)
+    print("x="..game.player.x, 2, 2, 7)
+    print("y="..game.player.y, 2, 11, 7)
+    print("rx="..game.region.x, 2, 24, 9)
+    print("ry="..game.region.y, 2, 33, 9)
+    print("bullets="..#game.bullet, 2, 42, 9)
+    print("tiles="..#game.world.map, 2, 51, 9)
+    font_outline()
 end
 
 function mode.test.start()

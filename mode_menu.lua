@@ -24,13 +24,17 @@ end
 function mode.menu.draw()
     cls(3)
     draw_menu_ui()
-    csprint("ld44", 15, 9, 11)
-    coprint("Play", 5, cursor_y[1], (pos == 1 and main and 9 or 11))
-    coprint("Help", 5, cursor_y[2], (pos == 2 and main and 9 or 11))
-    coprint("Scores", 5, cursor_y[3], (pos == 3 and main and 9 or 11))
+    font_outline(1)
+    font_scale(2)
+    print("ld44", 15, 9, 11)
+    font_scale()
+    print("Play", 5, cursor_y[1], (pos == 1 and main and 9 or 11))
+    print("Help", 5, cursor_y[2], (pos == 2 and main and 9 or 11))
+    print("Scores", 5, cursor_y[3], (pos == 3 and main and 9 or 11))
     draw_menu_play()
     draw_menu_help()
     draw_menu_debug()
+    font_outline()
 end
 
 function draw_menu_ui()
@@ -43,17 +47,17 @@ end
 
 function draw_menu_play()
     if main and pos == 1 or (not main) then
-        coprint("Levels", 70, 35, 9)
+        print("Levels", 70, 35, 9)
         for i = 1, #levels do
-            coprint(levels[i], 75, 35 + 15*i, pos == i and not main and 9 or 11)
+            print(levels[i], 75, 35 + 15*i, pos == i and not main and 9 or 11)
         end
     end
 end
 
 function draw_menu_help()
     if main and pos==2 then
-        coprint("Controls", 65, 35, 9)
-        coprint("w or z to shoot", 65, cursor_y[1], 11)
+        print("Controls", 65, 35, 9)
+        print("w or z: shoot", 65, cursor_y[1], 11)
     end
 end
 
