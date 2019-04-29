@@ -37,8 +37,8 @@ end
 
 function draw_menu_ui()
     palt(0, false)
-    palt(5, true)
     map(0, 48, 0, 0, 16, 16)
+    palt(5, true)
     spr(64, cursor_x, cursor_y[pos])
     palt()
 end
