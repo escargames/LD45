@@ -1,3 +1,5 @@
+mode.play = {}
+
 function mode.play.start()
 end
 
