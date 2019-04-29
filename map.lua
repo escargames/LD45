@@ -91,7 +91,7 @@ function grow_map(map, id, depth)
     -- try to connect to the north
     if chunk.exit_n and not tile.next_n then
         local candidates = {}
-        for i=1,#g_chunks do
+        for i=2,#g_chunks do
             local new_chunk = g_chunks[i]
             if new_chunk.exit_s then
                 add(candidates, {
@@ -111,7 +111,7 @@ function grow_map(map, id, depth)
     -- try to connect to the south
     if chunk.exit_s and not tile.next_s then
         local candidates = {}
-        for i=1,#g_chunks do
+        for i=2,#g_chunks do
             local new_chunk = g_chunks[i]
             if new_chunk.exit_n then
                 add(candidates, {
@@ -131,7 +131,7 @@ function grow_map(map, id, depth)
     -- try to connect to the west
     if chunk.exit_w and not tile.next_w then
         local candidates = {}
-        for i=1,#g_chunks do
+        for i=2,#g_chunks do
             local new_chunk = g_chunks[i]
             if new_chunk.exit_e then
                 add(candidates, {
@@ -151,7 +151,7 @@ function grow_map(map, id, depth)
     -- try to connect to the east
     if chunk.exit_e and not tile.next_e then
         local candidates = {}
-        for i=1,#g_chunks do
+        for i=2,#g_chunks do
             local new_chunk = g_chunks[i]
             if new_chunk.exit_w then
                 add(candidates, {
@@ -177,10 +177,9 @@ end
 
 function new_map(seed, depth)
     srand(seed)
-    local map = {}
-    -- initialise world with one tile
-    map[1] = { chunk = flr(crnd(1,1+#g_chunks)), x = 16384, y = 16384 }
-    -- grow world
+    local map = { startx=16384, starty=16384 }
+    -- initialise world with one tile and grow it
+    map[1] = { chunk = 1, x = map.startx - 6, y = map.starty - 5 }
     grow_map(map, 1, depth)
     return map
 end

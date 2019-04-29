@@ -4,7 +4,7 @@
 
 function new_world()
     return {
-        map = new_map(0x1234.5678, 16),
+        map = new_map(0x1234, 12),
     }
 end
 
@@ -13,8 +13,8 @@ function new_game()
     game.world = new_world()
     -- spawn player on tile #1
     game.player = {
-        x = game.world.map[1].x + 6.5,
-        y = game.world.map[1].y + 2.75,
+        x = game.world.map.startx,
+        y = game.world.map.starty,
         movements = {},
         lives = 2,
         maxlives = 6,
@@ -201,7 +201,7 @@ function update_map()
         local off = 0x2000 + y * 128
         for p = off+rx, off+rx+rw-1 do
             local tile = 7
-            if rnd() > 0.8 then tile = ccrnd({19,20}) end
+            if rnd() > 0.2 then tile = ccrnd({19,20}) end
             local bg,fg,dc = gen_tiles(tile)
             poke(p, bg)
             poke(p+40, fg)
