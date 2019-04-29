@@ -2,7 +2,7 @@ function mode.menu.start()
     main = true
     cursor_x = 36
     cursor_y = {50, 65, 80}
-    levels = {"blablabla", "hihihi", "prout"}
+    levels = {"Blablabla", "Hihihi", "Prout"}
     pos = 1
 end
 
@@ -25,9 +25,9 @@ function mode.menu.draw()
     cls(3)
     draw_menu_ui()
     csprint("ld44", 15, 9, 11)
-    cosprint("play", 5, cursor_y[1], 6, (pos == 1 and main and 9 or 11))
-    cosprint("help", 5, cursor_y[2], 6, (pos == 2 and main and 9 or 11))
-    cosprint("scores", 5, cursor_y[3], 6, (pos == 3 and main and 9 or 11))
+    coprint("Play", 5, cursor_y[1], (pos == 1 and main and 9 or 11))
+    coprint("Help", 5, cursor_y[2], (pos == 2 and main and 9 or 11))
+    coprint("Scores", 5, cursor_y[3], (pos == 3 and main and 9 or 11))
     draw_menu_play()
     draw_menu_help()
     draw_menu_debug()
@@ -43,17 +43,17 @@ end
 
 function draw_menu_play()
     if main and pos == 1 or (not main) then
-        cosprint("levels", 70, 35, 6, 9)
+        coprint("Levels", 70, 35, 9)
         for i = 1, #levels do
-            cosprint(levels[i], 75, 35 + 15*i, 6, pos == i and not main and 9 or 11)
+            coprint(levels[i], 75, 35 + 15*i, pos == i and not main and 9 or 11)
         end
     end
 end
 
 function draw_menu_help()
     if main and pos==2 then
-        cosprint("controls", 65, 35, 6, 9)
-        cosprint("w or z to shoot", 65, cursor_y[1], 6, 11)
+        coprint("Controls", 65, 35, 9)
+        coprint("w or z to shoot", 65, cursor_y[1], 11)
     end
 end
 
