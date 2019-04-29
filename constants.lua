@@ -13,3 +13,11 @@ g_bat = 98
 g_slime = 114
 g_shadow = 71
 
+g_text = {"Your poster is still here, but no one called.\nMISSING\nCookie\nMy sweet Cookie disapeared last night.\nDescription: the cutest.\nPlease call Grandma.",
+          "Keep finding cats but Cookie's still nowhere to be found.",
+          "When I find him, I am going to cuddle the shit out of him.",
+          "The moving could have scared him. The new house is not what he's used to. I really hope he's okay.",
+          "Cookie, if you come back I'll never grumble again when you sharpen your claws on the wall. Promise.",
+          "There is tuna fish waiting for you in the house. Your favorite.",
+          "I'll let you sleep on the bed next to me.",
+          "Cookie! You had me worried sick! Missed your friend from the old house huh?\nCome on, there's plenty of room for both of you."}
