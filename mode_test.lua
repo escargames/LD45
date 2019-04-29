@@ -17,6 +17,7 @@ function new_entity(x, y, dir)
     return {
         x = x, y = y,
         dir = dir,
+        cooldown = 0,
         anim = rnd(128),
         walk = rnd(128),
     }
@@ -161,9 +162,9 @@ function mode.test.update()
     update_world(game.world)
     update_player(game.player)
 
-    if cbtnp(5) then
-        game.cats += 1
-    end
+    --if cbtnp(5) then
+    --    game.cats += 1
+    --end
 end
 
 function update_player(p)
@@ -199,6 +200,7 @@ function update_player(p)
     if #p.movements > 0 then
         p.walk += 1/60
         p.dir = p.movements[1]
+        --if (rnd() > 0.6) sfx(g_sfx_walk)
     end
 
     p.anim += 1/60
@@ -211,6 +213,7 @@ function update_player(p)
         local vy = ((p.dir == 2) and -1 or ((p.dir == 3) and 1 or 0)) / 4
         local dx, dy = vy, -vx
 
+        sfx(g_sfx_shoot)
         if p.weapon == 1 or p.weapon == 3 then
             add(game.bullets, {spr = g_apple, x = bx, y = by, vx = vx, vy = vy})
         end
@@ -221,7 +224,7 @@ function update_player(p)
         for i = 1,game.cats do
             local item = p.trail[(p.trail.off - 2 - i * 10) % #p.trail + 1]
             if item then
-                add(game.bullets, {spr = g_banana, x = item.x, y = item.y, vx = vx, vy = vy})
+                add(game.bullets, {spr = g_banana, x = item.x + crnd(-0.4,0.4), y = item.y + crnd(-0.4,0.4), vx = vx, vy = vy})
             end
         end
     end
@@ -254,7 +257,28 @@ function update_world(w)
     -- tick monsters
     foreach(game.bats, function(b)
         b.anim += 1/60
-        --local visible = (abs(b.x - p.x) < 10) and (abs(b.y - p.y) < 10)
+        local visible = (abs(b.x - p.x) < 10) and (abs(b.y - p.y) < 10)
+        if visible then
+            -- find a point near the player
+            local dx = p.x - b.x
+            local dy = p.y - b.y
+            local n = sqrt(dx*dx+dy*dy)
+            b.cooldown -= 1/60
+            if b.cooldown < 0 then
+                add(game.bullets, {spr = g_energy, x = b.x, y = b.y, vx = dx / n / 8, vy = dy / n / 8})
+                b.cooldown = crnd(1,4)
+                b.dir = 1 - b.dir
+            end
+            if (b.dir == 0) n = -n
+            local ex = dy / n * 8
+            local ey = -dx / n * 8
+            -- new destination
+            dx -= ex
+            dy -= ey
+            n = sqrt(dx*dx+dy*dy)
+            b.x += dx / n / 16
+            b.y += dy / n / 16
+        end
     end)
     foreach(game.slimes, function(s)
         s.anim += 1/60
