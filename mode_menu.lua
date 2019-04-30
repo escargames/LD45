@@ -11,13 +11,14 @@ end
 
 -------------
 
+seed = 1
+
 function mode.menu.start()
     main = true
     cursor_x = 36
     cursor_y = {50, 64, 78}
     cursor_y_nm = {50, 70}
     pos = 1
-    seed = 1
 end
 
 function mode.menu.update()
@@ -71,13 +72,13 @@ end
 
 function draw_menu_play()
     if main and pos == 1 or (not main) then
-        print("Play", 80, 50, pos == 1 and not main and 9 or 11)
-        print("Seed", 80, 70, pos == 2 and not main and 9 or 11)
+        print("Play!", 80, 50, pos == 1 and not main and 9 or 11)
+        print("Seed:", 80, 70, pos == 2 and not main and 9 or 11)
         while #tostr(seed) < 5 do seed = "0"..seed end
-        print(tostr(seed), 79, 85, 9)
+        print(tostr(seed), 79, 81, 9)
         if not main and pos == 2 then
-            foprint("⬅️", 70, 85, 13, 0, 2)
-            foprint("➡️", 108, 85, 13, 1, 2)
+            foprint("⬅️", 70, 81, 13, 0, 2)
+            foprint("➡️", 108, 81, 13, 1, 2)
         end
     end
 end

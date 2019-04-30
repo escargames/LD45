@@ -1,11 +1,11 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
--- ld44
+-- finding cookie
 -- by niarkou and sam
 
 #include escarlib/p8u.lua
---#include escarlib/logo.lua
+#include escarlib/logo.lua
 #include escarlib/btn.lua
 #include escarlib/draw.lua
 --#include escarlib/print.lua
@@ -28,7 +28,7 @@ mode = {}
 
 function _init()
     poke(0x5f34, 1)
-    cartdata("ld44")
+    cartdata("findingcookie")
     state = "menu"
     music(2, 300)
 end
