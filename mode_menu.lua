@@ -1,25 +1,38 @@
 mode.menu = {}
+-- print 
+
+function foprint(text,x,y,col,toff,dur)
+	if (time()*4-toff)%dur<.5 then
+		print(text,x,y+1,col)
+	else
+		print(text,x,y,col)
+	end
+end
+
+-------------
 
 function mode.menu.start()
     main = true
     cursor_x = 36
     cursor_y = {50, 64, 78}
-    levels = {"Blablabla", "Hihihi", "Prout"}
     pos = 1
+    seed = 1
 end
 
 function mode.menu.update()
-    local max = main and #cursor_y or #levels
+    local max = main and #cursor_y or 2
     pos += ((btnp(2) and (pos > 1) and -1) or (btnp(3) and (pos < max) and 1 or 0))
     cursor_x = main and 36 or 61
 
-    if pos == 1 and (btnp(4) or btnp(1)) and main then
+    if pos == 1 and btnp(4) and main then
         main = false
     elseif main == false and btnp(4) then
         state = "test"
-    elseif main == false and (btnp(5) or btnp(0)) then
+    elseif main == false and btnp(5) then
         pos = 1
         main = true
+    elseif main == false then
+        seed += ((btnp(0) and (seed > 1) and -1) or (btnp(1) and 1 or 0))
     end
 end
 
@@ -29,7 +42,7 @@ function mode.menu.draw()
     font_outline(1)
     print("Cute Little Game", 12, 8, 8)
     print("by Niarkou and Sam", 28, 18, 15)
-    print("Play", 5, cursor_y[1], (pos == 1 and main and 9 or 12))
+    print("Game", 5, cursor_y[1], (pos == 1 and main and 9 or 12))
     print("Help", 5, cursor_y[2], (pos == 2 and main and 9 or 12))
     print("About", 5, cursor_y[3], (pos == 3 and main and 9 or 12))
     draw_menu_play()
@@ -48,10 +61,11 @@ end
 
 function draw_menu_play()
     if main and pos == 1 or (not main) then
-        print("Levels", 70, 35, 9)
-        for i = 1, #levels do
-            print(levels[i], 75, 35 + 16*i, pos == i and not main and 9 or 11)
-        end
+        print("Play", 75, 50, pos == 1 and not main and 9 or 11)
+        print("Seed", 75, 64, pos == 2 and not main and 9 or 11)
+        print(tostr(seed), 83, 85, 9)
+        foprint("⬅️", 75, 85, 13, 0, 2)
+	    foprint("➡️", 90, 85, 13, 1, 2)
     end
 end
 
