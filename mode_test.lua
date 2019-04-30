@@ -61,6 +61,7 @@ function new_game()
     game.cats = 0
     game.explosions = {}
     game.kills = 0
+    game.story = 0
 end
 
 function draw_bg()
@@ -157,6 +158,7 @@ end
 
 cpu_hist = {}
 function draw_debug()
+--[[
     font_outline(1)
     pico8_print(stat(7).." fps", 89, 20, 8)
     --pico8_print("x="..game.player.x, 2, 2, 7)
@@ -180,6 +182,7 @@ function draw_debug()
     pico8_print("cpu="..ceil(cpu), 89, 2, 14)
     pico8_print("max="..ceil(max_cpu), 89, 11, 8)
     font_outline()
+]]--
 end
 
 function mode.test.start()
@@ -199,6 +202,11 @@ function mode.test.update()
 
     if (game.player.lives <= 0) and (game.player.shot < 0.8) then
         state = "gameover"
+    end
+
+    if game.kills > game.story * 6 then
+        state = "story"
+        game.cats += 1
     end
 end
 
