@@ -210,7 +210,7 @@ function grow_map(map, id, depth)
 end
 
 function new_map(seed, depth, nsigns)
-    srand(seed)
+    srand(bxor(seed, 0xa472.39f3))
     local map
     repeat
         map = { startx=16384, starty=16384, trees={}, signs={}, water={}, nsigns=nsigns }

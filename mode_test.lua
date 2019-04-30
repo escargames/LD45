@@ -3,11 +3,11 @@ mode.test = {}
 -- debug
 --local debug_tiles = true
 
-function new_world()
+function new_world(seed)
     local depth = 10
     local nsigns = 8
     return {
-        map = new_map(0x234, depth, nsigns),
+        map = new_map(seed, depth, nsigns),
         signs = {},
         swamps = {},
     }
@@ -47,9 +47,9 @@ function new_player(x, y)
     return e
 end
 
-function new_game()
+function new_game(seed)
     game = {}
-    game.world = new_world()
+    game.world = new_world(seed)
     -- spawn player on tile #1
     game.player = new_player(game.world.map.startx, game.world.map.starty)
     game.region = { x = -1, y = -1 }
@@ -186,7 +186,7 @@ function draw_debug()
 end
 
 function mode.test.start()
-    new_game()
+    new_game(seed)
 end
 
 function mode.test.update()
