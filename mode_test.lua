@@ -204,7 +204,9 @@ function mode.test.update()
         state = "gameover"
     end
 
-    if game.kills > game.story * 6 then
+    if game.story == 8 then
+        state = "gameover"
+    elseif game.kills > game.story * 6 then
         state = "story"
         game.cats += 1
     end

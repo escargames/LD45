@@ -25,9 +25,11 @@ function mode.gameover.draw()
     end
     if animation >= 1.5 then
         print("You did well !", 26, 52, 15)
-        print("Alas, Cookie was", 16, 64, 15)
-        print("nowhere to be found.", 16, 74, 15)
-        print("Maybe next time?", 16, 84, 15)
+        if game.story < 8 then
+            print("Alas, Cookie was", 16, 64, 15)
+            print("nowhere to be found.", 16, 74, 15)
+            print("Maybe next time?", 16, 84, 15)
+        end
     end
     font_outline()
 end
