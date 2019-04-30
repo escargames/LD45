@@ -20,17 +20,20 @@ function new_entity(x, y, dir)
         cooldown = 0,
         anim = rnd(128),
         walk = rnd(128),
+        shot = 0,
     }
 end
 
 function new_bat(x, y)
     local e = new_entity(x, y, 0)
+    e.lives = 3
     return e
 end
 
 function new_slime(x, y, spr)
     local e = new_entity(x, y, 0)
     e.spr = spr
+    e.lives = 5
     return e
 end
 
@@ -105,13 +108,21 @@ end
 
 function draw_slimes()
     foreach(game.slimes, function(s)
+        if s.shot > 0 and rnd() > 0.5 then
+            for i = 0,15 do pal(i,7) end
+        end
         spr(s.spr + flr(s.anim * 2 % 2), s.x * 8 - 4, s.y * 8 - 6)
+        for i = 0,15 do pal(i,i) end
     end)
 end
 
 function draw_bats()
     foreach(game.bats, function(b)
+        if b.shot > 0 and rnd() > 0.5 then
+            for i = 0,15 do pal(i,7) end
+        end
         spr(g_bat + (b.dir < 2 and 0 or 2) + flr(b.anim * 3 % 2), b.x * 8 - 4, b.y * 8 - 4, 1, 1, b.dir == 0)
+        for i = 0,15 do pal(i,i) end
     end)
 end
 
@@ -237,8 +248,8 @@ function update_world(w)
         local sign = w.map.signs[i]
         local visible = (abs(sign.x - p.x) < 16) and (abs(sign.y - p.y) < 16)
         if visible and not w.signs[i] then
-            for i = 1,9 do
-                add(game.bats, new_bat(sign.x + 3 * sin(i / 9), sign.y + 3 * cos(i / 9)))
+            for i = 1,5 do
+                add(game.bats, new_bat(sign.x + 3 * sin(i / 5), sign.y + 3 * cos(i / 5)))
             end
             w.signs[i] = {} -- spawned
         end
@@ -257,6 +268,7 @@ function update_world(w)
     -- tick monsters
     foreach(game.bats, function(b)
         b.anim += 1/60
+        b.shot -= 1/60
         local visible = (abs(b.x - p.x) < 10) and (abs(b.y - p.y) < 10)
         if visible then
             -- find a point near the player
@@ -278,11 +290,62 @@ function update_world(w)
             n = sqrt(dx*dx+dy*dy)
             b.x += dx / n / 16
             b.y += dy / n / 16
+            -- shot by a bullet?
+            foreach(game.bullets, function(bul)
+                if bul.spr != g_energy and
+                    max(abs(bul.x-b.x),abs(bul.y-b.y)) < 0.5 then
+                     b.lives -= 1
+                     b.shot = 1
+                     del(game.bullets, bul)
+                end
+            end)
+        end
+        if b.lives < 0 then
+            del(game.bats, b)
         end
     end)
     foreach(game.slimes, function(s)
         s.anim += 1/60
-        --local visible = (ass(s.x - p.x) < 10) and (abs(s.y - p.y) < 10)
+        s.shot -= 1/60
+        local visible = (abs(s.x - p.x) < 10) and (abs(s.y - p.y) < 10)
+        if visible then
+            if s.plan then
+                if s.cooldown > 3 then
+                elseif s.cooldown > 1 then
+                    s.x += crnd(-.05,.05)
+                else
+                    s.x -= 0.3 * (s.x - s.plan.x)
+                    s.y -= 0.3 * (s.y - s.plan.y)
+                end
+            else
+                -- find a point near the player
+                local dx = p.x - s.x
+                local dy = p.y - s.y
+                local n = sqrt(dx*dx+dy*dy)
+                local ex = s.x + dx / n * 2 + crnd(-2,2)
+                local ey = s.y + dy / n * 2 + crnd(-2,2)
+                if not block_fly(ex, ey, 0.6, 0.4) then
+                    s.plan = {x=ex,y=ey}
+                    s.cooldown = crnd(4,6)
+                end
+            end
+            s.cooldown -= 1/60
+            if s.cooldown < 0 then
+                s.plan = nil
+            end
+            -- shot by a bullet?
+            foreach(game.bullets, function(bul)
+                if bul.spr != g_energy and
+                    max(abs(bul.x-s.x),abs(bul.y-s.y)) < 0.5 then
+                     s.lives -= 1
+                     s.shot = 1
+                     del(game.bullets, bul)
+                end
+            end)
+        end
+        if s.lives < 0 then
+            del(game.slimes, s)
+        end
     end)
 end
 
