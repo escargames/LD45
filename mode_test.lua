@@ -113,7 +113,7 @@ function draw_slimes()
         if s.shot > 0 and rnd() > 0.5 then
             for i = 0,15 do pal(i,7) end
         end
-        spr(s.spr + flr(s.anim * 2 % 2), s.x * 8 - 4, s.y * 8 - 6)
+        spr(s.spr + flr(s.anim * 2 % 2), s.x * 8 - 4, s.y * 8 - 4)
         for i = 0,15 do pal(i,i) end
     end)
 end
@@ -325,7 +325,7 @@ function update_world(w)
         if visible then
             if s.plan then
                 if s.cooldown > 3 then
-                elseif s.cooldown > 1 then
+                elseif s.cooldown > 2 then
                     s.x += crnd(-.05,.05)
                 else
                     s.x -= 0.3 * (s.x - s.plan.x)
