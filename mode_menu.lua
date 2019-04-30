@@ -33,7 +33,7 @@ function mode.menu.update()
         pos = 1
         main = true
     elseif main == false then
-        seed += ((btnp(0) and (seed > 1) and -1) or (btnp(1) and 1 or 0))
+        seed += ((btnp(0) and (tonum(seed) > 1) and -1) or (btnp(1) and 1 or 0))
     end
 end
 
@@ -41,7 +41,7 @@ function mode.menu.draw()
     cls(3)
     draw_menu_ui()
     font_outline(1)
-    print("Cute Little Game", 12, 8, 8)
+    print("Finding Cookie", 12, 8, 8)
     print("by Niarkou and Sam", 28, 18, 15)
     print("Game", 5, cursor_y[1], (pos == 1 and main and 9 or 12))
     print("Help", 5, cursor_y[2], (pos == 2 and main and 9 or 12))
@@ -71,12 +71,13 @@ end
 
 function draw_menu_play()
     if main and pos == 1 or (not main) then
-        print("Play", 75, 50, pos == 1 and not main and 9 or 11)
-        print("Seed", 75, 70, pos == 2 and not main and 9 or 11)
-        print(tostr(seed), 83, 85, 9)
+        print("Play", 80, 50, pos == 1 and not main and 9 or 11)
+        print("Seed", 80, 70, pos == 2 and not main and 9 or 11)
+        while #tostr(seed) < 5 do seed = "0"..seed end
+        print(tostr(seed), 79, 85, 9)
         if not main and pos == 2 then
-            foprint("⬅️", 65, 85, 13, 0, 2)
-            foprint("➡️", 105, 85, 13, 1, 2)
+            foprint("⬅️", 70, 85, 13, 0, 2)
+            foprint("➡️", 108, 85, 13, 1, 2)
         end
     end
 end
