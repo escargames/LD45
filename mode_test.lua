@@ -57,7 +57,9 @@ function new_game()
     game.bats = {}
     game.slimes = {}
     game.score = 0
+    game.money = 0
     game.cats = 0
+    game.explosions = {}
 end
 
 function draw_bg()
@@ -134,6 +136,16 @@ function draw_ui()
         end
     end
     palt()
+    font_outline(1)
+    palt(0,false) palt(5,true)
+    spr(86 + flr(t()*2%2), 6, 114)
+    spr(80, 80, 114)
+    palt()
+    print(tostr(game.money), 15, 114, 7)
+    local score = tostr(game.score)
+    while #score < 6 do score = "0"..score end
+    print(score, 90, 114, 7)
+    font_outline()
 end
 
 cpu_hist = {}
@@ -173,9 +185,10 @@ function mode.test.update()
     update_world(game.world)
     update_player(game.player)
 
-    --if cbtnp(5) then
+    if cbtnp(5) then
     --    game.cats += 1
-    --end
+    --game.score += flr(rnd(80))
+    end
 end
 
 function update_player(p)
@@ -301,6 +314,7 @@ function update_world(w)
             end)
         end
         if b.lives < 0 then
+            game.score += 500
             del(game.bats, b)
         end
     end)
@@ -344,6 +358,7 @@ function update_world(w)
             end)
         end
         if s.lives < 0 then
+            game.score += 350
             del(game.slimes, s)
         end
     end)
