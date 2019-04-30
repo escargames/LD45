@@ -24,6 +24,7 @@ mode = {}
 #include mode_test.lua
 #include mode_menu.lua
 #include mode_play.lua
+#include mode_extra.lua
 
 function _init()
     poke(0x5f34, 1)

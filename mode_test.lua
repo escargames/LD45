@@ -41,7 +41,7 @@ function new_player(x, y)
     local e = new_entity(x, y, 1)
     e.movements = {}
     e.weapon = 1
-    e.lives = 2
+    e.lives = 6
     e.maxlives = 6
     e.trail = { off=0 }
     return e
@@ -98,8 +98,12 @@ function draw_player(p)
     end
     -- player
     --spr(g_shadow, p.x * 8 - 4, p.y * 8 - 5)
+    if p.shot > 0 and rnd() > 0.5 then
+        for i = 0,15 do pal(i,7) end
+    end
     spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), p.x * 8 - 4, p.y * 8 - 6)
     spr(66 + max(1, p.dir), p.x * 8 - 4, p.y * 8 - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
+    for i = 0,15 do pal(i,i) end
 end
 
 function draw_bullets()
@@ -189,6 +193,10 @@ function mode.test.update()
     --    game.cats += 1
     --game.score += flr(rnd(80))
     end
+
+    if game.player.lives <= 0 then
+        state = "gameover"
+    end
 end
 
 function update_player(p)
@@ -227,6 +235,7 @@ function update_player(p)
         --if (rnd() > 0.6) sfx(g_sfx_walk)
     end
 
+    p.shot -= 1/60
     p.anim += 1/60
 
     -- handle shoots
@@ -371,8 +380,20 @@ function update_bullets()
 
         if block_fly(b.x, b.y) then
             del(game.bullets, b)
-        elseif abs(b.x - game.player.x) > 9 or abs(b.y - game.player.y) > 9 then
-            del(game.bullets, b)
+        else
+            local dx = abs(b.x - game.player.x)
+            local dy = abs(b.y - game.player.y)
+            if max(dx, dy) > 9 then
+                del(game.bullets, b)
+            else
+                if max(dx, dy) < 0.5 then
+                    if game.player.shot < 0 then
+                        game.player.lives = max(0, game.player.lives - 1)
+                        game.player.shot = 1
+                    end
+                    del(game.bullets, b)
+                end
+            end
         end
     end)
 end
