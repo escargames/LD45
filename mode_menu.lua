@@ -15,6 +15,7 @@ function mode.menu.start()
     main = true
     cursor_x = 36
     cursor_y = {50, 64, 78}
+    cursor_y_nm = {50, 70}
     pos = 1
     seed = 1
 end
@@ -55,17 +56,23 @@ function draw_menu_ui()
     palt(0, false)
     map(0, 48, 0, 0, 16, 16)
     palt(5, true)
-    spr(64, cursor_x, cursor_y[pos])
+    if main then
+        spr(64, cursor_x, cursor_y[pos])
+    else
+        spr(64, cursor_x, cursor_y_nm[pos])
+    end
     palt()
 end
 
 function draw_menu_play()
     if main and pos == 1 or (not main) then
         print("Play", 75, 50, pos == 1 and not main and 9 or 11)
-        print("Seed", 75, 64, pos == 2 and not main and 9 or 11)
+        print("Seed", 75, 70, pos == 2 and not main and 9 or 11)
         print(tostr(seed), 83, 85, 9)
-        foprint("⬅️", 75, 85, 13, 0, 2)
-	    foprint("➡️", 90, 85, 13, 1, 2)
+        if not main and pos == 2 then
+            foprint("⬅️", 65, 85, 13, 0, 2)
+            foprint("➡️", 105, 85, 13, 1, 2)
+        end
     end
 end
 
