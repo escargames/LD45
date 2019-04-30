@@ -4,12 +4,19 @@ g_btn_back = 5
 g_btn_jump = 4
 g_btn_call = 5
 
+g_sfx_menu_move = 0
+g_sfx_menu_select = 1
+g_sfx_walk = 2
+g_sfx_shoot = 3
+
 g_initial_lives = 3
 g_max_lives = 3
 
 g_apple = 64
 g_banana = 65
+g_energy = 70
 g_bat = 98
+g_slime = 114
 g_shadow = 71
 
 g_text = {"Your poster is still here, but no one called.\nMISSING\nCookie\nMy sweet Cookie disapeared last night.\nDescription: the cutest.\nPlease call Grandma.",
