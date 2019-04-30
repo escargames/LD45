@@ -55,11 +55,16 @@ end
 function draw_menu_ui()
     palt(0, false)
     map(0, 48, 0, 0, 16, 16)
+    palt(15, true)
+    map(16, 48, 0, 0, 16, 16)
+    palt(15, false)
     palt(5, true)
-    if main then
-        spr(64, cursor_x, cursor_y[pos])
-    else
-        spr(64, cursor_x, cursor_y_nm[pos])
+    if t() * 3 % 1 > 0.4 then
+        if main then
+            spr(64, cursor_x, cursor_y[pos])
+        else
+            spr(64, cursor_x, cursor_y_nm[pos])
+        end
     end
     palt()
 end
