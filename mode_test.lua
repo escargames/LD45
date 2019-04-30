@@ -26,7 +26,7 @@ end
 
 function new_bat(x, y)
     local e = new_entity(x, y, 0)
-    e.lives = 3
+    e.lives = 2
     return e
 end
 
@@ -60,6 +60,7 @@ function new_game()
     game.money = 0
     game.cats = 0
     game.explosions = {}
+    game.kills = 0
 end
 
 function draw_bg()
@@ -142,10 +143,12 @@ function draw_ui()
     palt()
     font_outline(1)
     palt(0,false) palt(5,true)
-    spr(86 + flr(t()*2%2), 6, 114)
-    spr(80, 80, 114)
+    spr(g_coin + flr(t()*2%2), 6, 114)
+    spr(g_heart, 23, 114)
+    spr(g_sword, 80, 114)
     palt()
-    print(tostr(game.money), 15, 114, 7)
+    print(game.money, 15, 114, 7)
+    print(game.player.maxlives / 2, 32, 114, 7)
     local score = tostr(game.score)
     while #score < 6 do score = "0"..score end
     print(score, 90, 114, 7)
@@ -322,8 +325,9 @@ function update_world(w)
                 end
             end)
         end
-        if b.lives < 0 then
+        if b.lives <= 0 then
             game.score += 100
+            game.kills += 1
             del(game.bats, b)
         end
     end)
@@ -368,8 +372,9 @@ function update_world(w)
                 end
             end)
         end
-        if s.lives < 0 then
+        if s.lives <= 0 then
             game.score += 70
+            game.kills += 1
             del(game.slimes, s)
             return
         end

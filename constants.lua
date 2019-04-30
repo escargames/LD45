@@ -14,7 +14,10 @@ g_max_lives = 3
 
 g_apple = 64
 g_banana = 65
+g_heart = 66
 g_energy = 70
+g_sword = 80
+g_coin = 86
 g_bat = 98
 g_slime = 114
 g_shadow = 71
