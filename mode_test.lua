@@ -4,8 +4,8 @@ mode.test = {}
 --local debug_tiles = true
 
 function new_world()
-    local depth = 8
-    local nsigns = 6
+    local depth = 10
+    local nsigns = 8
     return {
         map = new_map(0x234, depth, nsigns),
         signs = {},
@@ -134,10 +134,10 @@ end
 
 function draw_ui()
     for i = 1,game.player.maxlives do
-        sspr(7 - i % 2 * 7, 48, 7, 16, i * 7 - 4, 3)
-        if i == game.player.lives then
+        if i > game.player.lives then
             palt(2,true) palt(7,true) palt(8,true) palt(14,true)
         end
+        sspr(7 - i % 2 * 7, 48, 7, 16, i * 7 - 4, 3)
     end
     palt()
     font_outline(1)
@@ -194,7 +194,7 @@ function mode.test.update()
     --game.score += flr(rnd(80))
     end
 
-    if game.player.lives <= 0 then
+    if (game.player.lives <= 0) and (game.player.shot < 0.8) then
         state = "gameover"
     end
 end
@@ -323,14 +323,16 @@ function update_world(w)
             end)
         end
         if b.lives < 0 then
-            game.score += 500
+            game.score += 100
             del(game.bats, b)
         end
     end)
     foreach(game.slimes, function(s)
         s.anim += 1/60
         s.shot -= 1/60
-        local visible = (abs(s.x - p.x) < 10) and (abs(s.y - p.y) < 10)
+        local distx = abs(s.x - p.x)
+        local disty = abs(s.y - p.y)
+        local visible = max(distx, disty) < 10
         if visible then
             if s.plan then
                 if s.cooldown > 3 then
@@ -367,8 +369,15 @@ function update_world(w)
             end)
         end
         if s.lives < 0 then
-            game.score += 350
+            game.score += 70
             del(game.slimes, s)
+            return
+        end
+        if max(distx, disty) < 0.5 then
+            if game.player.shot < 0 then
+                game.player.lives = max(0, game.player.lives - 1)
+                game.player.shot = 1
+            end
         end
     end)
 end
@@ -386,7 +395,7 @@ function update_bullets()
             if max(dx, dy) > 9 then
                 del(game.bullets, b)
             else
-                if max(dx, dy) < 0.5 then
+                if b.spr == g_energy and (max(dx, dy) < 0.5) then
                     if game.player.shot < 0 then
                         game.player.lives = max(0, game.player.lives - 1)
                         game.player.shot = 1
