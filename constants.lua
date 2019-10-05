@@ -12,6 +12,8 @@ g_sfx_shoot = 3
 g_initial_lives = 3
 g_max_lives = 3
 
+g_spr_sign = 16
+
 g_apple = 64
 g_banana = 65
 g_heart = 66

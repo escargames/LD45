@@ -1,4 +1,29 @@
 
+-- save the cartridge map in lua memory for future use
+g_map = {}
+for i=0,0x400 do g_map[i+1] = peek4(0x2000+i*4) end
+
+function new_map(seed, depth, nsigns)
+    -- restore saved map
+    for i=0,0x400 do poke4(0x2000+i*4,g_map[i+1]) end
+    --srand(bxor(seed, 0xa472.39f3))
+    local map = {
+        startx=17.5, starty=12.5,
+        signs={},
+        trees={},
+        water={}
+    }
+    -- parse all levels
+    for ty = 0,63 do for tx = 0,127 do
+        local spr = mget(tx,ty)
+        if spr == g_spr_sign then
+            add(signs, {x=tx+.5,y=ty+.5})
+            mset(tx,ty,g_spr_gnd)
+        end
+    end end
+    return map
+end
+
 -- parse the map
 -- FIXME: TODO
 function fix_map(map)
@@ -51,12 +76,4 @@ for ty = 1,63 do for tx = 1,127 do
     end
 end end
 ]]--
-
-function new_map(seed, depth, nsigns)
-    --srand(bxor(seed, 0xa472.39f3))
-    local map
-    map = { startx=16, starty=16, trees={}, signs={}, water={} }
-    fix_map(map)
-    return map
-end
 

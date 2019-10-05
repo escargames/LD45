@@ -5,7 +5,7 @@ __lua__
 -- by niarkou and sam
 
 #include escarlib/p8u.lua
-#include escarlib/logo.lua
+--#include escarlib/logo.lua
 #include escarlib/btn.lua
 #include escarlib/draw.lua
 --#include escarlib/print.lua
@@ -21,7 +21,6 @@ load_font(lilabit,14)
 #include constants.lua
 
 mode = {}
-#include mode_test.lua
 #include mode_menu.lua
 #include mode_play.lua
 #include mode_extra.lua
