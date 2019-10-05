@@ -8,7 +8,7 @@ function load_map()
     for i=0,0x400 do poke4(0x2000+i*4,g_map[i+1]) end
     --srand(bxor(seed, 0xa472.39f3))
     local map = {
-        startx=17.5, starty=12.5,
+        startx=17.5, starty=9.5,
         signs={},
         chests={},
         keys={},
