@@ -237,10 +237,10 @@ function update_player(p)
     -- move player
     local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 12
     local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 12
-    if not block_walk(p.x + dx, p.y, 0.6, 0.4) then
+    if not block_walk(p.x + dx, p.y, 0.6, 0.4, dx > 0 and 1 or 0) then
         p.x += dx
     end
-    if not block_walk(p.x, p.y + dy, 0.6, 0.4) then
+    if not block_walk(p.x, p.y + dy, 0.6, 0.4, dy > 0 and 3 or 2) then
         p.y += dy
     end
 
