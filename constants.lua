@@ -20,7 +20,7 @@ g_spr_key = 40
 g_spr_collapse = 52
 
 g_spr_ground = 34
-g_spr_water = 13
+g_spr_water = 39
 
 g_apple = 64
 g_banana = 65
