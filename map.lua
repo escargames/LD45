@@ -213,7 +213,7 @@ function new_map(seed, depth, nsigns)
     srand(bxor(seed, 0xa472.39f3))
     local map
     repeat
-        map = { startx=16384, starty=16384, trees={}, signs={}, water={}, nsigns=nsigns }
+        map = { startx=16, starty=16, trees={}, signs={}, water={}, nsigns=nsigns }
         -- initialise world with one tile and grow it
         append_map(map, { chunk = 1, x = map.startx - 4, y = map.starty - 5 })
         grow_map(map, 1, depth)
