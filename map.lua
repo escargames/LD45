@@ -11,19 +11,22 @@ function load_map()
         startx=17.5, starty=12.5,
         signs={},
         chests={},
-        trees={},
-        water={}
+        keys={},
+        collapses={},
     }
     -- parse all levels
     for ty = 0,63 do for tx = 0,127 do
-        local spr = mget(tx,ty)
-        if spr == g_spr_sign then
-            add(map.signs, {x=tx+.5,y=ty+.5})
-            mset(tx,ty,g_spr_ground)
-        elseif spr == g_spr_chest then
-            add(map.chests, {x=tx+.5,y=ty+.5})
-            mset(tx,ty,g_spr_ground)
+        local id = mget(tx,ty)
+        local function special(list, src, dst)
+            if id == src then
+                add(list, {x=tx+.5,y=ty+.5})
+                mset(tx,ty,dst)
+            end
         end
+        special(map.signs,  g_spr_sign,  g_spr_ground)
+        special(map.chests, g_spr_chest, g_spr_ground)
+        special(map.keys,   g_spr_key,   g_spr_ground)
+        special(map.collapses, g_spr_collapse, g_spr_water)
     end end
     return map
 end

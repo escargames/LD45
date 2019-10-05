@@ -58,21 +58,30 @@ end
 
 function draw_bg()
     map(0, 0, 0, 0, 128, 64)
-    draw_elems(true)
+    draw_ground_tiles()
+    draw_object_tiles(false)
 end
 
 function draw_fg()
-    draw_elems(false)
+    draw_object_tiles(true)
 end
 
-function draw_elems(top)
-    local function good(y) return top and y<=game.player.y or y>game.player.y end
-    foreach(game.world.map.signs, function(s)
-        if good(s.y) then spr(g_spr_sign, s.x*8-4, s.y*8-4) end
+function draw_ground_tiles()
+    foreach(game.world.map.collapses, function(c)
+        spr(g_spr_collapse, c.x*8-4, c.y*8-4)
     end)
-    foreach(game.world.map.chests, function(s)
-        if good(s.y) then spr(g_spr_chest, s.x*8-4, s.y*8-4) end
-    end)
+end
+
+function draw_object_tiles(top)
+    local function good(y) return top and y>game.player.y or y<=game.player.y end
+    local function special(list, id)
+        foreach(list, function(s)
+            if good(s.y) then spr(id, s.x*8-4, s.y*8-4) end
+        end)
+    end
+    special(game.world.map.signs, g_spr_sign)
+    special(game.world.map.chests, g_spr_chest)
+    special(game.world.map.keys, g_spr_key)
 end
 
 function draw_player(p)
@@ -174,6 +183,7 @@ end
 function mode.play.start()
     local grad = { 0, 128, 133, 5, 134, 6, 7 }
     --local grad = { 1, 131, 3, 139, 11, 138, 135 }
+    --local grad = { 2, 132, 136, 137, 9, 10, 7 }
     pal(0,1,1)
     for i=1,#grad do pal(i,grad[i],1) end
     new_game()
