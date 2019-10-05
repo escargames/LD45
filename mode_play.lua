@@ -234,6 +234,17 @@ function update_player(p)
         p.trail.off = p.trail.off % len + 1
     end
 
+    -- handle death conditions
+    if p.dead then
+        p.dead += 1/60
+        p.dir = ({0,2,1,3})[1+flr(p.dead*6)%4]
+        return
+    end
+
+    if is_drowning(p.x, p.y, 0.6, 0.4) then
+        p.dead = 0
+    end
+
     -- move player
     local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 12
     local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 12

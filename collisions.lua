@@ -12,6 +12,14 @@ function block_object(list,x,y)
     return false
 end
 
+function on_object(list,x,y)
+    for i=1,#list do
+        local o = list[i]
+        if max(abs(x-o.x),abs(y-o.y)) <= 1 then return true end
+    end
+    return false
+end
+
 function block_walk(x,y,w,h)
     local x1,x2,y1,y2 = flr(x-w/2),flr(x+w/2),flr(y-h/2),flr(y+h/2)
     if x1!=x2 then
@@ -39,6 +47,12 @@ function block_fly(x,y,w,h)
         return block_fly(x-w/2,y-h/2) or block_fly(x+w/2,y-h/2)
             or block_fly(x-w/2,y+h/2) or block_fly(x+w/2,y+h/2)
     end
+    return false
+end
+
+function is_drowning(x,y,w,h)
+    if on_object(game.world.map.collapses,x,y) then return false end
+    if has_flag(x,y,4) then return true end
     return false
 end
 
