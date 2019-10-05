@@ -63,7 +63,7 @@ function draw_bg()
 end
 
 function draw_fg()
-    draw_object_tiles(true)
+    draw_object_tiles(true) -- top layer
 end
 
 function draw_ground_tiles()
@@ -83,10 +83,10 @@ function draw_ground_tiles()
 end
 
 function draw_object_tiles(top)
-    local function good(y) return top and y>game.player.y or y<=game.player.y end
+    local function xor(b1,b2) return (not b1)!=(not b2) end
     local function special(list, id)
         foreach(list, function(s)
-            if good(s.y) then spr(id, s.x*8-4, s.y*8-4) end
+            if xor(top,s.y<=game.player.y) then spr(id, s.x*8-4, s.y*8-4) end
         end)
     end
     special(game.world.map.signs, g_spr_sign)
