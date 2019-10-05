@@ -13,6 +13,8 @@ g_initial_lives = 3
 g_max_lives = 3
 
 g_spr_sign = 16
+g_spr_chest = 32
+g_spr_ground = 34
 
 g_apple = 64
 g_banana = 65

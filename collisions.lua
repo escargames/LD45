@@ -9,7 +9,9 @@ function block_walk(x,y,w,h)
         return block_walk(x-w/2,y-h/2) or block_walk(x+w/2,y-h/2)
             or block_walk(x-w/2,y+h/2) or block_walk(x+w/2,y+h/2)
     end
-    return has_flag(x,y, 4) -- water
+    local spr = mget(x, y)
+    if fget(spr, 4) then return true end -- water
+    return false
 end
 
 function block_fly(x,y,w,h)

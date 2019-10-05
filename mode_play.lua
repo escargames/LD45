@@ -2,9 +2,7 @@ mode.play = {}
 
 function new_world()
     return {
-        map = new_map(),
-        signs = {},
-        swamps = {},
+        map = load_map(),
     }
 end
 
@@ -59,7 +57,22 @@ function new_game()
 end
 
 function draw_bg()
-    map(0, 0, 0, 0, 40, 32)
+    map(0, 0, 0, 0, 128, 64)
+    draw_elems(true)
+end
+
+function draw_fg()
+    draw_elems(false)
+end
+
+function draw_elems(top)
+    local function good(y) return top and y<=game.player.y or y>game.player.y end
+    foreach(game.world.map.signs, function(s)
+        if good(s.y) then spr(g_spr_sign, s.x*8-4, s.y*8-4) end
+    end)
+    foreach(game.world.map.chests, function(s)
+        if good(s.y) then spr(g_spr_chest, s.x*8-4, s.y*8-4) end
+    end)
 end
 
 function draw_player(p)
@@ -205,7 +218,7 @@ function update_player(p)
         p.y += dy
     end
 
-    -- choose player direction from user controls
+    -- choose player orientation from user controls
     for i = 0,3 do
         if cbtnp(i) then
             add(p.movements, i)
@@ -412,6 +425,7 @@ function mode.play.draw()
     draw_slimes()
     draw_bullets()
     palt() palt(0,false) palt(5,true)
+    draw_fg()
     draw_bats()
     camera()
 

@@ -3,13 +3,14 @@
 g_map = {}
 for i=0,0x400 do g_map[i+1] = peek4(0x2000+i*4) end
 
-function new_map(seed, depth, nsigns)
+function load_map()
     -- restore saved map
     for i=0,0x400 do poke4(0x2000+i*4,g_map[i+1]) end
     --srand(bxor(seed, 0xa472.39f3))
     local map = {
         startx=17.5, starty=12.5,
         signs={},
+        chests={},
         trees={},
         water={}
     }
@@ -17,16 +18,14 @@ function new_map(seed, depth, nsigns)
     for ty = 0,63 do for tx = 0,127 do
         local spr = mget(tx,ty)
         if spr == g_spr_sign then
-            add(signs, {x=tx+.5,y=ty+.5})
-            mset(tx,ty,g_spr_gnd)
+            add(map.signs, {x=tx+.5,y=ty+.5})
+            mset(tx,ty,g_spr_ground)
+        elseif spr == g_spr_chest then
+            add(map.chests, {x=tx+.5,y=ty+.5})
+            mset(tx,ty,g_spr_ground)
         end
     end end
     return map
-end
-
--- parse the map
--- FIXME: TODO
-function fix_map(map)
 end
 
 function void(x, y)
