@@ -29,7 +29,7 @@ function mode.menu.update()
     if pos == 1 and btnp(4) and main then
         main = false
     elseif main == false and btnp(4) and pos == 1 then
-        state = "test"
+        state = "play"
     elseif main == false and btnp(5) then
         pos = 1
         main = true

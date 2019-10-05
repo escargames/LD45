@@ -85,8 +85,8 @@ end
 function mode.story.update()
     animation += 1/60
     if (animation > 2) and cbtnp(g_btn_confirm) then
-        prev_state = "test"
-        state = "test"
+        prev_state = "play"
+        state = "play"
     end
 end
 
