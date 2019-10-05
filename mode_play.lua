@@ -121,6 +121,8 @@ function draw_bats()
 end
 
 function draw_ui()
+    font_outline(1)
+--[[
     for i = 1,game.player.maxlives do
         if i > game.player.lives then
             palt(2,true) palt(7,true) palt(8,true) palt(14,true)
@@ -128,7 +130,6 @@ function draw_ui()
         sspr(7 - i % 2 * 7, 48, 7, 16, i * 7 - 4, 3)
     end
     palt()
-    font_outline(1)
     palt(0,false) palt(5,true)
     spr(g_coin + flr(t()*2%2), 6, 114)
     spr(g_heart, 23, 114)
@@ -136,6 +137,7 @@ function draw_ui()
     palt()
     print(game.money, 15, 114, 7)
     print(game.player.maxlives / 2, 32, 114, 7)
+]]--
     local score = tostr(game.score)
     while #score < 6 do score = "0"..score end
     print(score, 90, 114, 7)
@@ -170,6 +172,7 @@ function draw_debug()
 end
 
 function mode.play.start()
+    pal(0,1,1)pal(1,0,1)pal(2,128,1)pal(3,133,1)pal(4,5,1)pal(5,134,1)
     new_game()
 end
 
@@ -410,21 +413,18 @@ end
 
 function update_map()
     -- sparkle water
-    for i=1,40 do sset(crnd(104,120),crnd(0,16),12) end
-    for i=1,4 do sset(crnd(104,120),crnd(0,16),ccrnd({5,6,6,7,7,7})) end
+    --for i=1,40 do sset(crnd(104,120),crnd(0,16),2) end
+    --for i=1,4 do sset(crnd(104,120),crnd(0,16),ccrnd({4,3,3,2,2,2})) end
 end
 
 function mode.play.draw()
     cls(0)
 
     camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
-    palt(0,false) palt(15,true)
     draw_bg()
-    palt() palt(0,false) palt(5,true)
     draw_player(game.player)
     draw_slimes()
     draw_bullets()
-    palt() palt(0,false) palt(5,true)
     draw_fg()
     draw_bats()
     camera()
