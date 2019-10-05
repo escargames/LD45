@@ -68,7 +68,17 @@ end
 
 function draw_ground_tiles()
     foreach(game.world.map.collapses, function(c)
-        spr(g_spr_collapse, c.x*8-4, c.y*8-4)
+        local x, y = c.x*8, c.y*8
+        if c.t2 then
+            x += rnd(c.t2)-rnd(c.t2)
+            y += rnd(c.t2)-rnd(c.t2)
+        end
+        spr(g_spr_collapse, x-4, y-4)
+        if c.t1 then
+            for n=1,8*c.t1 do
+                pset(x+rnd(n)-rnd(n),y+rnd(n)-rnd(n),crnd(4,7))
+            end
+        end
     end)
 end
 
@@ -157,13 +167,14 @@ cpu_hist = {}
 function draw_debug()
     font_outline(1)
     pico8_print(stat(7).." fps", 89, 20, 8)
+    pico8_print("x="..game.player.x, 2, 2, 0)
+    pico8_print("y="..game.player.y, 2, 10, 0)
 --[[
-    --pico8_print("x="..game.player.x, 2, 2, 7)
-    --pico8_print("y="..game.player.y, 2, 11, 7)
     pico8_print("bullets="..#game.bullets, 2, 42, 10)
     pico8_print("tiles="..#game.world.map, 2, 48, 10)
     pico8_print("bats="..#game.bats, 2, 54, 10)
     pico8_print("slimes="..#game.slimes, 2, 60, 10)
+]]--
     local cpu = 100*stat(1)
     local max_cpu = cpu
     add(cpu_hist, cpu)
@@ -176,7 +187,6 @@ function draw_debug()
     end
     pico8_print("cpu="..ceil(cpu), 89, 2, 14)
     pico8_print("max="..ceil(max_cpu), 89, 11, 8)
-]]--
     font_outline()
 end
 
@@ -302,6 +312,24 @@ function update_world(w)
         end
     end
 ]]
+    -- tick collapsibles
+    local tx, ty = flr(p.x)+.5, flr(p.y)+.5
+    foreach(game.world.map.collapses, function(c)
+        if c.t2 then
+            c.t2 += 1/32
+            if c.t2 >= 1 then
+                del(game.world.map.collapses, c)
+            end
+        elseif c.t1 then
+            c.t1 += 1/64
+            if c.t1 >= 1 then
+                c.t2 = 0
+                sfx(g_sfx_collapse)
+            end
+        elseif c.x==tx and c.y==ty then
+            c.t1 = 0
+        end
+    end)
     -- tick monsters
     foreach(game.bats, function(b)
         b.anim += 1/60

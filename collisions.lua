@@ -10,7 +10,7 @@ function block_walk(x,y,w,h)
             or block_walk(x-w/2,y+h/2) or block_walk(x+w/2,y+h/2)
     end
     local spr = mget(x, y)
-    if fget(spr, 4) then return true end -- water
+    --if fget(spr, 4) then return true end -- water
     return false
 end
 
