@@ -1,10 +1,8 @@
 mode.play = {}
 
-function new_world(seed)
-    local depth = 10
-    local nsigns = 8
+function new_world()
     return {
-        map = new_map(seed, depth, nsigns),
+        map = new_map(),
         signs = {},
         swamps = {},
     }
@@ -44,9 +42,9 @@ function new_player(x, y)
     return e
 end
 
-function new_game(seed)
+function new_game()
     game = {}
-    game.world = new_world(seed)
+    game.world = new_world()
     -- spawn player on tile #1
     game.player = new_player(game.world.map.startx, game.world.map.starty)
     game.bullets = {}
@@ -159,7 +157,7 @@ function draw_debug()
 end
 
 function mode.play.start()
-    new_game(seed)
+    new_game()
 end
 
 function mode.play.update()
@@ -418,6 +416,6 @@ function mode.play.draw()
     camera()
 
     draw_ui()
-    --draw_debug()
+    draw_debug()
 end
 

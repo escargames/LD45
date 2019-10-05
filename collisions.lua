@@ -1,5 +1,5 @@
 
-function bg_flag(x,y,flag)
+function has_flag(x,y,flag)
     local bg = mget(x, y)
     return fget(bg, flag)
 end
@@ -9,7 +9,7 @@ function block_walk(x,y,w,h)
         return block_walk(x-w/2,y-h/2) or block_walk(x+w/2,y-h/2)
             or block_walk(x-w/2,y+h/2) or block_walk(x+w/2,y+h/2)
     end
-    return bg_flag(x,y, 4) -- water
+    return has_flag(x,y, 4) -- water
 end
 
 function block_fly(x,y,w,h)
