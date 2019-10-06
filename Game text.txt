@@ -1,17 +1,32 @@
 Beginning:
 "?"
 
-Granma on the beach: "Hey there! What a storm huh? My two grand-daughters are so light and tiny they were lifted by the wind!
-If by any chance you find them on your way, would you be kind enough to send them back to me? I have been worrying like hell.
+Grandma on the beach: "Hey there! What a storm huh? My two grand-daughters are so light and tiny they were lifted by the wind!
+If by any chance you find them on your way, would you be kind enough to send them back to me? I have been worrying like hell."
 
 Heart: "You are right, I should take care of myself and try not to worry too much. Thank you, it helps to know that I am not alone."
-Interrogation point: "
+Interrogation point: "Yes it was a very strong wind! And they love storms so much, they couldn't resist going out."
 Excalamation point: "They sure are ressourcefull little girls! I would not be surprised if they found their way home by themselves!"
 
 Person near house: "Good morning! Did the storm do any damage to your lovely home? I just can't believe my beloved plants are still intact!
-I heard the storm destroyed a house near the lake, I am going there to help rebuilding it! Can you water my plants while I am gone?
+I heard the storm destroyed a house near the lake, I am going there to help rebuilding it! Can you water my plants while I am gone?"
 
 Heart: "Thank you so much! My plants mean so much to me. Taking care of them and watching them grow is my biggest joy in the world."
 Interrogation point: "Don't worry, I am sure you will find it very easy and relaxing! You will do great."
 Exclamation point: "Aww, I didn't know you loved gardening too! We should get together sometimes when I come back, I would love to hear
 about your plants."
+* Received a watering can *
+
+Little girl 1: "Well, that was a fun adventure! For a minute, I was a bird! 
+My grandma says storms are a lot more common now than in the past. 
+Sometimes, it makes me so sad and discouraged to see the world falling appart."
+
+Heart: 
+Interrogation point:
+Exclamation point:
+
+Little girl 2:
+
+Cat:
+
+Raccon:
