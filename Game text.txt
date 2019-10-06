@@ -28,7 +28,8 @@ Interrogation point: "My friends and I have so much ideas on how to improve thin
 We are already taking part in some peaceful actions to change things, you should come by sometimes."
 Exclamation point: "That's inspiring! I agree, collective action can feel very empowering."
 
-Little girl 2: "You, here? What a nice surprise! Come sit next to me.
+Little girl 2: "You, here? What a nice surprise! Come sit next to me. I promise this time I will not bore you with science facts.
+...
 ...
 So, I have been reading about storms lately: did you know that the temperature of lightning is around 20000°C?"
 
