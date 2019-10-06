@@ -17,6 +17,13 @@ function new_entity(x, y, dir)
     }
 end
 
+function new_living(x, y, dir, id, name)
+    local e = new_entity(x, y, dir)
+    e.id = id
+    e.name = name
+    return e
+end
+
 function new_bat(x, y)
     local e = new_entity(x, y, 0)
     e.lives = 2
@@ -60,11 +67,11 @@ end
 function draw_bg()
     map(0, 0, 0, 0, 128, 64)
     draw_ground_tiles()
-    draw_object_tiles(false)
+    draw_other_tiles(false)
 end
 
 function draw_fg()
-    draw_object_tiles(true) -- top layer
+    draw_other_tiles(true) -- top layer
 end
 
 function draw_ground_tiles()
@@ -83,11 +90,41 @@ function draw_ground_tiles()
     end)
 end
 
-function draw_object_tiles(top)
+function draw_other_tiles(top)
     local function xor(b1,b2) return (not b1)!=(not b2) end
     foreach(game.specials, function(s)
-        if xor(top,s.y<=game.player.y) then spr(s.id, s.x*8+s.xoff, s.y*8+s.yoff) end
+        if xor(top,s.y<=game.player.y) then
+            if s.id == g_id_person then
+                draw_person(s)
+            elseif s.id == g_id_cat then
+                draw_cat(s)
+            elseif s.id == g_id_raccoon then
+                draw_raccoon(s)
+            else
+                spr(s.id, s.x*8+s.xoff, s.y*8+s.yoff)
+            end
+        end
     end)
+end
+
+function draw_person(p)
+    --spr(g_shadow, p.x * 8 - 4, p.y * 8 - 5)
+    --if p.shot > 0 and rnd() > 0.5 then
+    --    for i = 0,15 do pal(i,7) end
+    --end
+    spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), p.x * 8 - 4, p.y * 8 - 6)
+    spr(66 + max(1, p.dir), p.x * 8 - 4, p.y * 8 - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
+    --for i = 0,15 do pal(i,i) end
+end
+
+function draw_cat(o)
+    spr(70 + flr(t() * 3 % 2), o.x * 8 - 4, o.y * 8 - 6, 1, 1, o.dir == 0)
+    spr(72, o.x * 8 - (o.dir == 0 and 6 or 2), o.y * 8 - 7 - flr(t() * 2.5 % 2), 1, 1, o.dir == 0)
+end
+
+function draw_raccoon(o)
+    spr(73 + flr(t() * 3 % 2), o.x * 8 - 4, o.y * 8 - 6, 1, 1, o.dir == 0)
+    spr(75, o.x * 8 - (o.dir == 0 and 6 or 2), o.y * 8 - 7 - flr(t() * 2.5 % 2), 1, 1, o.dir == 0)
 end
 
 function draw_player(p)
@@ -100,13 +137,7 @@ function draw_player(p)
         end
     end
     -- player
-    --spr(g_shadow, p.x * 8 - 4, p.y * 8 - 5)
-    if p.shot > 0 and rnd() > 0.5 then
-        for i = 0,15 do pal(i,7) end
-    end
-    spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), p.x * 8 - 4, p.y * 8 - 6)
-    spr(66 + max(1, p.dir), p.x * 8 - 4, p.y * 8 - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
-    for i = 0,15 do pal(i,i) end
+    draw_person(p)
 end
 
 function draw_bullets()

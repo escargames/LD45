@@ -5,10 +5,11 @@ function has_flag(x,y,flag)
 end
 
 function block_object(list,x,y)
-    -- check for collisions with any special objects that has flag 7
+    -- check for collisions with any living being or special object that has flag 7
     for i=1,#list do
         local o = list[i]
-        if fget(o.id,7) and max(abs(x-o.x),abs(y-o.y)) <= .5 then return true end
+        local ok = o.id<0 or fget(o.id,7)
+        if ok and max(abs(x-o.x),abs(y-o.y)) <= .5 then return true end
     end
     return false
 end

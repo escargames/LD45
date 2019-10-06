@@ -19,6 +19,10 @@ g_spr_chest = 32
 g_spr_key = 40
 g_spr_collapse = 52
 
+g_id_person = -1
+g_id_cat = -2
+g_id_raccoon = -3
+
 g_spr_ground = 34
 g_spr_water = 39
 g_spr_waterfall = 55

@@ -1,7 +1,7 @@
 
 function new_quest()
     return {
-        start = { x=12.5, y=8.5 },
+        start = { x=11.5, y=6.5 },
         -- a chest
         chests = {
             { x=18, y=09, item="boots",
@@ -20,18 +20,26 @@ function new_quest()
             { x=17, y=5, text="Wootwoot" },
             { x=19, y=5, text="Hello again" },
         },
+        living = {
+            { x=12, y=9, id=g_id_cat, dir=1, name="Botox" },
+            { x=14, y=7, id=g_id_raccoon, dir=0, name="Lulu" },
+            { x=14, y=3, id=g_id_person, name="Yoyo" },
+        },
     }
 end
 
 function init_quest(q)
-    foreach(q.chests, function(s)
-        add(game.specials, { x=s.x+.5, y=s.y+.5, id=g_spr_chest, xoff=-4, yoff=-4 })
+    foreach(q.chests, function(o)
+        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_chest, xoff=-4, yoff=-4 })
     end)
-    foreach(q.keys, function(s)
-        add(game.specials, { x=s.x+.5, y=s.y+.5, id=g_spr_key, xoff=-4, yoff=-4 })
+    foreach(q.keys, function(o)
+        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_key, xoff=-4, yoff=-4 })
     end)
-    foreach(q.signs, function(s)
-        add(game.specials, { x=s.x+.5, y=s.y+.5, id=g_spr_sign, xoff=-4, yoff=-6 })
+    foreach(q.signs, function(o)
+        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_sign, xoff=-4, yoff=-6 })
+    end)
+    foreach(q.living, function(o)
+        add(game.specials, new_living(o.x, o.y, o.dir or 3, o.id, o.name))
     end)
 end
 
