@@ -6,7 +6,7 @@ If by any chance you find them on your way, would you be kind enough to send the
 
 Heart: "You are right, I should take care of myself and try not to worry too much. Thank you, it helps to know that I am not alone."
 Interrogation point: "Yes it was a very strong wind! And they love storms so much, they couldn't resist going out."
-Excalamation point: "They sure are ressourcefull little girls! I would not be surprised if they found their way home by themselves!"
+Excalamation point: "They sure are ressourceful little girls! I would not be surprised if they found their way home by themselves!"
 
 Person near house: "Good morning! Did the storm do any damage to your lovely home? I just can't believe my beloved plants are still intact!
 I heard the storm destroyed a house near the lake, I am going there to help rebuilding it! Can you water my plants while I am gone?"
@@ -19,11 +19,14 @@ about your plants."
 
 Little girl 1: "Well, that was a fun adventure! For a minute, I was a bird! 
 My grandma says storms are a lot more common now than in the past. 
-Sometimes, it makes me so sad and discouraged to see the world falling appart."
+...
+Sometimes it makes me so sad and scared to see the world falling appart."
 
-Heart: 
-Interrogation point:
-Exclamation point:
+Heart: "You are so sweet. I could really use someone to talk to, thank you so much. 
+I promise I will not stay alone and come to you whenever I feel anxious."
+Interrogation point: "My friends and I have so much ideas on how to improve things!
+We are already taking part in some peaceful actions to change things, you should come by sometimes."
+Exclamation point: "That's inspiring! I agree, collective action can feel very empowering."
 
 Little girl 2:
 
