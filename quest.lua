@@ -23,7 +23,7 @@ function new_quest()
             { x=23, y=5, text="Can a kangaroo jump higher than a cliff?⬇️...⬇️Of course, cliffs can't jump!" },
             { x=25, y=5, text="To the person who invented zero: thanks for nothing." },
             { x=27, y=5, text="I find potatoes jokes very appeeling." },
-            { x=27, y=5, text="What do you call a man with a rubber toe?⬇️...⬇️Roberto." },
+            { x=29, y=5, text="What do you call a man with a rubber toe?⬇️...⬇️Roberto." },
         },
         living = {
             { x=12, y=9, id=g_id_cat, dir=1, name="Botox" },
