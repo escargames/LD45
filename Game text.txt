@@ -11,11 +11,13 @@ Excalamation point: "They sure are ressourceful little girls! I would not be sur
 Person near house: "Good morning! Did the storm do any damage to your lovely home? I just can't believe my beloved plants are still intact!
 I heard the storm destroyed a house near the lake, I am going there to help rebuilding it! Can you water my plants while I am gone?"
 
-Heart: "Thank you so much! My plants mean so much to me. Taking care of them and watching them grow is my biggest joy in the world."
+Heart: "Thank you my dear friend! My plants mean so much to me. Taking care of them and watching them grow is my biggest joy in the world."
 Interrogation point: "Don't worry, I am sure you will find it very easy and relaxing! You will do great."
 Exclamation point: "Aww, I didn't know you loved gardening too! We should get together sometimes when I come back, I would love to hear
 about your plants."
 * Received a watering can *
+* At second encounter if plants were taken care of *
+"My plants are so beautiful because of you! I hope you enjoyed taking care of them."
 
 Little girl 1: "Well, that was a fun adventure! For a minute, I was a bird! 
 My grandma says storms are a lot more common now than in the past. 
@@ -45,5 +47,5 @@ Riddle giver: "Well be with you, gentleman! Let me narrate a riddle for thee:
 "Is this a raccoon that I see before me, the muzzle toward my hand? Come, let me clutch thee.
 I have thee not, and yet I see thee thrice."
 
-* Après avoir fini l'énigme"
-"O, brave! intelligent party to the advantages of the very all of all. This told, I joy."
+* After finishing the riddle *
+"O, brave! Intelligent party to the advantages of the very all of all. This told, I joy."
