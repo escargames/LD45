@@ -191,11 +191,14 @@ function draw_debug()
 end
 
 function mode.play.start()
-    local grad = { 0, 128, 133, 5, 134, 6, 7 }
-    --local grad = { 1, 131, 3, 139, 11, 138, 135 }
-    --local grad = { 2, 132, 136, 137, 9, 10, 7 }
-    pal(0,1,1)
-    for i=1,#grad do pal(i,grad[i],1) end
+    local p = {
+        1,
+        0, 128, 133, 5, 134, 6, 7,
+        --1, 131, 3, 139, 11, 138, 135,
+        --2, 132, 136, 137, 9, 10, 7,
+        8, 137, 9, 10,
+        140, 12, 139, 138,
+    } for i=1,#p do pal(i-1,p[i],1) end
     new_game()
 end
 
