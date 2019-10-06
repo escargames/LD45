@@ -43,7 +43,7 @@ function init_game()
     game.msg = {}
     game.tick = 0 -- reference for all animations
     -- deprecated
-    game.bullets = {}
+    game.balls = {}
     game.score = 0
     game.cats = 0
     game.explosions = {}
@@ -125,8 +125,8 @@ function draw_player(p)
     draw_person(p)
 end
 
-function draw_bullets()
-    foreach(game.bullets, function(b)
+function draw_balls()
+    foreach(game.balls, function(b)
         spr(b.spr, b.x * 8 - 4, b.y * 8 - 4)
     end)
 end
@@ -178,8 +178,8 @@ function mode.play.update()
     if game.msg.text then
         messages.update()
     else
-        -- otherwise updat ethe logic
-        update_bullets()
+        -- otherwise update the logic
+        update_balls()
         update_world(game.world)
         update_player(game.player)
     end
@@ -189,6 +189,11 @@ function mode.play.update()
     --    game.cats += 1
     --game.score += flr(rnd(80))
     end
+end
+
+-- convert dx,dy to a direction (0,1,2,3)
+function atan3(dx,dy)
+    return ({1,2,0,3,1})[flr(4*atan2(dx,dy)+1.5)]
 end
 
 function update_player(p)
@@ -240,27 +245,45 @@ function update_player(p)
 
     p.shot -= 1/60
 
-    -- handle shoots
+    -- handle action button
     if cbtnp(4) then
-        local bx = p.x
-        local by = p.y - 0.25
-        local vx = ((p.dir == 0) and -1 or ((p.dir == 1) and 1 or 0)) / 4
-        local vy = ((p.dir == 2) and -1 or ((p.dir == 3) and 1 or 0)) / 4
-        local dx, dy = vy, -vx
-
-        sfx(g_sfx_shoot)
-        if p.weapon == 1 or p.weapon == 3 then
-            add(game.bullets, {spr = g_apple, x = bx, y = by, vx = vx, vy = vy})
-        end
-        if p.weapon == 2 or p.weapon == 3 then
-            add(game.bullets, {spr = g_apple, x = bx, y = by, vx = 0.8 * vx + 0.2 * dx, vy = 0.8 * vy + 0.2 * dy})
-            add(game.bullets, {spr = g_apple, x = bx, y = by, vx = 0.8 * vx - 0.2 * dx, vy = 0.8 * vy - 0.2 * dy})
-        end
-        for i = 1,game.cats do
-            local item = p.trail[(p.trail.off - 2 - i * 10) % #p.trail + 1]
-            if item then
-                add(game.bullets, {spr = g_banana, x = item.x + crnd(-0.4,0.4), y = item.y + crnd(-0.4,0.4), vx = vx, vy = vy})
+        -- look for a special object
+        local s
+        foreach(game.specials, function(o)
+            -- check that the player is facing the object
+            if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
+        end)
+        if s then
+            if s.id==g_spr_sign and p.dir==3 then
+                game.msg.text = "The text is on the other side\nof the sign!"
+            else
+                game.msg.text = s.data.text
             end
+        else
+            shoot(p)
+        end
+    end
+end
+
+function shoot(p)
+    local bx = p.x
+    local by = p.y - 0.25
+    local vx = ((p.dir == 0) and -1 or ((p.dir == 1) and 1 or 0)) / 4
+    local vy = ((p.dir == 2) and -1 or ((p.dir == 3) and 1 or 0)) / 4
+    local dx, dy = vy, -vx
+
+    sfx(g_sfx_shoot)
+    if p.weapon == 1 or p.weapon == 3 then
+        add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = vx, vy = vy})
+    end
+    if p.weapon == 2 or p.weapon == 3 then
+        add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = 0.8 * vx + 0.2 * dx, vy = 0.8 * vy + 0.2 * dy})
+        add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = 0.8 * vx - 0.2 * dx, vy = 0.8 * vy - 0.2 * dy})
+    end
+    for i = 1,game.cats do
+        local item = p.trail[(p.trail.off - 2 - i * 10) % #p.trail + 1]
+        if item then
+            add(game.balls, {spr = g_banana, x = item.x + crnd(-0.4,0.4), y = item.y + crnd(-0.4,0.4), vx = vx, vy = vy})
         end
     end
 end
@@ -289,28 +312,32 @@ function update_world(w)
     end)
     -- tick specials
     foreach(game.specials, function(o)
+        -- compute distance to player
+        o.dx = p.x-o.x
+        o.dy = p.y-o.y
+        o.d = max(abs(o.dx),abs(o.dy))
     end)
 end
 
-function update_bullets()
-    foreach(game.bullets, function(b)
+function update_balls()
+    foreach(game.balls, function(b)
         b.x += b.vx
         b.y += b.vy
 
         if block_fly(b.x, b.y) then
-            del(game.bullets, b)
+            del(game.balls, b)
         else
             local dx = abs(b.x - game.player.x)
             local dy = abs(b.y - game.player.y)
             if max(dx, dy) > 9 then
-                del(game.bullets, b)
+                del(game.balls, b)
             else
                 if b.spr == g_energy and (max(dx, dy) < 0.5) then
                     if game.player.shot < 0 then
                         game.player.lives = max(0, game.player.lives - 1)
                         game.player.shot = 1
                     end
-                    del(game.bullets, b)
+                    del(game.balls, b)
                 end
             end
         end
@@ -352,7 +379,7 @@ function mode.play.draw()
     camera(cam_x, cam_y)
     draw_bg()
     draw_player(game.player)
-    draw_bullets()
+    draw_balls()
     draw_fg()
     camera()
     draw_ui()
