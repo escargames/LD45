@@ -24,19 +24,6 @@ function new_living(x, y, dir, id, name)
     return e
 end
 
-function new_bat(x, y)
-    local e = new_entity(x, y, 0)
-    e.lives = 2
-    return e
-end
-
-function new_slime(x, y, spr)
-    local e = new_entity(x, y, 0)
-    e.spr = spr
-    e.lives = 5
-    return e
-end
-
 function new_player(x, y)
     local e = new_entity(x, y, 1)
     e.movements = {}
@@ -57,8 +44,6 @@ function init_game()
     game.tick = 0 -- reference for all animations
     -- deprecated
     game.bullets = {}
-    game.bats = {}
-    game.slimes = {}
     game.score = 0
     game.cats = 0
     game.explosions = {}
@@ -146,26 +131,6 @@ function draw_bullets()
     end)
 end
 
-function draw_slimes()
-    foreach(game.slimes, function(s)
-        if s.shot > 0 and rnd() > 0.5 then
-            for i = 0,15 do pal(i,7) end
-        end
-        spr(s.spr + flr(s.anim * 2 % 2), s.x * 8 - 4, s.y * 8 - 4)
-        for i = 0,15 do pal(i,i) end
-    end)
-end
-
-function draw_bats()
-    foreach(game.bats, function(b)
-        if b.shot > 0 and rnd() > 0.5 then
-            for i = 0,15 do pal(i,7) end
-        end
-        spr(g_bat + (b.dir < 2 and 0 or 2) + flr(b.anim * 3 % 2), b.x * 8 - 4, b.y * 8 - 4, 1, 1, b.dir == 0)
-        for i = 0,15 do pal(i,i) end
-    end)
-end
-
 function draw_ui()
     font_outline(1)
 --[[
@@ -187,33 +152,6 @@ function draw_ui()
     while #score < 6 do score = "0"..score end
     print(score, 90, 2, 7)
 ]]--
-    font_outline()
-end
-
-cpu_hist = {}
-function draw_debug()
-    font_outline(1)
-    print(stat(7).." fps", 89, 26, 8)
-    print("x="..game.player.x, 2, 2, 11)
-    print("y="..game.player.y, 2, 10, 11)
---[[
-    pico8_print("bullets="..#game.bullets, 2, 42, 10)
-    pico8_print("tiles="..#game.world.map, 2, 48, 10)
-    pico8_print("bats="..#game.bats, 2, 54, 10)
-    pico8_print("slimes="..#game.slimes, 2, 60, 10)
-]]--
-    local cpu = 100*stat(1)
-    local max_cpu = cpu
-    add(cpu_hist, cpu)
-    if #cpu_hist > 50 then
-        for i=1,50 do
-            cpu_hist[i] = cpu_hist[i+1]
-            max_cpu = max(max_cpu, cpu_hist[i])
-        end
-        cpu_hist[51] = nil
-    end
-    print("cpu="..ceil(cpu), 89, 12, 14)
-    print("max="..ceil(max_cpu), 89, 19, 8)
     font_outline()
 end
 
@@ -330,29 +268,7 @@ end
 function update_world(w)
     local p = game.player
     -- spawn stuff if necessary
---[[
-    for i=1,w.map.nsigns do
-        local sign = w.map.signs[i]
-        local visible = (abs(sign.x - p.x) < 16) and (abs(sign.y - p.y) < 16)
-        if visible and not w.signs[i] then
-            for i = 1,5 do
-                add(game.bats, new_bat(sign.x + 3 * sin(i / 5), sign.y + 3 * cos(i / 5)))
-            end
-            w.signs[i] = {} -- spawned
-        end
-    end
-    for i=1,#w.map.water do
-        local water = w.map.water[i]
-        local visible = (abs(water.x - p.x) < 16) and (abs(water.y - p.y) < 16)
-        if visible and not w.swamps[i] then
-            local color = g_slime + 2 * flr(rnd(3))
-            for i = 1,6 do
-                add(game.slimes, new_slime(water.x + crnd(-5,5), water.y + crnd(-5,5), color))
-            end
-            w.swamps[i] = {} -- spawned
-        end
-    end
-]]
+    do end
     -- tick collapsibles
     local tx, ty = flr(p.x)+.5, flr(p.y)+.5
     foreach(game.world.map.collapses, function(c)
@@ -371,98 +287,8 @@ function update_world(w)
             c.t1 = 0
         end
     end)
-    -- tick monsters
-    foreach(game.bats, function(b)
-        b.anim += 1/60
-        b.shot -= 1/60
-        local visible = (abs(b.x - p.x) < 10) and (abs(b.y - p.y) < 10)
-        if visible then
-            -- find a point near the player
-            local dx = p.x - b.x
-            local dy = p.y - b.y
-            local n = sqrt(dx*dx+dy*dy)
-            b.cooldown -= 1/60
-            if b.cooldown < 0 then
-                add(game.bullets, {spr = g_energy, x = b.x, y = b.y, vx = dx / n / 8, vy = dy / n / 8})
-                b.cooldown = crnd(1,4)
-                b.dir = 1 - b.dir
-            end
-            if (b.dir == 0) n = -n
-            local ex = dy / n * 8
-            local ey = -dx / n * 8
-            -- new destination
-            dx -= ex
-            dy -= ey
-            n = sqrt(dx*dx+dy*dy)
-            b.x += dx / n / 16
-            b.y += dy / n / 16
-            -- shot by a bullet?
-            foreach(game.bullets, function(bul)
-                if bul.spr != g_energy and
-                    max(abs(bul.x-b.x),abs(bul.y-b.y)) < 0.5 then
-                     b.lives -= 1
-                     b.shot = 1
-                     del(game.bullets, bul)
-                end
-            end)
-        end
-        if b.lives <= 0 then
-            game.score += 100
-            del(game.bats, b)
-        end
-    end)
-    foreach(game.slimes, function(s)
-        s.anim += 1/60
-        s.shot -= 1/60
-        local distx = abs(s.x - p.x)
-        local disty = abs(s.y - p.y)
-        local visible = max(distx, disty) < 10
-        if visible then
-            if s.plan then
-                if s.cooldown > 3 then
-                elseif s.cooldown > 2 then
-                    s.x += crnd(-.05,.05)
-                else
-                    s.x -= 0.3 * (s.x - s.plan.x)
-                    s.y -= 0.3 * (s.y - s.plan.y)
-                end
-            else
-                -- find a point near the player
-                local dx = p.x - s.x
-                local dy = p.y - s.y
-                local n = sqrt(dx*dx+dy*dy)
-                local ex = s.x + dx / n * 2 + crnd(-2,2)
-                local ey = s.y + dy / n * 2 + crnd(-2,2)
-                if not block_fly(ex, ey, 0.6, 0.4) then
-                    s.plan = {x=ex,y=ey}
-                    s.cooldown = crnd(4,6)
-                end
-            end
-            s.cooldown -= 1/60
-            if s.cooldown < 0 then
-                s.plan = nil
-            end
-            -- shot by a bullet?
-            foreach(game.bullets, function(bul)
-                if bul.spr != g_energy and
-                    max(abs(bul.x-s.x),abs(bul.y-s.y)) < 0.5 then
-                     s.lives -= 1
-                     s.shot = 1
-                     del(game.bullets, bul)
-                end
-            end)
-        end
-        if s.lives <= 0 then
-            game.score += 70
-            del(game.slimes, s)
-            return
-        end
-        if max(distx, disty) < 0.5 then
-            if game.player.shot < 0 then
-                game.player.lives = max(0, game.player.lives - 1)
-                game.player.shot = 1
-            end
-        end
+    -- tick specials
+    foreach(game.specials, function(o)
     end)
 end
 
@@ -526,17 +352,13 @@ function mode.play.draw()
     camera(cam_x, cam_y)
     draw_bg()
     draw_player(game.player)
-    draw_slimes()
     draw_bullets()
     draw_fg()
-    draw_bats()
     camera()
     draw_ui()
 
     if game.msg.text then
         messages.draw()
     end
-
-    draw_debug()
 end
 
