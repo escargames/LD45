@@ -42,12 +42,12 @@ function messages.draw()
     if game.msg.display then
         clip(m + 2, 127 - h - m + 2, 127 - 2 * m - 4, h - 4)
         local i = game.msg.display
-        print(sub(game.msg.text,1,i)..game.msg.cursor, m + 4, 127 - h - m + 4, 2)
+        print(sub(game.msg.text,1,i)..game.msg.cursor, m + 4, 127 - h - m + 4)
         clip()
     end
     if game.msg.wait then
         if game.msg.wait % 1 > .4 then
-            pico8_print("🅾️", 127 - m - 10, 127 - m - 8, 2)
+            print("⬇️", 127 - m - 11, 127 - m - 9)
         end
     end
 end

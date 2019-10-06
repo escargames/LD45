@@ -219,7 +219,7 @@ end
 
 function mode.play.start()
     local p = {
-        1,
+        15,
         0, 128, 133, 5, 134, 6, 7,
         --1, 131, 3, 139, 11, 138, 135,
         --2, 132, 136, 137, 9, 10, 7,
@@ -247,7 +247,7 @@ function mode.play.update()
     end
 
     if cbtnp(5) then
-        game.msg.text = "Hey there! What a storm,\nhuh? My two granddaughters\nare so light and tiny they\nwere lifted by the wind!"
+        game.msg.text = "♥Hey there! What a storm,\nhuh? My granddaughters\nare so light and tiny they\nwere lifted by the wind!"
     --    game.cats += 1
     --game.score += flr(rnd(80))
     end
