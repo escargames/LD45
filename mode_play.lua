@@ -40,18 +40,19 @@ function new_player(x, y)
     return e
 end
 
-function new_game()
+function init_game()
     game = {}
     game.world = new_world()
-    game.anim = 0 -- reference for all animations
-    -- spawn player on tile #1
-    game.player = new_player(game.world.map.startx, game.world.map.starty)
+    game.quest = new_quest()
+    game.player = new_player(game.quest.start.x, game.quest.start.y)
+    game.specials = {}
     game.msg = {}
+    game.tick = 0 -- reference for all animations
+    -- deprecated
     game.bullets = {}
     game.bats = {}
     game.slimes = {}
     game.score = 0
-    game.money = 0
     game.cats = 0
     game.explosions = {}
 end
@@ -84,14 +85,9 @@ end
 
 function draw_object_tiles(top)
     local function xor(b1,b2) return (not b1)!=(not b2) end
-    local function special(list, id, xoff, yoff)
-        foreach(list, function(s)
-            if xor(top,s.y<=game.player.y) then spr(id, s.x*8+xoff, s.y*8+yoff) end
-        end)
-    end
-    special(game.world.map.signs, g_spr_sign, -4, -6)
-    special(game.world.map.chests, g_spr_chest, -4, -4)
-    special(game.world.map.keys, g_spr_key, -4, -4)
+    foreach(game.specials, function(s)
+        if xor(top,s.y<=game.player.y) then spr(s.id, s.x*8+s.xoff, s.y*8+s.yoff) end
+    end)
 end
 
 function draw_player(p)
@@ -154,20 +150,21 @@ function draw_ui()
     spr(g_heart, 23, 114)
     spr(g_sword, 80, 114)
     palt()
-    print(game.money, 15, 114, 7)
     print(game.player.maxlives / 2, 32, 114, 7)
-]]--
+
     local score = tostr(game.score)
     while #score < 6 do score = "0"..score end
     print(score, 90, 2, 7)
+]]--
     font_outline()
 end
 
 cpu_hist = {}
 function draw_debug()
-    pico8_print(stat(7).." fps", 89, 26, 8)
-    pico8_print("x="..game.player.x, 2, 2, 0)
-    pico8_print("y="..game.player.y, 2, 10, 0)
+    font_outline(1)
+    print(stat(7).." fps", 89, 26, 8)
+    print("x="..game.player.x, 2, 2, 11)
+    print("y="..game.player.y, 2, 10, 11)
 --[[
     pico8_print("bullets="..#game.bullets, 2, 42, 10)
     pico8_print("tiles="..#game.world.map, 2, 48, 10)
@@ -184,8 +181,9 @@ function draw_debug()
         end
         cpu_hist[51] = nil
     end
-    pico8_print("cpu="..ceil(cpu), 89, 12, 14)
-    pico8_print("max="..ceil(max_cpu), 89, 19, 8)
+    print("cpu="..ceil(cpu), 89, 12, 14)
+    print("max="..ceil(max_cpu), 89, 19, 8)
+    font_outline()
 end
 
 function mode.play.start()
@@ -197,33 +195,30 @@ function mode.play.start()
         8, 137, 9, 10,
         140, 12, 139, 138,
     } for i=1,#p do pal(i-1,p[i],1) end
-    new_game()
+    init_game()
+    init_quest(game.quest)
 end
 
 function mode.play.update()
 
-    game.anim += 1/60
+    -- update animations (even if paused)
+    update_anims()
+    update_quest(game.quest)
 
-    update_map()
-
-    -- if a message is displayed, do not update the world
+    -- if a message is displayed, update that part
     if game.msg.text then
         messages.update()
-        return
+    else
+        -- otherwise updat ethe logic
+        update_bullets()
+        update_world(game.world)
+        update_player(game.player)
     end
-
-    update_bullets()
-    update_world(game.world)
-    update_player(game.player)
 
     if cbtnp(5) then
-        game.msg.text = "Hey there! What a storm,\nhuh? My two granddaughters\nare so light and tiny\nthey were lifted by the wind!"
+        game.msg.text = "Hey there! What a storm,\nhuh? My two granddaughters\nare so light and tiny they\nwere lifted by the wind!"
     --    game.cats += 1
     --game.score += flr(rnd(80))
-    end
-
-    if (game.player.lives <= 0) and (game.player.shot < 0.8) then
-        state = "gameover"
     end
 end
 
@@ -275,7 +270,6 @@ function update_player(p)
     end
 
     p.shot -= 1/60
-    p.anim += 1/60
 
     -- handle shoots
     if cbtnp(4) then
@@ -466,9 +460,13 @@ function update_bullets()
     end)
 end
 
-function update_map()
+function update_anims()
+
+    game.tick += 1
+    game.player.anim += 1/60
+
     -- scroll water
-    if flr(game.anim) != flr(game.anim+1/60) then
+    if game.tick % 40 == 0 then
         for y=0,7 do
             local p=sget(56,16+y)
             for x=0,6 do sset(56+x,16+y,sget(57+x,16+y)) end
@@ -476,11 +474,13 @@ function update_map()
         end
     end
     -- scroll waterfall
-    local l=128/2
-    local p=3*8*l+56/2
-    local a,b = peek4(p+7*l),peek4(p+4+7*l)
-    for q=p+6*l,p,-l do poke4(q+l,peek4(q)) poke4(q+4+l,peek4(q+4)) end
-    poke4(p,a)poke4(p+4,b)
+    if game.tick % 3 == 0 then
+        local l=128/2
+        local p=3*8*l+56/2
+        local a,b = peek4(p+7*l),peek4(p+4+7*l)
+        for q=p+6*l,p,-l do poke4(q+l,peek4(q)) poke4(q+4+l,peek4(q+4)) end
+        poke4(p,a)poke4(p+4,b)
+    end
     --for i=rnd(12),2 do sset(crnd(56,64),crnd(16,24),ccrnd({6,6,7,7,7})) end
     --for i=1,10 do sset(crnd(56,64),crnd(16,24),13) end
 end

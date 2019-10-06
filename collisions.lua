@@ -5,9 +5,10 @@ function has_flag(x,y,flag)
 end
 
 function block_object(list,x,y)
+    -- check for collisions with any special objects that has flag 7
     for i=1,#list do
         local o = list[i]
-        if max(abs(x-o.x),abs(y-o.y)) <= .5 then return true end
+        if fget(o.id,7) and max(abs(x-o.x),abs(y-o.y)) <= .5 then return true end
     end
     return false
 end
@@ -34,8 +35,7 @@ function block_walk(x,y,w,h)
             return true
         end
     end
-    if block_object(game.world.map.signs,x,y) then return true end
-    if block_object(game.world.map.chests,x,y) then return true end
+    if block_object(game.specials,x,y) then return true end
     --if band(f,0xf)!=0 then
        -- this tile has collisions, we need to check them
     --end
