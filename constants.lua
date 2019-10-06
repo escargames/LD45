@@ -21,6 +21,7 @@ g_spr_collapse = 52
 
 g_spr_ground = 34
 g_spr_water = 39
+g_spr_waterfall = 55
 
 g_apple = 64
 g_banana = 65

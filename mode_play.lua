@@ -467,7 +467,7 @@ function update_bullets()
 end
 
 function update_map()
-    -- sparkle water
+    -- scroll water
     if flr(game.anim) != flr(game.anim+1/60) then
         for y=0,7 do
             local p=sget(56,16+y)
@@ -475,6 +475,12 @@ function update_map()
             sset(56+7,16+y,p)
         end
     end
+    -- scroll waterfall
+    local l=128/2
+    local p=3*8*l+56/2
+    local a,b = peek4(p+7*l),peek4(p+4+7*l)
+    for q=p+6*l,p,-l do poke4(q+l,peek4(q)) poke4(q+4+l,peek4(q+4)) end
+    poke4(p,a)poke4(p+4,b)
     --for i=rnd(12),2 do sset(crnd(56,64),crnd(16,24),ccrnd({6,6,7,7,7})) end
     --for i=1,10 do sset(crnd(56,64),crnd(16,24),13) end
 end
