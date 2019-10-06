@@ -34,7 +34,7 @@ Little girl 2: "You, here? What a nice surprise! Come sit next to me. I promise 
 So, I have been reading about storms lately: did you know that the temperature of lightning is around 20000°C?"
 
 Heart: "No, you are amazing! After all, it is you who gave me my very first science book a while ago."
-Interrogation point: "When I grow up, I want to become a scientist!"
+Interrogation point: "I learned it in a book my grandma found."
 Exclamation point: "Amazing, right? Science facts are so fascinating. Did you know that one day on Venus is longer than a year on Earth?"
 
 Cat: Meow!
@@ -46,4 +46,4 @@ Riddle giver: "Well be with you, gentleman! Let me narrate a riddle for thee:
 I have thee not, and yet I see thee thrice."
 
 * Après avoir fini l'énigme"
-"O, brave! intelligent party to the advantages of the very all of all. This told, I joy.
+"O, brave! intelligent party to the advantages of the very all of all. This told, I joy."
