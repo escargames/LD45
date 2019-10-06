@@ -16,15 +16,15 @@ __lua__
 --load_font(double_homicide,14)
 --load_font(lilabit,14)
 
+#include constants.lua
+#include messages.lua
 #include map.lua
 #include collisions.lua
-#include constants.lua
 #include nokia.lua
 
 mode = {}
 #include mode_menu.lua
 #include mode_play.lua
-#include mode_extra.lua
 
 function _init()
     poke(0x5f2e, 1) -- preserve palette

@@ -45,6 +45,7 @@ function new_game()
     game.world = new_world()
     -- spawn player on tile #1
     game.player = new_player(game.world.map.startx, game.world.map.starty)
+    game.msg = {}
     game.bullets = {}
     game.bats = {}
     game.slimes = {}
@@ -52,8 +53,6 @@ function new_game()
     game.money = 0
     game.cats = 0
     game.explosions = {}
-    game.kills = 0
-    game.story = 0
 end
 
 function draw_bg()
@@ -159,14 +158,14 @@ function draw_ui()
 ]]--
     local score = tostr(game.score)
     while #score < 6 do score = "0"..score end
-    print(score, 90, 114, 7)
+    print(score, 90, 2, 7)
     font_outline()
 end
 
 cpu_hist = {}
 function draw_debug()
     font_outline(1)
-    pico8_print(stat(7).." fps", 89, 20, 8)
+    pico8_print(stat(7).." fps", 89, 26, 8)
     pico8_print("x="..game.player.x, 2, 2, 0)
     pico8_print("y="..game.player.y, 2, 10, 0)
 --[[
@@ -185,8 +184,8 @@ function draw_debug()
         end
         cpu_hist[51] = nil
     end
-    pico8_print("cpu="..ceil(cpu), 89, 2, 14)
-    pico8_print("max="..ceil(max_cpu), 89, 11, 8)
+    pico8_print("cpu="..ceil(cpu), 89, 12, 14)
+    pico8_print("max="..ceil(max_cpu), 89, 19, 8)
     font_outline()
 end
 
@@ -203,12 +202,19 @@ function mode.play.start()
 end
 
 function mode.play.update()
+    -- if a message is displayed, do not update the world
+    if game.msg.text then
+        messages.update()
+        return
+    end
+
     update_bullets()
     update_map()
     update_world(game.world)
     update_player(game.player)
 
     if cbtnp(5) then
+        game.msg.text = "Hey there! What a storm\nhuh? My two grand-\ndaughters are so\nlight and tiny they\nwere lifted by the\nwind!"
     --    game.cats += 1
     --game.score += flr(rnd(80))
     end
@@ -216,27 +222,9 @@ function mode.play.update()
     if (game.player.lives <= 0) and (game.player.shot < 0.8) then
         state = "gameover"
     end
-
-    if game.story == 8 then
-        state = "gameover"
-    elseif game.kills > game.story * 6 then
-        state = "story"
-        game.cats += 1
-    end
 end
 
 function update_player(p)
-    -- record a trail behind the player
-    if band(btn(), 0xf) != 0 then
-        local t = {x=p.x, y=p.y, dir=p.dir}
-        local len = max(#p.trail, 10 * game.cats + 10)
-        while #p.trail < len do
-            add(p.trail, t)
-        end
-        p.trail[p.trail.off] = t
-        p.trail.off = p.trail.off % len + 1
-    end
-
     -- handle death conditions
     if p.dead then
         p.dead += 1/60
@@ -270,6 +258,17 @@ function update_player(p)
         p.walk += 1/60
         p.dir = p.movements[1]
         --if (rnd() > 0.6) sfx(g_sfx_walk)
+    end
+
+    -- record a trail behind the player
+    if band(btn(), 0xf) != 0 then
+        local t = {x=p.x, y=p.y, dir=p.dir}
+        local len = max(#p.trail, 10 * game.cats + 10)
+        while #p.trail < len do
+            add(p.trail, t)
+        end
+        p.trail[p.trail.off] = t
+        p.trail.off = p.trail.off % len + 1
     end
 
     p.shot -= 1/60
@@ -381,7 +380,6 @@ function update_world(w)
         end
         if b.lives <= 0 then
             game.score += 100
-            game.kills += 1
             del(game.bats, b)
         end
     end)
@@ -428,7 +426,6 @@ function update_world(w)
         end
         if s.lives <= 0 then
             game.score += 70
-            game.kills += 1
             del(game.slimes, s)
             return
         end
@@ -475,7 +472,11 @@ end
 function mode.play.draw()
     cls(0)
 
-    camera(game.player.x * 8 - 64, game.player.y * 8 - 64)
+    local cam_x, cam_y = game.player.x * 8 - 64, game.player.y * 8 - 64
+    if game.msg.h then
+        cam_y += game.msg.h / 2
+    end
+    camera(cam_x, cam_y)
     draw_bg()
     draw_player(game.player)
     draw_slimes()
@@ -483,8 +484,13 @@ function mode.play.draw()
     draw_fg()
     draw_bats()
     camera()
-
     draw_ui()
+
+    if game.msg.text then
+        messages.draw()
+        return
+    end
+
     draw_debug()
 end
 

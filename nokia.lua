@@ -45,8 +45,8 @@ do
                 end
             end
         end
+        local old1,old2 = peek4(0x5f00),peek4(0x5f04)
         if outline>0 then
-            local old1,old2 = peek4(0x5f00),peek4(0x5f04)
             for i=1,7 do pal(i,max(1,i-5)) end
             pal(7,1)
             local function sspr2(sx, sy, sw, sh, x, y)
@@ -56,11 +56,11 @@ do
                 sspr(sx, sy, sw, sh, x, y+1)
             end
             do_work(x0, y, sspr2)
-            pal(7,c)
-            poke4(0x5f00,old1)poke4(0x5f04,old2)
         end
+        pal(7,c)
         do_work(x0, y, sspr)
+        poke4(0x5f00,old1)poke4(0x5f04,old2)
     end
-    function font_outline(s) outline=s end
+    function font_outline(s) outline=s or 0 end
 end
 
