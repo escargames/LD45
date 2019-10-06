@@ -43,6 +43,7 @@ end
 function new_game()
     game = {}
     game.world = new_world()
+    game.anim = 0 -- reference for all animations
     -- spawn player on tile #1
     game.player = new_player(game.world.map.startx, game.world.map.starty)
     game.msg = {}
@@ -164,7 +165,6 @@ end
 
 cpu_hist = {}
 function draw_debug()
-    font_outline(1)
     pico8_print(stat(7).." fps", 89, 26, 8)
     pico8_print("x="..game.player.x, 2, 2, 0)
     pico8_print("y="..game.player.y, 2, 10, 0)
@@ -186,7 +186,6 @@ function draw_debug()
     end
     pico8_print("cpu="..ceil(cpu), 89, 12, 14)
     pico8_print("max="..ceil(max_cpu), 89, 19, 8)
-    font_outline()
 end
 
 function mode.play.start()
@@ -202,6 +201,11 @@ function mode.play.start()
 end
 
 function mode.play.update()
+
+    game.anim += 1/60
+
+    update_map()
+
     -- if a message is displayed, do not update the world
     if game.msg.text then
         messages.update()
@@ -209,7 +213,6 @@ function mode.play.update()
     end
 
     update_bullets()
-    update_map()
     update_world(game.world)
     update_player(game.player)
 
@@ -465,8 +468,15 @@ end
 
 function update_map()
     -- sparkle water
-    --for i=1,40 do sset(crnd(104,120),crnd(0,16),2) end
-    --for i=1,4 do sset(crnd(104,120),crnd(0,16),ccrnd({4,3,3,2,2,2})) end
+    if flr(game.anim) != flr(game.anim+1/60) then
+        for y=0,7 do
+            local p=sget(56,16+y)
+            for x=0,6 do sset(56+x,16+y,sget(57+x,16+y)) end
+            sset(56+7,16+y,p)
+        end
+    end
+    --for i=rnd(12),2 do sset(crnd(56,64),crnd(16,24),ccrnd({6,6,7,7,7})) end
+    --for i=1,10 do sset(crnd(56,64),crnd(16,24),13) end
 end
 
 function mode.play.draw()
@@ -488,7 +498,6 @@ function mode.play.draw()
 
     if game.msg.text then
         messages.draw()
-        return
     end
 
     draw_debug()
