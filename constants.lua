@@ -14,6 +14,7 @@ g_sfx_collapse = 4
 g_initial_lives = 3
 g_max_lives = 3
 
+g_spr_ball = 64
 g_spr_sign = 16
 g_spr_chest = 32
 g_spr_key = 40
