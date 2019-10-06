@@ -14,7 +14,7 @@ function messages.update()
     if game.msg.close then
         game.msg.close += 1/20
         if game.msg.close > 1 then game.msg = {} return end
-        game.msg.h = game.msg.wanted_h * (1 - game.msg.close)
+        game.msg.h = game.msg.wanted_h * max(0, 1 - game.msg.close)
     elseif game.msg.wait then
         game.msg.wait += 1/30
         game.msg.cursor = ""
@@ -35,9 +35,13 @@ function messages.draw()
     local m = 2 -- margin
     local h = game.msg.h
     if h then
-        smoothrectfill(m, 127 - h - m, 127 - m, 127 - m, 5, 15)
+        fillp(0x6699)
+        smoothrectfill(m, 127 - h - m, 127 - m, 127 - m, 5, 0xbf)
+        fillp()
         smoothrect(m, 127 - h - m, 127 - m, 127 - m, 5, 1)
-        smoothrect(m + 2, 127 - h - m + 2, 127 - m - 2, 127 - m - 2, 3, 14)
+        if h >= 4 then
+            smoothrect(m + 1, 127 - h - m + 1, 127 - m - 1, 127 - m - 1, 3, 14)
+        end
     end
     if game.msg.display then
         clip(m + 2, 127 - h - m + 2, 127 - 2 * m - 4, h - 4)

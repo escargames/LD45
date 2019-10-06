@@ -254,14 +254,19 @@ function update_player(p)
             if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
         end)
         if s then
-            if s.id==g_spr_sign and p.dir==3 then
-                game.msg.text = "The text is on the other side\nof the sign!"
-            else
-                game.msg.text = s.data.text
-            end
+            activate(s)
         else
             shoot(p)
         end
+    end
+end
+
+function activate(o)
+    local p = game.player
+    if o.id==g_spr_sign and p.dir==3 then
+        game.msg.text = "The text is on the other side\nof the sign!"
+    elseif o.id==g_spr_sign then
+        game.msg.text = o.data.text
     end
 end
 
