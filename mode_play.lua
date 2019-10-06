@@ -217,7 +217,7 @@ function mode.play.update()
     update_player(game.player)
 
     if cbtnp(5) then
-        game.msg.text = "Hey there! What a storm\nhuh? My two grand-\ndaughters are so\nlight and tiny they\nwere lifted by the\nwind!"
+        game.msg.text = "Hey there! What a storm,\nhuh? My two granddaughters\nare so light and tiny\nthey were lifted by the wind!"
     --    game.cats += 1
     --game.score += flr(rnd(80))
     end
