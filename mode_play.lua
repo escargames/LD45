@@ -84,14 +84,14 @@ end
 
 function draw_object_tiles(top)
     local function xor(b1,b2) return (not b1)!=(not b2) end
-    local function special(list, id)
+    local function special(list, id, xoff, yoff)
         foreach(list, function(s)
-            if xor(top,s.y<=game.player.y) then spr(id, s.x*8-4, s.y*8-4) end
+            if xor(top,s.y<=game.player.y) then spr(id, s.x*8+xoff, s.y*8+yoff) end
         end)
     end
-    special(game.world.map.signs, g_spr_sign)
-    special(game.world.map.chests, g_spr_chest)
-    special(game.world.map.keys, g_spr_key)
+    special(game.world.map.signs, g_spr_sign, -4, -6)
+    special(game.world.map.chests, g_spr_chest, -4, -4)
+    special(game.world.map.keys, g_spr_key, -4, -4)
 end
 
 function draw_player(p)
