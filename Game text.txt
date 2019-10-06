@@ -28,13 +28,22 @@ Interrogation point: "My friends and I have so much ideas on how to improve thin
 We are already taking part in some peaceful actions to change things, you should come by sometimes."
 Exclamation point: "That's inspiring! I agree, collective action can feel very empowering."
 
-Little girl 2: "What a wonderful surprise to find you here! Take a look at the view from out there.
-Breathtaking."
+Little girl 2: "You, here? What a nice surprise! Come sit next to me. I promise this time I will not bore you with science facts.
+...
+...
+So, I have been reading about storms lately: did you know that the temperature of lightning is around 20000°C?"
 
-Heart: "
-Interrogation point:
-Exclamation point:
+Heart: "No, you are amazing! After all, it is you who gave me my very first science book a while ago."
+Interrogation point: "I learned it in a book my grandma found."
+Exclamation point: "Amazing, right? Science facts are so fascinating. Did you know that one day on Venus is longer than a year on Earth?"
 
 Cat: Meow!
 
 Raccon: Trill!
+
+Riddle giver: "Well be with you, gentleman! Let me narrate a riddle for thee:
+"Is this a raccoon that I see before me, the muzzle toward my hand? Come, let me clutch thee.
+I have thee not, and yet I see thee thrice."
+
+* Après avoir fini l'énigme"
+"O, brave! intelligent party to the advantages of the very all of all. This told, I joy."
