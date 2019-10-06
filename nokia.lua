@@ -46,14 +46,15 @@ do
             end
         end
         if outline>0 then
-            local old1,old2 = peek4(0x5f10),peek4(0x5f14)
+            local old1,old2 = peek4(0x5f00),peek4(0x5f04)
+            for i=1,7 do pal(i,max(1,i-5)) end
             pal(7,1)
             do_work(x0+1, y, sspr)
             do_work(x0-1, y, sspr)
             do_work(x0, y+1, sspr)
             do_work(x0, y-1, sspr)
             pal(7,c)
-            poke4(0x5f10,old1)poke4(0x5f14,old2)
+            poke4(0x5f00,old1)poke4(0x5f04,old2)
         end
         do_work(x0, y, sspr)
     end

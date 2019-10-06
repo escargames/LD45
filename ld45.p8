@@ -27,6 +27,7 @@ mode = {}
 #include mode_extra.lua
 
 function _init()
+    poke(0x5f2e, 1) -- preserve palette
     poke(0x5f34, 1)
     cartdata("findingcookie")
     state = "menu"
