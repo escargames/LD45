@@ -49,10 +49,13 @@ do
             local old1,old2 = peek4(0x5f00),peek4(0x5f04)
             for i=1,7 do pal(i,max(1,i-5)) end
             pal(7,1)
-            do_work(x0+1, y, sspr)
-            do_work(x0-1, y, sspr)
-            do_work(x0, y+1, sspr)
-            do_work(x0, y-1, sspr)
+            local function sspr2(sx, sy, sw, sh, x, y)
+                sspr(sx, sy, sw, sh, x-1, y)
+                sspr(sx, sy, sw, sh, x+1, y)
+                sspr(sx, sy, sw, sh, x, y-1)
+                sspr(sx, sy, sw, sh, x, y+1)
+            end
+            do_work(x0, y, sspr2)
             pal(7,c)
             poke4(0x5f00,old1)poke4(0x5f04,old2)
         end
