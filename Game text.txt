@@ -28,8 +28,13 @@ Interrogation point: "My friends and I have so much ideas on how to improve thin
 We are already taking part in some peaceful actions to change things, you should come by sometimes."
 Exclamation point: "That's inspiring! I agree, collective action can feel very empowering."
 
-Little girl 2:
+Little girl 2: "What a wonderful surprise to find you here! Take a look at the view from out there.
+Breathtaking."
 
-Cat:
+Heart: "
+Interrogation point:
+Exclamation point:
 
-Raccon:
+Cat: Meow!
+
+Raccon: Trill!
