@@ -15,7 +15,7 @@ function new_quest()
             { x=18, y=21 },
         },
         signs = {
-            { x=13, y=5, text="Why hello there!" },
+            { x=13, y=5, text="Why hello there!⬇️Yes it's me!" },
             { x=15, y=5, text="What?" },
             { x=17, y=5, text="Wootwoot" },
             { x=19, y=5, text="Hello again" },
