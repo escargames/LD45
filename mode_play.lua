@@ -400,8 +400,8 @@ function update_world(w)
         end
         -- if moving, try moving
         if o.id==g_spr_fire then
-            local dx = ({-0.2,0.2,0,0})[o.dir+1]
-            local dy = ({0,0,-0.2,0.2})[o.dir+1]
+            local dx = ({-0.1,0.1,0,0})[o.dir+1]
+            local dy = ({0,0,-0.1,0.1})[o.dir+1]
             if not block_walk(o.x + dx, o.y + dy, 0.6, 0.6) then
                 o.x += dx
                 o.y += dy
