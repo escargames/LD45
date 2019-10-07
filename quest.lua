@@ -4,12 +4,12 @@ function new_quest()
         start = { x=4, y=28 },
         -- a chest
         chests = {
-            { x=25, y=07, item="boots",
+            { x=52, y=10, item="science book",
+              text="You found a science book!" },
+            { x=18, y=09, item="boots",
               text="You found a pair of boots!\nYou can now jump with ❎." },
-            { x=18, y=09, item="rope",
-              text="You found a rope!" },
-            { x=9, y=34, item="",
-              text="You found" },
+            { x=9, y=34, item="bathing suit",
+              text="You found a bathing suit!\nYou can now swim." },
         },
         boulders = {
             { x=10,y=13 },
@@ -52,22 +52,34 @@ function new_quest()
             { x=13,y=39 },
             { x=14,y=39 },
             { x=15,y=39 },
-            { x=12,y=40 },
+            { x=12,y=41 },
             { x=14,y=40 },
             { x=15,y=40 },
             { x=17,y=40 },
-            { x=11,y=41 },
             { x=11,y=42 },
             { x=12,y=43 },
+            { x=23,y=7 },
+            { x=57,y=23 },
+            { x=30,y=29 },
+            { x=48,y=25 },
         },
         keys = {
-            { x=11, y=19 },
             { x=18, y=21 },
             { x=22, y=38 },
+            { x=40, y=16 },
         },
         triggers = {
+            { x=2, y=28, f=function()
+                  open_message("Wow.\nWhy am I waking up here?",g_style_center)
+              end },
+            { x=1, y=22, f=function()
+                open_message("There must have been one\nof those storms again.",g_style_center)
+              end },
             { x=2, y=15, f=function()
-                  open_message("Hi!",g_style_center)
+                open_message("I hope nobody's\nhurt. Better check\nif everyone's ok.",g_style_center)
+              end },
+            { x=10, y=8, f=function()
+                open_message("Storms have destroyed\nthe landscape.\nEverything is fragile now.",g_style_center)
               end },
             -- etc.
         },
