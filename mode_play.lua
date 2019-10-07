@@ -301,8 +301,10 @@ function update_player(p)
             -- check that the player is facing the object
             if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
         end)
-        if not s and game.inventory.ball then
-            shoot(p)
+        if not s then
+            if game.inventory.ball then
+                shoot(p)
+            end
         elseif s.id==g_spr_boulder and game.inventory.gloves then
             p.push=0
             p.boulder=s
