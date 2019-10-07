@@ -1,12 +1,22 @@
 
+function msave(p,n)
+    local m={}
+    for i=1,n/4 do m[i]=peek4(p+(i-1)*4) end
+    m.restore = function(p2)
+        p2 = p2 or p
+        for i=1,#m do poke4(p+(i-1)*4,m[i]) end
+    end
+    return m
+end
+
 do
     local data =
-        " ♥ ⬇️ "..
+        " ♥ 🅾️❎ ⬇️ "..
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ"..
         "abcdefghijklmnopqrstuvwxyz"..
         "0123456789.,:;?!\"-'()=█"
     local widths = {
-        16,7,105,8,40,
+        16,7,73,9,9,14,8,40,
         4,4,4,4,4,4,4,4,1,3,4,4,5,5,5,4,5,4,4,5,4,5,7,5,5,4,
         4,4,3,4,4,2,4,4,1,2,4,1,5,4,4,4,4,3,3,2,4,5,5,4,4,4,
         4,2,4,4,4,4,4,4,4,4,1,2,1,2,4,1,3,4,1,2,2,3,4,
@@ -45,9 +55,9 @@ do
                 end
             end
         end
-        local old1,old2 = peek4(0x5f00),peek4(0x5f04)
+        local old = msave(0x5f00,0x20)
         if outline then
-            for i=1,7 do pal(i,max(1,i-5)) end
+            for i=2,15 do palt(i,true) end
             pal(1,outline)
             local function sspr2(sx, sy, sw, sh, x, y, dw, dh)
                 sspr(sx, sy, sw, sh, x-1, y, dw, dh)
@@ -56,10 +66,11 @@ do
                 sspr(sx, sy, sw, sh, x, y+1, dw, dh)
             end
             do_work(x0, y, sspr2)
+            palt()
         end
         pal(1,c or 1)
         do_work(x0, y, sspr)
-        poke4(0x5f00,old1)poke4(0x5f04,old2)
+        old.restore()
     end
     function font_width(str)
         local x,xmax = 0,0
