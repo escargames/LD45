@@ -81,6 +81,12 @@ function new_quest()
             { x=10, y=8, f=function()
                 open_message("Storms have destroyed\nthe landscape.\nEverything is fragile now.",g_style_center)
               end },
+            { x=113, y=40, f=function()
+                open_message("Finally home\non my island!",g_style_center)
+                open_message("While I was busy\ncatching up with\neveryone,",g_style_center)
+                open_message("All my friends\nwere reconstructing\nmy house!",g_style_center)
+                open_message("What a kind\nthing to do!",g_style_center)
+              end },
         },
         signs = {
             { x=13, y=6, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
@@ -101,6 +107,7 @@ function new_quest()
             { x=1, y=2, id=g_id_cat, dir=1, name="Botox" },
             { x=91, y=26, id=g_id_cat, dir=1, name="Juno" },
             { x=24, y=35, id=g_id_cat, dir=0, name="Grocha" },
+            { x=116, y=41, id=g_id_cat, dir=0, name="Yoyo" },
             { x=52, y=23,  id=g_id_raccoon, dir=0, name="Lulu" },
             { x=67, y=5,  id=g_id_raccoon, dir=0, name="Damdam" },
             { x=84, y=38,  id=g_id_raccoon, dir=0, name="Sammy" },
