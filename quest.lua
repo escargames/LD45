@@ -1,23 +1,65 @@
 
 function new_quest()
     return {
-        start = { x=11.5, y=6.5 },
+        start = { x=23, y=29 },
         -- a chest
         chests = {
             { x=25, y=07, item="boots",
               text="You found a pair of boots!\nYou can now jump with ❎." },
             { x=18, y=09, item="rope",
               text="You found a rope!" },
+            { x=9, y=34, item="",
+              text="You found" },
         },
         boulders = {
             { x=10,y=13 },
             { x=11,y=13 },
             { x=12,y=15 },
             { x=13,y=13 },
+            { x=11,y=31 },
+            { x=14,y=30 },
+            { x=12,y=32 },
+            { x=13,y=31 },
+            { x=12,y=30 },
+            { x=11,y=33 },
+            { x=13,y=33 },
+            { x=15,y=33 },
+            { x=6,y=32 },
+            { x=14,y=32 },
+            { x=1,y=37 },
+            { x=2,y=38 },
+            { x=6,y=44 },
+            { x=7,y=43 },
+            { x=23,y=38 },
+            { x=23,y=37 },
+            { x=24,y=37 },
+            { x=20,y=40 },
+            { x=21,y=40 },
+            { x=22,y=40 },
+            { x=23,y=40 },
+            { x=24,y=40 },
+            { x=21,y=41 },
+            { x=23,y=41 },
+            { x=20,y=42 },
+            { x=23,y=42 },
+            { x=24,y=42 },
+            { x=23,y=43 },
+            { x=22,y=44 },
+            { x=13,y=39 },
+            { x=14,y=39 },
+            { x=15,y=39 },
+            { x=12,y=40 },
+            { x=14,y=40 },
+            { x=15,y=40 },
+            { x=17,y=40 },
+            { x=11,y=41 },
+            { x=11,y=42 },
+            { x=12,y=43 },
         },
         keys = {
             { x=11, y=19 },
             { x=18, y=21 },
+            { x=22, y=38 },
         },
         signs = {
             { x=13, y=5, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
@@ -35,7 +77,17 @@ function new_quest()
             { x=12, y=10, id=g_id_cat, dir=1, name="Botox" },
             { x=14, y=8,  id=g_id_raccoon, dir=0, name="Lulu" },
             { x=15, y=3,  id=g_id_person, name="Yoyo" },
-            { x=6,  y=30, id=g_spr_fire, dir=3, },
+            { x=6,  y=36, id=g_spr_fire, dir=3, },
+            { x=20,  y=39, id=g_spr_fire, dir=1, },
+            { x=15,  y=43, id=g_spr_fire, dir=1, },
+            { x=15,  y=42, id=g_spr_fire, dir=1, },
+            { x=15,  y=41, id=g_spr_fire, dir=1, },
+            { x=11,  y=38, id=g_spr_fire, dir=3, },
+            { x=12,  y=38, id=g_spr_fire, dir=3, },
+            { x=0,  y=41, id=g_spr_fire, dir=1, },
+            { x=0,  y=42, id=g_spr_fire, dir=1, },
+            { x=5,  y=43, id=g_spr_fire, dir=1, },
+            { x=8,  y=38, id=g_spr_fire, dir=3, },
         },
     }
 end
@@ -57,7 +109,7 @@ function init_quest(q)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_sign, data=o, xoff=-4, yoff=-6 })
     end)
     foreach(q.living, function(o)
-        add(game.specials, new_living(o.x, o.y, o.dir or 3, o.id, o.name))
+        add(game.specials, new_living(o.x+.5, o.y+.5, o.dir or 3, o.id, o.name))
     end)
 end
 
