@@ -47,6 +47,8 @@ function init_game()
     game.score = 0
     game.cats = 0
     game.explosions = {}
+    -- create maze
+    create_maze(64,0,63,29)
 end
 
 function draw_bg()
