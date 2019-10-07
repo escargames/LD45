@@ -4,9 +4,9 @@ function new_quest()
         start = { x=11.5, y=6.5 },
         -- a chest
         chests = {
-            { x=18, y=09, item="boots",
+            { x=25, y=07, item="boots",
               text="You found a pair of boots!" },
-            { x=25, y=07, item="rope",
+            { x=18, y=09, item="rope",
               text="You found a rope!" },
             { x=34, y=15, item="",
               text="The chest was empty, lol!" },
@@ -80,8 +80,9 @@ function quest_activate(q,o)
             sfx(g_sfx_loot1)
             sfx(g_sfx_loot2)
             open_message(o.data.text,g_style_center)
-            o.id=g_spr_chest_open
+            game.inventory.nkeys -= 1
             game.inventory[o.data.item] = true
+            o.id=g_spr_chest_open
         else
             open_message("The chest is locked.",g_style_center)
         end

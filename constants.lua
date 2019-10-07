@@ -25,6 +25,7 @@ g_style_center = 1
 g_style_bottom = 2
 
 g_spr_ball = 64
+g_spr_boots = 6
 g_spr_sign = 16
 g_spr_chest = 32
 g_spr_chest_open = 48

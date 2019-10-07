@@ -16,7 +16,7 @@ end
 
 function message_cam_y()
     local m = msg_queue[1]
-    if m and m.style==2 then return max(m.h - 14, 0) / 2 end
+    --if m and m.style==2 then return max(m.h - 14, 0) / 2 end
     return 0
 end
 

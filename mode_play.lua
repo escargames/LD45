@@ -138,6 +138,15 @@ function draw_balls()
 end
 
 function draw_ui()
+    -- inventory
+    local x = 128 - 15
+    local function disp(id)
+        smoothrectfill(x,2,x+11,13,2,7,1)
+        spr(id,x+2,4)
+        x -= 14
+    end
+    for i=1,game.inventory.nkeys do disp(g_spr_key) end
+    if game.inventory.boots then disp(g_spr_boots) end
     font_outline(1)
 --[[
     for i = 1,game.player.maxlives do
