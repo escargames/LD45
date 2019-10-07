@@ -228,9 +228,28 @@ function update_player(p)
         p.dead = 0
     end
 
-    -- move player
+    -- compute player direction
     local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 12
     local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 12
+
+    -- handle action button
+    if cbtnp(4) and not p.push then
+        -- look for a special object
+        local s
+        foreach(game.specials, function(o)
+            -- check that the player is facing the object
+            if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
+        end)
+        if not s then
+            shoot(p)
+        elseif s.id==g_spr_boulder then
+            p.push=0
+            p.boulder=s
+        else
+            quest_activate(game.quest,s)
+        end
+    end
+
     -- handle jump
     if p.jump then
         p.jump -= 1/12
@@ -249,7 +268,28 @@ function update_player(p)
         p.jdx = (cx - p.x) / 24
         p.jdy = (cy - p.y) / 24
     end
-    -- handle collisions
+
+    -- handle pushing
+    if p.push then
+        if p.push == 0 then
+            sfx(g_sfx_push)
+            p.pdx = ({-1,1,0,0})[p.dir+1]
+            p.pdy = ({0,0,-1,1})[p.dir+1]
+        end
+        p.push += 1/32
+        p.boulder.id = 0
+        if p.push >= 1 or block_walk(p.boulder.x + p.pdx*0.5, p.boulder.y + p.pdy*0.5, 0.5, 0.5) then
+            p.boulder.x = flr(p.boulder.x) + 0.5
+            p.boulder.y = flr(p.boulder.y) + 0.5
+            p.push = nil
+        else
+            p.boulder.x += p.pdx / 32
+            p.boulder.y += p.pdy / 32
+        end
+        p.boulder.id = g_spr_boulder
+    end
+
+    -- move if no collisions
     if not block_walk(p.x + dx, p.y, 0.6, 0.4) then
         p.x += dx
     end
@@ -280,23 +320,6 @@ function update_player(p)
         end
         p.trail[p.trail.off] = t
         p.trail.off = p.trail.off % len + 1
-    end
-
-    p.shot -= 1/60
-
-    -- handle action button
-    if cbtnp(4) then
-        -- look for a special object
-        local s
-        foreach(game.specials, function(o)
-            -- check that the player is facing the object
-            if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
-        end)
-        if s then
-            quest_activate(game.quest,s)
-        else
-            shoot(p)
-        end
     end
 end
 
