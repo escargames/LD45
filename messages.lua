@@ -6,6 +6,7 @@ function open_message(text,style)
     local m = { text=text, style=style, h=0, cursor="", opening=true }
     m.wanted_h = 6 + 8
     for i=1,#text do if sub(text,i,i)=="\n" then m.wanted_h += 8 end end
+    m.text_width = font_width(text)
     add(msg_queue, m)
 end
 
@@ -46,8 +47,8 @@ function draw_message()
     if not m then return end
     local c1 = { 0xbf, 0xba }
     local c2 = { 14, 8 }
-    local w,h = ({92, 128 - 4})[m.style], m.h
-    local x,y = ({18, 2})[m.style], ({70 - h / 2, 127 - h - 2})[m.style]
+    local w,h = ({m.text_width+8, 128 - 4})[m.style], m.h
+    local x,y = ({64-m.text_width/2, 2})[m.style], ({70 - h / 2, 127 - h - 2})[m.style]
     if h then
         fillp(0x6699)
         smoothrectfill(x, y, x + w - 1, y + h, 5, c1[m.style])

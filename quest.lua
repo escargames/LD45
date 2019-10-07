@@ -57,13 +57,13 @@ end
 -- Activate a quest object
 function quest_activate(p,o)
     if o.id==g_spr_sign and p.dir==3 then
-        open_message("The text is on the other side\nof the sign!",g_style_center)
+        open_message("The text is on the other\nside of the sign!",g_style_center)
     elseif o.id==g_spr_chest and not game.inventory.key then
         open_message("The chest is locked.",g_style_center)
     elseif o.id==g_id_cat then
-        open_message("You pet "..o.name.."\nthe cat. ♥",g_style_center)
+        open_message("You pet "..o.name.." the\ncat. How adorable! ♥",g_style_center)
     elseif o.id==g_id_raccoon then
-        open_message("You pet "..o.name.."\nthe raccoon. ♥",g_style_center)
+        open_message("You pet "..o.name.." the\nraccoon. How cute! ♥",g_style_center)
     elseif o.id==g_spr_sign then
         open_message(o.data.text,g_style_bottom)
     end

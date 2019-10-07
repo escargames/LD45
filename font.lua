@@ -59,6 +59,21 @@ do
         do_work(x0, y, sspr)
         poke4(0x5f00,old1)poke4(0x5f04,old2)
     end
+    function font_width(str)
+        local x,xmax = 0,0
+        for i=1,#str do
+            local ch = sub(str,i,i)
+            local param = params[ch]
+            if ch==" " then
+                x += 3
+            elseif ch=="\n" then
+                xmax,x = max(x,xmax),0
+            elseif param then
+                x += param.w + 1
+            end
+        end
+        return max(x,xmax)-1
+    end
     function font_outline(s) outline=s end
 end
 
