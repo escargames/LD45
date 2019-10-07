@@ -17,6 +17,7 @@ do
         if game then
             pico8_print("x="..game.player.x, 2, 2, c)
             pico8_print("y="..game.player.y, 2, 10, c)
+            pico8_print("dead="..tostr(game.player.dead), 2, 18, c)
         end
         local cpu = 100*stat(1)
         local max_cpu = cpu
