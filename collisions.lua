@@ -56,7 +56,7 @@ function block_fly(x,y,w,h)
     return false
 end
 
-function is_drowning(x,y,w,h)
+function in_water(x,y,w,h)
     if on_object(game.world.map.collapses,x,y) then return false end
     if has_flag(x,y,4) then return true end
     return false

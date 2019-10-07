@@ -117,6 +117,9 @@ function draw_person(p)
     if p.dead then
         clip(0,33,128,32) -- clip at the feet of the player
         y+=p.dead*8
+    elseif p.in_water then
+        clip(0,33,128,32)
+        y+=4
     elseif p.jump then
         local k=sin(p.jump/4)
         y-=8*k*k
@@ -272,7 +275,9 @@ function update_player(p)
         return
     end
 
-    if not p.jump and is_drowning(p.x, p.y, 0.6, 0.4) then
+    p.in_water = not p.jump and in_water(p.x, p.y, 0.6, 0.4)
+
+    if p.in_water and not game.inventory.suit then
         sfx(g_sfx_drown)
         p.dead = 0
     end
@@ -289,9 +294,9 @@ function update_player(p)
             -- check that the player is facing the object
             if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
         end)
-        if not s then
+        if not s and game.inventory.ball then
             shoot(p)
-        elseif s.id==g_spr_boulder then
+        elseif s.id==g_spr_boulder and game.inventory.gloves then
             p.push=0
             p.boulder=s
         else
@@ -308,7 +313,7 @@ function update_player(p)
         else
             p.jump = nil
         end
-    elseif cbtnp(5) then
+    elseif cbtnp(5) and game.inventory.boots then
         sfx(g_sfx_jump)
         p.jump = 2
         -- find destination cell
