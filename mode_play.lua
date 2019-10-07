@@ -17,10 +17,10 @@ function new_entity(x, y, dir)
     }
 end
 
-function new_living(x, y, dir, id, name)
+function new_living(x, y, dir, id, data)
     local e = new_entity(x, y, dir)
     e.id = id
-    e.name = name
+    e.data = data
     return e
 end
 

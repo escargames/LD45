@@ -23,6 +23,7 @@ g_sfx_loot2 = 27
 
 g_style_center = 1
 g_style_bottom = 2
+g_style_question = 3
 
 g_spr_ball = 64
 g_spr_boots = 6

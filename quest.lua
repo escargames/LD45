@@ -86,19 +86,30 @@ function new_quest()
         living = {
             { x=12, y=10, id=g_id_cat, dir=1, name="Botox" },
             { x=14, y=8,  id=g_id_raccoon, dir=0, name="Lulu" },
-            { x=15, y=3,  id=g_id_person, name="Yoyo" },
+
+            { x=15, y=3,  id=g_id_person, name="Yoyo",
+              text = { "Hello!",
+                       "How are you?", -- question followed by answers
+                       { "Answer 1", "More text" }, -- ♥
+                       { "Answer 2" },              -- ?
+                       { "Answer 3" },              -- !
+                       "Good Bye!", -- more text
+              }
+            },
+
+            -- the fire puzzle
             { x=6,  y=36, id=g_spr_fire, dir=3, },
-            { x=20,  y=39, id=g_spr_fire, dir=1, },
-            { x=15,  y=43, id=g_spr_fire, dir=1, },
-            { x=15,  y=42, id=g_spr_fire, dir=1, },
-            { x=15,  y=41, id=g_spr_fire, dir=1, },
-            { x=11,  y=38, id=g_spr_fire, dir=3, },
-            { x=12,  y=38, id=g_spr_fire, dir=3, },
+            { x=20, y=39, id=g_spr_fire, dir=1, },
+            { x=15, y=43, id=g_spr_fire, dir=1, },
+            { x=15, y=42, id=g_spr_fire, dir=1, },
+            { x=15, y=41, id=g_spr_fire, dir=1, },
+            { x=11, y=38, id=g_spr_fire, dir=3, },
+            { x=12, y=38, id=g_spr_fire, dir=3, },
             { x=0,  y=41, id=g_spr_fire, dir=1, },
             { x=0,  y=42, id=g_spr_fire, dir=1, },
             { x=5,  y=43, id=g_spr_fire, dir=1, },
             { x=8,  y=38, id=g_spr_fire, dir=3, },
-            { x=19,  y=34, id=g_spr_fire, dir=1, },
+            { x=19, y=34, id=g_spr_fire, dir=1, },
         },
     }
 end
@@ -123,7 +134,7 @@ function init_quest(q)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_sign, data=o, xoff=-4, yoff=-6 })
     end)
     foreach(q.living, function(o)
-        add(game.specials, new_living(o.x+.5, o.y+.5, o.dir or 3, o.id, o.name))
+        add(game.specials, new_living(o.x+.5, o.y+.5, o.dir or 3, o.id, o))
     end)
 end
 
@@ -164,12 +175,31 @@ function quest_activate(q,o)
         else
             open_message("The chest is locked.",g_style_center)
         end
+    elseif o.id==g_id_person then
+        q.current=0
+        local function next_msg()
+            q.current += 1
+            local i=q.current
+            if i<=#o.data.text then
+                if type(o.data.text[i+1])==type({}) then
+                    open_message(o.data.text[i], g_style_question, o.data.name,
+                        function(answer)
+                            foreach(o.data.text[i+answer], function(t) open_message(t,g_style_bottom,o.data.name) end)
+                            q.current += 3 -- skip answers
+                            next_msg()
+                        end)
+                else
+                    open_message(o.data.text[i],g_style_bottom,o.data.name,next_msg)
+                end
+            end
+        end
+        next_msg()
     elseif o.id==g_id_cat then
         sfx(g_sfx_pet)
-        open_message("You pet "..o.name.." the\ncat. How adorable! ♥",g_style_center)
+        open_message("You pet "..o.data.name.." the\ncat. How adorable! ♥",g_style_center)
     elseif o.id==g_id_raccoon then
         sfx(g_sfx_pet)
-        open_message("You pet "..o.name.." the\nraccoon. How cute! ♥",g_style_center)
+        open_message("You pet "..o.data.name.." the\nraccoon. How cute! ♥",g_style_center)
     end
 end
 
