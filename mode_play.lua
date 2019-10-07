@@ -14,6 +14,12 @@ function new_entity(x, y, dir)
         anim = rnd(128),
         walk = rnd(128),
         shot = 0,
+
+        -- needs to be somewhere else...
+        skin = 1+flr(rnd(4))
+        eyes = 1+flr(rnd(2))
+        clothes = 1+flr(rnd(5))
+        hair = 1+flr(rnd(6))
     }
 end
 
@@ -97,6 +103,11 @@ function draw_other_tiles(top)
     end)
 end
 
+local cl1 = { 5, 6, 0, 0 }
+local cl2 = { 12, 14, 8, 10, 4 }
+local cl3 = { 2, 3, 4, 5, 6, 10 }
+local cl4 = { 13, 14 }
+
 function draw_person(p)
     local x,y = p.x*8, p.y*8
     --spr(g_shadow, p.x * 8 - 4, p.y * 8 - 5)
@@ -110,10 +121,17 @@ function draw_person(p)
         local k=sin(p.jump/4)
         y-=8*k*k
     end
+    local oldpal = msave(0x5f00,0x20)
+    pal(7,cl1[p.skin])
+    pal(12,cl2[p.clothes])
+    pal(13,cl2[p.clothes]+1)
     spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), x - 4, y - 6)
+    pal(14,cl3[p.hair])
+    pal(15,cl3[p.hair]+1)
+    pal(8,cl4[p.eyes])
     spr(66 + max(1, p.dir), x - 4, y - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
     clip()
-    --for i = 0,15 do pal(i,i) end
+    oldpal.restore()
 end
 
 function draw_fire(o)
@@ -410,6 +428,10 @@ function update_world(w)
         -- if close enough, try to collect item!
         if o.d < 0.5 and not p.dead then
             quest_touch(game.quest,o)
+        end
+        -- animate
+        if o.anim then
+            o.anim += 1/60
         end
         -- if moving, try moving
         if o.d < 20 and o.id==g_spr_fire then
