@@ -81,7 +81,6 @@ function new_quest()
             { x=10, y=8, f=function()
                 open_message("Storms have destroyed\nthe landscape.\nEverything is fragile now.",g_style_center)
               end },
-            -- etc.
         },
         signs = {
             { x=13, y=5, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
@@ -96,16 +95,68 @@ function new_quest()
             { x=31, y=5, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
         },
         living = {
-            { x=12, y=10, id=g_id_cat, dir=1, name="Botox" },
-            { x=14, y=8,  id=g_id_raccoon, dir=0, name="Lulu" },
+            { x=1, y=2, id=g_id_cat, dir=1, name="Botox" },
+            { x=91, y=26, id=g_id_cat, dir=1, name="Juno" },
+            { x=1, y=30, id=g_id_cat, dir=1, name="Grocha" },
+            { x=52, y=23,  id=g_id_raccoon, dir=0, name="Lulu" },
+            { x=67, y=5,  id=g_id_raccoon, dir=0, name="Damdam" },
+            { x=84, y=38,  id=g_id_raccoon, dir=0, name="Sammy" },
 
-            { x=15, y=3,  id=g_id_person, name="Yoyo",
-              text = { "Hello!",
-                       "How are you?", -- question followed by answers
-                       { "Answer 1", "More text" }, -- ♥
-                       { "Answer 2" },              -- ?
-                       { "Answer 3" },              -- !
-                       "Good Bye!", -- more text
+            { x=15, y=25,  id=g_id_person, name="Frdy",
+              text = { "Good morning!",
+                       "Did the storm do any damage to your lovely home?", 
+                       "I just can't believe my beloved plants are still intact!",
+                       "I heard the storm destroyed a house by the lake,\nI am going there to help rebuilding it!",
+                       "Can you water my plants while I am gone?", -- question followed by answers
+                       { "Thank you my dear friend!\nMy plants mean so much to me.","Taking care of them and watching them grow\nis my biggest joy in the world." }, -- ♥
+                       { "Don't worry, I am sure you will find it\nvery easy and relaxing!\nYou will do great." },              -- ?
+                       { "Aww, I didn't know you loved gardening too!","We should get together sometimes when I come back,\nI would love to hear
+                       about your plants." },     -- !         
+                       "You received a watering can!", 
+              },
+              text2 = { "My plants are so beautiful because of you!\nI hope you enjoyed taking care of them."}
+            },
+
+            { x=25, y=22,  id=g_id_person, name="Clemon",
+              text = { "Well be with you, gentleman!",
+                       "Let me narrate a riddle for thee:", 
+                       "Is this a raccoon that I see before me,\nthe muzzle toward my hand? Come, let me clutch thee.",
+                       "I have thee not, and yet I see thee thrice.",
+              },
+              text2 = { "O, brave!","Intelligent party to the advantages\nof the very all of all. This told, I joy."}
+            },
+
+            { x=26, y=4,  id=g_id_person, name="Marjolaine",
+              text = { "Hey there! What a storm huh?",
+                       "My two grand-daughters are so light and tiny\nthey were lifted by the wind!",
+                       "If by any chance you find them on your way,\nwould you be kind enough to send them back to me?\nI have been worrying like hell.",  -- question followed by answers
+                       { "You are right, I should take care of myself\nand try not to worry too much.","Thank you, it helps to know\nthat I am not alone." }, -- ♥
+                       { "Yes it was a very strong wind!\nAnd they love storms so much,\nthey couldn't resist going out." },              -- ?
+                       { "They sure are ressourceful little girls!","I would not be surprised if they found\ntheir way home by themselves!" },     -- !         
+              },
+              text2 = { "Thank you for sending back my girls."}
+            },
+
+            { x=90, y=26,  id=g_id_person, name="Charlene",
+              text = { "Well, that was a fun adventure!\nFor a minute, I was a bird!",
+              "My grandma says storms are a lot more common now than in the past.",
+              "...",
+              "Sometimes it makes me so sad and scared\nto see the world falling appart.",  -- question followed by answers
+                       { "You are so sweet.\nI could really use someone to talk to,\nthank you so much.","I promise I will not stay alone\nand come to you whenever I feel anxious." }, -- ♥
+                       { "My friends and I have so much ideas\non how to improve things!",
+                       "We are already taking part in some peaceful actions\nto change things,\nyou should come by sometimes." },              -- ?
+                       { "That's inspiring!\nI agree, collective action can feel very empowering." },     -- !         
+              }
+            },
+
+            { x=54, y=39,  id=g_id_person, name="Alix",
+              text = { "You, here? What a nice surprise!\nCome sit next to me.","I promise not to bore you with science facts.",
+              "...",
+              "...",
+              "So, I have been reading.","Did you know that the temperature\nof lightning is around 20000°C?",  -- question followed by answers
+                       { "No, you are amazing!","After all, it is you who gave me\nmy very first science book a while ago." }, -- ♥
+                       { "I learned it in a book my grandma found.\nOh! That's the one!\nWhere did you find it?" },              -- ?
+                       { "Amazing, right?\nScience facts are so fascinating.","Did you know that one day on Venus\nis longer than a year on Earth?" },     -- !         
               }
             },
 
