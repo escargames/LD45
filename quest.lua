@@ -133,17 +133,17 @@ function new_quest()
                        "If by any chance you find them\non your way,\nwould you be kind enough\nto send them back to me?","I have been worrying\nlike hell.",  -- question followed by answers
                        { "You are right,\nI should take care of myself\nand try not to worry too much.","Thank you,\nit helps to know\nthat I am not alone." }, -- ♥
                        { "Yes it was a\nvery strong wind!\nThey love storms so much,\nthey couldn't resist\ngoing out." },              -- ?
-                       { "They sure are ressourceful\nlittle girls!","I would not be surprised if they found\ntheir way home by themselves!" },     -- !         
+                       { "They are ressourceful\nlittle girls!","I would not be surprised\nif they found their\nway home by themselves!" },     -- !         
               },
-              text2 = { "Thank you for sending back my girls."}
+              text2 = { "Thank you for sending\nback my girls."}
             },
 
             { x=90, y=26,  id=g_id_person, name="Charlene",
-              text = { "Well, that was a fun adventure!\nFor a minute, I was a bird!",
-              "My grandma says storms are a lot more common now than in the past.",
+              text = { "Well,\nthat was a fun adventure!\nFor a minute,\nI was a bird!",
+              "My grandma says storms\nare a lot more common now\nthan in the past.",
               "...",
-              "Sometimes it makes me so sad and scared\nto see the world falling appart.",  -- question followed by answers
-                       { "You are so sweet.\nI could really use someone to talk to,\nthank you so much.","I promise I will not stay alone\nand come to you whenever I feel anxious." }, -- ♥
+              "Sometimes it makes me\nso sad and scared\nto see the world\nfalling appart.",  -- question followed by answers
+                       { "You are so sweet.\nI could really use\nsomeone to talk to,\nthank you so much.","I promise I will not stay alone\nand come to you whenever I feel anxious." }, -- ♥
                        { "My friends and I have so much ideas\non how to improve things!",
                        "We are already taking part in some peaceful actions\nto change things,\nyou should come by sometimes." },              -- ?
                        { "That's inspiring!\nI agree, collective action can feel very empowering." },     -- !         
