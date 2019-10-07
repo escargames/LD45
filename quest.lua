@@ -4,8 +4,8 @@ function new_quest()
         start = { x=4, y=28 },
         -- a chest
         chests = {
-            { x=52, y=10, item="science book",
-              text="You found a science book!" },
+            { x=52, y=10, item="ball",
+              text="You found a ball\n for the cats" },
             { x=18, y=09, item="boots",
               text="You found a pair of boots!\nYou can now jump with ❎." },
             { x=9, y=34, item="bathing suit",
@@ -93,13 +93,15 @@ function new_quest()
             { x=116, y=35, text={"To the person who invented\nzero: thanks for nothing."} },
             { x=40, y=16, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
             { x=21, y=15, text={"I find potatoes jokes\nvery...","appeeling."} },
-            { x=19, y=7, text={"The ravine of the death.\nReserved to people who can jump."} },
+            { x=19, y=7, text={"The ravine of the death.\nReserved to people who\ncan jump."} },
             { x=33, y=1, text={"Be careful on your way to\nthe other side of the lake!"} },
+            { x=19, y=20, text={"You should know that\neverytime you read a sign\nyour progress is saved."} },
+            { x=19, y=20, text={"Saving progress..."} },
         },
         living = {
             { x=1, y=2, id=g_id_cat, dir=1, name="Botox" },
             { x=91, y=26, id=g_id_cat, dir=1, name="Juno" },
-            { x=1, y=30, id=g_id_cat, dir=1, name="Grocha" },
+            { x=2, y=30, id=g_id_cat, dir=1, name="Grocha" },
             { x=52, y=23,  id=g_id_raccoon, dir=0, name="Lulu" },
             { x=67, y=5,  id=g_id_raccoon, dir=0, name="Damdam" },
             { x=84, y=38,  id=g_id_raccoon, dir=0, name="Sammy" },
@@ -130,7 +132,7 @@ function new_quest()
             { x=26, y=4,  id=g_id_person, name="Marjolaine",
               text = { "Hey there!","What a storm huh?",
                        "My two grand-daughters\nare so light and tiny\nthey were lifted\nby the wind!",
-                       "If by any chance you find them\non your way,\nwould you be kind enough\nto send them back to me?","I have been worrying\nlike hell.",  -- question followed by answers
+                       "If by any chance you find\nthem on your way,\nwould you be kind enough\nto send them back to me?","I have been worrying\nlike hell.",  -- question followed by answers
                        { "You are right,\nI should take care of myself\nand try not to worry too much.","Thank you,\nit helps to know\nthat I am not alone." }, -- ♥
                        { "Yes it was a\nvery strong wind!\nThey love storms so much,\nthey couldn't resist\ngoing out." },              -- ?
                        { "They are ressourceful\nlittle girls!","I would not be surprised\nif they found their\nway home by themselves!" },     -- !         
@@ -144,20 +146,20 @@ function new_quest()
               "...",
               "Sometimes it makes me\nso sad and scared\nto see the world\nfalling appart.",  -- question followed by answers
                        { "You are so sweet.\nI could really use\nsomeone to talk to,\nthank you so much.","I promise I will not stay alone\nand come to you whenever I feel anxious." }, -- ♥
-                       { "My friends and I have so much ideas\non how to improve things!",
-                       "We are already taking part in some peaceful actions\nto change things,\nyou should come by sometimes." },              -- ?
-                       { "That's inspiring!\nI agree, collective action can feel very empowering." },     -- !         
+                       { "My friends and I\nhave so much ideas\non how to improve things!",
+                       "We are already taking part\nin some peaceful actions\nto change things,\nyou should come by sometimes." },              -- ?
+                       { "That's inspiring!\nI agree, collective action\ncan feel very empowering." },     -- !         
               }
             },
 
             { x=54, y=39,  id=g_id_person, name="Alix",
-              text = { "You, here? What a nice surprise!\nCome sit next to me.","I promise not to bore you with science facts.",
+              text = { "You, here?\nWhat a nice surprise!\nCome sit next to me.","I promise not to bore you\nwith science facts.",
               "...",
               "...",
-              "So, I have been reading.","Did you know that the temperature\nof lightning is around 20000°C?",  -- question followed by answers
-                       { "No, you are amazing!","After all, it is you who gave me\nmy very first science book a while ago." }, -- ♥
-                       { "I learned it in a book my grandma found.\nOh! That's the one!\nWhere did you find it?" },              -- ?
-                       { "Amazing, right?\nScience facts are so fascinating.","Did you know that one day on Venus\nis longer than a year on Earth?" },     -- !         
+              "So, I have been reading.","Did you know that\nthe temperature of\nlightning is around\n20000°C?",  -- question followed by answers
+                       { "No, you are amazing!","After all,\nit is you who gave me\nmy very first science book\na while ago." }, -- ♥
+                       { "I learned it in\na book my grandma found.\nOh! That's the one!\nWhere did you find it?" },              -- ?
+                       { "Amazing, right?\nScience facts are\nso fascinating.","Did you know that\none day on Venus\nis longer than a year\non Earth?" },     -- !         
               }
             },
 
