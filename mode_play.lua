@@ -40,6 +40,7 @@ function init_game()
     game.quest = new_quest()
     game.player = new_player(game.quest.start.x, game.quest.start.y)
     game.specials = {}
+    game.junk = {}
     game.spawn = 0
     game.tick = 0 -- reference for all animations
     -- deprecated
@@ -197,7 +198,16 @@ end
 
 function respawn()
     game.spawn = 0
-    game.player = new_player(game.quest.start.x, game.quest.start.y)
+    local s = game.quest.save or game.quest.start
+    game.player = new_player(s.x, s.y)
+    reset_map(game.world.map)
+    -- reset specials
+    foreach(game.specials, function(o)
+        if o.id==g_spr_boulder then
+            o.x = o.data.x+.5
+            o.y = o.data.y+.5
+        end
+    end)
 end
 
 function mode.play.update()
@@ -378,6 +388,7 @@ function update_world(w)
         elseif c.t2 then
             c.t2 += 1/32
             if c.t2 >= 1 then
+                add(game.world.map.junk, c)
                 del(game.world.map.collapses, c)
             end
         elseif c.t1 then

@@ -8,6 +8,7 @@ function load_map()
     for i=0,0x400 do poke4(0x2000+i*4,g_map[i+1]) end
     local map = {
         collapses={},
+        junk={},
     }
     -- parse the map and replace collapsibles with water etc.
     for ty = 0,63 do for tx = 0,127 do
@@ -21,6 +22,13 @@ function load_map()
         special(map.collapses, g_spr_collapse, g_spr_water)
     end end
     return map
+end
+
+function reset_map(m)
+    foreach(m.junk, function(o)
+        add(m.collapses, {x=o.x, y=o.y})
+    end)
+    m.junk={}
 end
 
 function create_maze(x,y,w,h)

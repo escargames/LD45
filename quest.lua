@@ -226,6 +226,7 @@ function quest_activate(q,o)
             open_message("The text is on the other\nside of the sign!",g_style_center)
         else
             foreach(o.data.text, function(t) open_message(t,g_style_bottom) end)
+            q.save = { x=game.player.x, y=game.player.y }
         end
     elseif o.id==g_spr_chest then
         if game.inventory.nkeys>0 then
