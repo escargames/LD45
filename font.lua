@@ -26,21 +26,22 @@ do
     end
 
     pico8_print = print
-    function print(str, x0, y, c, scale)
-        scale = scale or 1
+    function print(str, x0, y, c, scx, scy)
+        scx = scx or 1
+        scy = scy or scx
         local function do_work(x0, y, blit)
             local x = x0
             for i=1,#str do
                 local ch = sub(str,i,i)
                 local param = params[ch]
                 if ch==" " then
-                    x += 3 * scale
+                    x += 3 * scx
                 elseif ch=="\n" then
                     x = x0
-                    y += 8 * scale
+                    y += 8 * scx
                 elseif param then
-                    blit(param.x, param.y, param.w, 8, x, y, param.w * scale, 8 * scale)
-                    x += (param.w + 1) * scale
+                    blit(param.x, param.y, param.w, 8, x, y, param.w * scx, 8 * scy)
+                    x += (param.w + 1) * scx
                 end
             end
         end

@@ -40,6 +40,7 @@ function init_game()
     game.quest = new_quest()
     game.player = new_player(game.quest.start.x, game.quest.start.y)
     game.specials = {}
+    game.spawn = 0
     game.tick = 0 -- reference for all animations
     -- deprecated
     game.balls = {}
@@ -98,8 +99,8 @@ function draw_person(p)
     --    for i = 0,15 do pal(i,7) end
     --end
     if p.dead then
-        clip(x-32,y-24,x+32,32)
-        y+=p.dead*6
+        clip(0,33,128,32) -- clip at the feet of the player
+        y+=p.dead*8
     end
     spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), x - 4, y - 6)
     spr(66 + max(1, p.dir), x - 4, y - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
@@ -161,12 +162,23 @@ function draw_ui()
 end
 
 function mode.play.start()
-    palette(0)
     init_game()
     init_quest(game.quest)
 end
 
+function respawn()
+    game.spawn = 0
+    game.player = new_player(game.quest.start.x, game.quest.start.y)
+end
+
 function mode.play.update()
+    if game.dead then
+        if cbtnp(4) then
+            game.dead = false
+            respawn()
+        end
+        return
+    end
 
     -- update animations (even if paused)
     update_anims()
@@ -190,9 +202,12 @@ end
 function update_player(p)
     -- handle death conditions
     if p.dead then
-        palette(min(8,flr(p.dead*3)))
+        palette(min(8,flr(p.dead*4)))
         p.dead += 1/60
         p.dir = ({0,2,1,3})[1+flr(p.dead*6)%4]
+        if p.dead > 2 then
+            game.dead = true
+        end
         return
     end
 
@@ -334,6 +349,7 @@ end
 
 function update_anims()
 
+    game.spawn += 1/60
     game.tick += 1
     game.player.anim += 1/60
 
@@ -358,17 +374,23 @@ function update_anims()
 end
 
 function mode.play.draw()
-    cls(0)
-
-    local cam_x = game.player.x * 8 - 64
-    local cam_y = game.player.y * 8 - 64 - message_cam_y()
-    camera(cam_x, cam_y)
-    draw_bg()
-    draw_player(game.player)
-    draw_balls()
-    draw_fg()
-    camera()
-    draw_ui()
-    draw_message()
+    if game.dead then
+        palette(0)
+        cls(1)
+        print("YOU DIED", 26, 50, 8, 2, 3)
+    else
+        if game.spawn < 2 then palette(max(0, flr(8 - game.spawn*4))) end
+        cls(0)
+        local cam_x = game.player.x * 8 - 64
+        local cam_y = game.player.y * 8 - 64 - message_cam_y()
+        camera(cam_x, cam_y)
+        draw_bg()
+        draw_player(game.player)
+        draw_balls()
+        draw_fg()
+        camera()
+        draw_ui()
+        draw_message()
+    end
 end
 
