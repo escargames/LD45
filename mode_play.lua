@@ -60,9 +60,15 @@ function init_game()
     -- create maze
     --create_maze(64,0,63,29)
     --create_maze(66,2,58,22)
+    -- create bg
+    for j=0,15 do for i=0,15 do mset(127-i,63-j,46) end end
 end
 
 function draw_bg()
+    for n=0,5 do
+        map(112, 48, -128, -128 + 128*n, 16, 16)
+        map(112, 48, -128 + 128*n, -128, 16, 16)
+    end
     map(0, 0, 0, 0, 128, 64)
     draw_ground_tiles()
     draw_other_tiles(false)
@@ -489,8 +495,6 @@ function update_anims()
         for q=p+6*64,p,-64 do poke4(q+64,peek4(q)) end
         poke4(p,saved)
     end
-    --for i=rnd(12),2 do sset(crnd(56,64),crnd(16,24),ccrnd({6,6,7,7,7})) end
-    --for i=1,10 do sset(crnd(56,64),crnd(16,24),13) end
 end
 
 function mode.play.draw()
@@ -500,7 +504,7 @@ function mode.play.draw()
         print("YOU DIED", 26, 50, 8, 2, 3)
     else
         if game.spawn < 2 then palette(max(0, flr(8 - game.spawn*4))) end
-        cls(0)
+        cls(7) -- should not be necessary
         local cam_x = game.player.x * 8 - 64
         local cam_y = game.player.y * 8 - 64 - message_cam_y()
         camera(cam_x, cam_y)
