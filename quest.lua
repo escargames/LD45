@@ -91,17 +91,16 @@ function new_quest()
             { x=8, y=36, text={"To support my work,\nyou can also tip me."} },
             { x=48, y=41, text={"Can a kangaroo jump higher\nthan a cliff?","...","Of course, cliffs can't jump!"} },
             { x=116, y=35, text={"To the person who invented\nzero: thanks for nothing."} },
-            { x=40, y=16, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
             { x=21, y=15, text={"I find potatoes jokes\nvery...","appeeling."} },
             { x=19, y=7, text={"The ravine of the death.\nReserved to people who\ncan jump."} },
             { x=33, y=1, text={"Be careful on your way to\nthe other side of the lake!"} },
             { x=19, y=20, text={"You should know that\neverytime you read a sign\nyour progress is saved."} },
-            { x=19, y=20, text={"Saving progress..."} },
+            { x=9, y=41, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
         },
         living = {
             { x=1, y=2, id=g_id_cat, dir=1, name="Botox" },
             { x=91, y=26, id=g_id_cat, dir=1, name="Juno" },
-            { x=2, y=30, id=g_id_cat, dir=1, name="Grocha" },
+            { x=24, y=35, id=g_id_cat, dir=0, name="Grocha" },
             { x=52, y=23,  id=g_id_raccoon, dir=0, name="Lulu" },
             { x=67, y=5,  id=g_id_raccoon, dir=0, name="Damdam" },
             { x=84, y=38,  id=g_id_raccoon, dir=0, name="Sammy" },
@@ -133,7 +132,7 @@ function new_quest()
               text = { "Hey there!","What a storm huh?",
                        "My two grand-daughters\nare so light and tiny\nthey were lifted\nby the wind!",
                        "If by any chance you find\nthem on your way,\nwould you be kind enough\nto send them back to me?","I have been worrying\nlike hell.",  -- question followed by answers
-                       { "You are right,\nI should take care of myself\nand try not to worry too much.","Thank you,\nit helps to know\nthat I am not alone." }, -- ♥
+                       { "You are right, I should\ntake care of myself and\ntry not to worry too much.","Thank you,\nit helps to know\nthat I am not alone." }, -- ♥
                        { "Yes it was a\nvery strong wind!\nThey love storms so much,\nthey couldn't resist\ngoing out." },              -- ?
                        { "They are ressourceful\nlittle girls!","I would not be surprised\nif they found their\nway home by themselves!" },     -- !         
               },
