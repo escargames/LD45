@@ -1,6 +1,7 @@
 mode.menu = {}
 
 function mode.menu.start()
+    create_maze(64,0,63,29)
     palette(0)
 end
 
@@ -12,6 +13,9 @@ end
 
 function mode.menu.draw()
     cls(13)
+    map(68,4,0,0,16,16)
+    for i=1,50 do x=rnd(200) y=rnd(128) line(x,y-32,x-20,y+52,ccrnd({13,7})) end
+
     font_outline(1)
     print("The Legend\n of Nothing", 14, 28, 8, 2)
     print("by Niarkou and Sam", 34, 64, 15)
