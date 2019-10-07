@@ -83,16 +83,18 @@ function new_quest()
               end },
         },
         signs = {
-            { x=13, y=5, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
-            { x=15, y=5, text={"Oh no, there's a spelling\nmistake in my first sign..."} },
-            { x=17, y=5, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
-            { x=19, y=5, text={"If you like my funny puns,\ndon't forget to engrave a\nthumb up."} },
-            { x=21, y=2, text={"Would you like to hear\na construction joke?","...","Still working on it."} },
-            { x=23, y=2, text={"To support my work,\nyou can also tip me."} },
-            { x=25, y=2, text={"Can a kangaroo jump higher\nthan a cliff?","...","Of course, cliffs can't jump!"} },
-            { x=27, y=5, text={"To the person who invented\nzero: thanks for nothing."} },
-            { x=29, y=5, text={"I find potatoes jokes\nvery appeeling."} },
-            { x=31, y=5, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
+            { x=13, y=6, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
+            { x=17, y=3, text={"Oh no, there's a spelling\nmistake in my first sign..."} },
+            { x=96, y=7, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
+            { x=59, y=27, text={"If you like my funny puns,\ndon't forget to engrave a\nthumb up."} },
+            { x=27, y=31, text={"Would you like to hear\na construction joke?","...","Still working on it."} },
+            { x=8, y=36, text={"To support my work,\nyou can also tip me."} },
+            { x=48, y=41, text={"Can a kangaroo jump higher\nthan a cliff?","...","Of course, cliffs can't jump!"} },
+            { x=116, y=35, text={"To the person who invented\nzero: thanks for nothing."} },
+            { x=40, y=16, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
+            { x=21, y=15, text={"I find potatoes jokes\nvery...","appeeling."} },
+            { x=19, y=7, text={"The ravine of the death.\nReserved to people who can jump."} },
+            { x=33, y=1, text={"Be careful on your way to\nthe other side of the lake!"} },
         },
         living = {
             { x=1, y=2, id=g_id_cat, dir=1, name="Botox" },
@@ -104,35 +106,34 @@ function new_quest()
 
             { x=15, y=25,  id=g_id_person, name="Frdy",
               text = { "Good morning!",
-                       "Did the storm do any damage to your lovely home?", 
-                       "I just can't believe my beloved plants are still intact!",
-                       "I heard the storm destroyed a house by the lake,\nI am going there to help rebuilding it!",
-                       "Can you water my plants while I am gone?", -- question followed by answers
-                       { "Thank you my dear friend!\nMy plants mean so much to me.","Taking care of them and watching them grow\nis my biggest joy in the world." }, -- ♥
-                       { "Don't worry, I am sure you will find it\nvery easy and relaxing!\nYou will do great." },              -- ?
-                       { "Aww, I didn't know you loved gardening too!","We should get together sometimes when I come back,\nI would love to hear
-                       about your plants." },     -- !         
-                       "You received a watering can!", 
+                       "Did the storm do any damage\nto your lovely home?", 
+                       "I just can't believe my\nbeloved plants are still\nintact!",
+                       "I heard the storm destroyed\na house by the lake.","I am going there to help\nrebuilding it!",
+                       "Can you water my plants\nwhile I am gone?", -- question followed by answers
+                       { "Thank you my dear friend!\nMy plants mean so much\nto me.","Taking care of them\nand watching them grow is\nmy biggest joy in the world." }, -- ♥
+                       { "Don't worry,\nI am sure you will find it\nvery easy and relaxing!\nYou will do great." },              -- ?
+                       { "Aww, I didn't know you\nloved gardening too!","We should get together\nsometimes when I come back,\nI would love to hear about\nyour plants." },     -- !         
+                       "You received a\nwatering can!", 
               },
-              text2 = { "My plants are so beautiful because of you!\nI hope you enjoyed taking care of them."}
+              text2 = { "My plants are so beautiful\nbecause of you!\nI hope you enjoyed\ntaking care of them."}
             },
 
             { x=25, y=22,  id=g_id_person, name="Clemon",
               text = { "Well be with you, gentleman!",
-                       "Let me narrate a riddle for thee:", 
-                       "Is this a raccoon that I see before me,\nthe muzzle toward my hand? Come, let me clutch thee.",
-                       "I have thee not, and yet I see thee thrice.",
+                       "Let me narrate a riddle\nfor thee:", 
+                       "Is this a raccoon\nthat I see before me,\nthe muzzle toward\nmy hand?","Come, let me clutch thee.",
+                       "I have thee not,\nand yet I see thee thrice.",
               },
-              text2 = { "O, brave!","Intelligent party to the advantages\nof the very all of all. This told, I joy."}
+              text2 = { "O, brave!","Intelligent party\nto the advantages\nof the very all of all.\nThis told, I joy."}
             },
 
             { x=26, y=4,  id=g_id_person, name="Marjolaine",
-              text = { "Hey there! What a storm huh?",
-                       "My two grand-daughters are so light and tiny\nthey were lifted by the wind!",
-                       "If by any chance you find them on your way,\nwould you be kind enough to send them back to me?\nI have been worrying like hell.",  -- question followed by answers
-                       { "You are right, I should take care of myself\nand try not to worry too much.","Thank you, it helps to know\nthat I am not alone." }, -- ♥
-                       { "Yes it was a very strong wind!\nAnd they love storms so much,\nthey couldn't resist going out." },              -- ?
-                       { "They sure are ressourceful little girls!","I would not be surprised if they found\ntheir way home by themselves!" },     -- !         
+              text = { "Hey there!","What a storm huh?",
+                       "My two grand-daughters\nare so light and tiny\nthey were lifted\nby the wind!",
+                       "If by any chance you find them\non your way,\nwould you be kind enough\nto send them back to me?","I have been worrying\nlike hell.",  -- question followed by answers
+                       { "You are right,\nI should take care of myself\nand try not to worry too much.","Thank you,\nit helps to know\nthat I am not alone." }, -- ♥
+                       { "Yes it was a\nvery strong wind!\nThey love storms so much,\nthey couldn't resist\ngoing out." },              -- ?
+                       { "They sure are ressourceful\nlittle girls!","I would not be surprised if they found\ntheir way home by themselves!" },     -- !         
               },
               text2 = { "Thank you for sending back my girls."}
             },
