@@ -78,7 +78,7 @@ end
 function draw_other_tiles(top)
     local function xor(b1,b2) return (not b1)!=(not b2) end
     foreach(game.specials, function(s)
-        if xor(top,s.y<=game.player.y) then
+        if s.d < 16 and xor(top,s.y<=game.player.y) then
             if s.id == g_id_person then
                 draw_person(s)
             elseif s.id == g_id_cat then
@@ -114,16 +114,16 @@ function draw_person(p)
 end
 
 function draw_fire(o)
-    spr(g_spr_fire, o.x*8-4, o.y*8-4)
     for dx=0,7 do
         local x=o.x*8-4+dx
-        local y=o.y*8+3+sin(dx/14)
+        local y=o.y*8+2-3*sin(dx/14)
         for c=8,11 do
-            local dy=rnd(4)-cos(dx/7)
+            local dy=rnd(4-cos(dx/7))
             rectfill(x,y,x,y-dy,c)
             y-=dy
         end
     end
+    spr(g_spr_fire, o.x*8-4, o.y*8-4)
 end
 
 function draw_cat(o)
@@ -399,7 +399,7 @@ function update_world(w)
             quest_touch(game.quest,o)
         end
         -- if moving, try moving
-        if o.id==g_spr_fire then
+        if o.d < 20 and o.id==g_spr_fire then
             local dx = ({-0.1,0.1,0,0})[o.dir+1]
             local dy = ({0,0,-0.1,0.1})[o.dir+1]
             if not block_walk(o.x + dx, o.y + dy, 0.6, 0.6) then
