@@ -5,7 +5,7 @@ function new_quest()
         -- a chest
         chests = {
             { x=25, y=07, item="boots",
-              text="You found a pair of boots!\nYou can now jump." },
+              text="You found a pair of boots!\nYou can now jump with ❎." },
             { x=18, y=09, item="rope",
               text="You found a rope!" },
         },
