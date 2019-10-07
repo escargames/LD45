@@ -37,6 +37,7 @@ g_spr_fire = 24
 g_id_person = -1
 g_id_cat = -2
 g_id_raccoon = -3
+g_id_trigger = -4
 
 g_spr_ground = 34
 g_spr_water = 39

@@ -65,6 +65,12 @@ function new_quest()
             { x=18, y=21 },
             { x=22, y=38 },
         },
+        triggers = {
+            { x=2, y=15, f=function()
+                  open_message("Hi!",g_style_center)
+              end },
+            -- etc.
+        },
         signs = {
             { x=13, y=5, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
             { x=15, y=5, text={"Oh no, there's a spelling\nmistake in my first sign..."} },
@@ -107,6 +113,9 @@ function init_quest(q)
     foreach(q.keys, function(o)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_key, data=o, xoff=-4, yoff=-4 })
     end)
+    foreach(q.triggers, function(o)
+        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_id_trigger, data=o })
+    end)
     foreach(q.boulders, function(o)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_boulder, data=o, xoff=-4, yoff=-6 })
     end)
@@ -124,9 +133,11 @@ end
 
 function quest_touch(q,o)
     if o.id==g_spr_key then
-        --open_message("You found a key!", g_style_center, function()game.inventory.nkeys+=1 end)
         sfx(g_sfx_key)
         game.inventory.nkeys += 1
+        del(game.specials,o)
+    elseif o.id==g_id_trigger then
+        o.data.f()
         del(game.specials,o)
     elseif o.id==g_spr_fire then
         game.player.dead = 0

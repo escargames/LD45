@@ -89,7 +89,7 @@ function draw_other_tiles(top)
                 draw_raccoon(s)
             elseif s.id == g_spr_fire then
                 draw_fire(s)
-            else
+            elseif s.id >= 0 then
                 spr(s.id, s.x*8+s.xoff, s.y*8+s.yoff)
             end
         end
