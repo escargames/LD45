@@ -156,14 +156,7 @@ function draw_ui()
 end
 
 function mode.play.start()
-    local p = {
-        15,
-        0, 128, 133, 5, 134, 6, 7,
-        --1, 131, 3, 139, 11, 138, 135,
-        --2, 132, 136, 137, 9, 10, 7,
-        8, 137, 9, 10,
-        140, 12, 139, 138,
-    } for i=1,#p do pal(i-1,p[i],1) end
+    palette(0)
     init_game()
     init_quest(game.quest)
 end
@@ -182,12 +175,6 @@ function mode.play.update()
         update_balls()
         update_world(game.world)
         update_player(game.player)
-    end
-
-    if cbtnp(5) then
-        game.msg.text = "♥Hey there! What a storm,\nhuh? My granddaughters\nare so light and tiny they\nwere lifted by the wind!"
-    --    game.cats += 1
-    --game.score += flr(rnd(80))
     end
 end
 

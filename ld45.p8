@@ -21,7 +21,7 @@ __lua__
 #include quest.lua
 #include map.lua
 #include collisions.lua
---#include nokia.lua
+#include palette.lua
 #include font.lua
 
 mode = {}
