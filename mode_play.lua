@@ -16,9 +16,9 @@ function new_entity(x, y, dir)
         shot = 0,
 
         -- needs to be somewhere else...
-        skin = 1+flr(rnd(4))
-        eyes = 1+flr(rnd(2))
-        clothes = 1+flr(rnd(5))
+        skin = 1+flr(rnd(4)),
+        eyes = 1+flr(rnd(2)),
+        clothes = 1+flr(rnd(5)),
         hair = 1+flr(rnd(6))
     }
 end
