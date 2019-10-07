@@ -20,6 +20,7 @@ g_sfx_jump = 33
 g_sfx_push = 32
 g_sfx_loot1 = 26
 g_sfx_loot2 = 27
+g_sfx_plant = -1
 
 g_style_center = 1
 g_style_bottom = 2
@@ -37,6 +38,7 @@ g_spr_key = 40
 g_spr_collapse = 52
 g_spr_boulder = 56
 g_spr_fire = 24
+g_spr_plant = 37
 
 g_id_person = -1
 g_id_cat = -2

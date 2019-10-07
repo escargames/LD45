@@ -2,6 +2,7 @@
 function new_quest()
     return {
         start = { x=4, y=28 },
+        --start = { x=15, y=26 },
         -- a chest
         chests = {
             { x=52, y=10, item="ball",
@@ -10,6 +11,8 @@ function new_quest()
               text="You found a pair of boots!\nYou can now jump with ❎." },
             { x=9, y=34, item="suit",
               text="You found a bathing suit!\nYou can now swim." },
+            { x=66.5, y=8, item="gloves",
+              text="You found a pair of\ngloves! You can now\npush boulders with 🅾️." },
         },
         boulders = {
             { x=10,y=13 },
@@ -67,6 +70,7 @@ function new_quest()
             { x=18, y=21 },
             { x=22, y=38 },
             { x=40, y=16 },
+            { x=78, y=26 }, -- gloves
         },
         triggers = {
             { x=2, y=28, f=function()
@@ -85,7 +89,7 @@ function new_quest()
         signs = {
             { x=13, y=6, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
             { x=17, y=3, text={"Oh no, there's a spelling\nmistake in my first sign..."} },
-            { x=96, y=7, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
+            --{ x=96, y=7, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
             { x=59, y=27, text={"If you like my funny puns,\ndon't forget to engrave a\nthumb up."} },
             { x=27, y=31, text={"Would you like to hear\na construction joke?","...","Still working on it."} },
             { x=8, y=36, text={"To support my work,\nyou can also tip me."} },
@@ -99,7 +103,7 @@ function new_quest()
         },
         living = {
             { x=1, y=2, id=g_id_cat, dir=1, name="Botox" },
-            { x=91, y=26, id=g_id_cat, dir=1, name="Juno" },
+            { x=91, y=2, id=g_id_cat, dir=1, name="Juno" },
             { x=24, y=35, id=g_id_cat, dir=0, name="Grocha" },
             { x=52, y=23,  id=g_id_raccoon, dir=0, name="Lulu" },
             { x=67, y=5,  id=g_id_raccoon, dir=0, name="Damdam" },
@@ -114,9 +118,15 @@ function new_quest()
                        { "Thank you my dear friend!\nMy plants mean so much\nto me.","Taking care of them\nand watching them grow is\nmy biggest joy in the world." }, -- ♥
                        { "Don't worry,\nI am sure you will find it\nvery easy and relaxing!\nYou will do great." },              -- ?
                        { "Aww, I didn't know you\nloved gardening too!","We should get together\nsometimes when I come back,\nI would love to hear about\nyour plants." },     -- !         
-                       "You received a\nwatering can!", 
+                       function()
+                           sfx(g_sfx_loot1)
+                           sfx(g_sfx_loot2)
+                           open_message("You received a\nwatering can!",g_style_center)
+                           game.inventory.nkeys -= 1
+                           game.inventory.can = true
+                       end,
               },
-              text2 = { "My plants are so beautiful\nbecause of you!\nI hope you enjoyed\ntaking care of them."}
+              text2 = { "My plants are so beautiful\nbecause of you!\nI hope you enjoyed\ntaking care of them."},
             },
 
             { x=25, y=22,  id=g_id_person, name="Clemon",
@@ -241,6 +251,9 @@ function quest_activate(q,o)
         else
             open_message("The chest is locked.",g_style_center)
         end
+    elseif o.id==g_spr_plant and not o.grown and game.inventory.can then
+        sfx(g_sfx_plant)
+        o.grown=flr(rnd(2))
     elseif o.id==g_id_person then
         q.current=0
         local function next_msg()
@@ -254,6 +267,8 @@ function quest_activate(q,o)
                             q.current += 3 -- skip answers
                             next_msg()
                         end)
+                elseif type(o.data.text[i])==type(function()end) then
+                    o.data.text[i](next_msg)
                 else
                     open_message(o.data.text[i],g_style_bottom,o.data.name,next_msg)
                 end

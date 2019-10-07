@@ -8,6 +8,7 @@ function load_map()
     for i=0,0x400 do poke4(0x2000+i*4,g_map[i+1]) end
     local map = {
         collapses={},
+        plants={},
         junk={},
     }
     -- parse the map and replace collapsibles with water etc.
@@ -20,6 +21,7 @@ function load_map()
             end
         end
         special(map.collapses, g_spr_collapse, g_spr_water)
+        special(map.plants, g_spr_plant, g_spr_ground)
     end end
     return map
 end

@@ -46,6 +46,9 @@ function init_game()
     game.quest = new_quest()
     game.player = new_player(game.quest.start.x, game.quest.start.y)
     game.specials = {}
+    foreach(game.world.map.plants, function(o)
+        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_plant, data=o, xoff=-4, yoff=-4 })
+    end)
     game.junk = {}
     game.spawn = 0
     game.tick = 0 -- reference for all animations
@@ -55,7 +58,8 @@ function init_game()
     game.cats = 0
     game.explosions = {}
     -- create maze
-    create_maze(64,0,63,29)
+    --create_maze(64,0,63,29)
+    --create_maze(66,2,58,22)
 end
 
 function draw_bg()
@@ -98,6 +102,9 @@ function draw_other_tiles(top)
                 draw_fire(s)
             elseif s.id >= 0 then
                 spr(s.id, s.x*8+s.xoff, s.y*8+s.yoff)
+                if s.grown then -- for plants
+                    spr(53+s.grown, s.x*8+s.xoff, s.y*8+s.yoff-4)
+                end
             end
         end
     end)
