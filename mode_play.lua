@@ -85,6 +85,8 @@ function draw_other_tiles(top)
                 draw_cat(s)
             elseif s.id == g_id_raccoon then
                 draw_raccoon(s)
+            elseif s.id == g_spr_fire then
+                draw_fire(s)
             else
                 spr(s.id, s.x*8+s.xoff, s.y*8+s.yoff)
             end
@@ -109,6 +111,19 @@ function draw_person(p)
     spr(66 + max(1, p.dir), x - 4, y - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
     clip()
     --for i = 0,15 do pal(i,i) end
+end
+
+function draw_fire(o)
+    spr(g_spr_fire, o.x*8-4, o.y*8-4)
+    for dx=0,7 do
+        local x=o.x*8-4+dx
+        local y=o.y*8+3+sin(dx/14)
+        for c=8,11 do
+            local dy=rnd(4)-cos(dx/7)
+            rectfill(x,y,x,y-dy,c)
+            y-=dy
+        end
+    end
 end
 
 function draw_cat(o)
@@ -283,8 +298,11 @@ function update_player(p)
             p.boulder.y = flr(p.boulder.y) + 0.5
             p.push = nil
         else
-            p.boulder.x += p.pdx / 32
-            p.boulder.y += p.pdy / 32
+            -- make the player go slower
+            dx = p.pdx / 32
+            dy = p.pdy / 32
+            p.boulder.x += dx
+            p.boulder.y += dy
         end
         p.boulder.id = g_spr_boulder
     end
@@ -377,8 +395,19 @@ function update_world(w)
         o.dy = p.y-o.y
         o.d = max(abs(o.dx),abs(o.dy))
         -- if close enough, try to collect item!
-        if o.d < 0.5 then
-            quest_collect(game.quest,o)
+        if o.d < 0.5 and not p.dead then
+            quest_touch(game.quest,o)
+        end
+        -- if moving, try moving
+        if o.id==g_spr_fire then
+            local dx = ({-0.2,0.2,0,0})[o.dir+1]
+            local dy = ({0,0,-0.2,0.2})[o.dir+1]
+            if not block_walk(o.x + dx, o.y + dy, 0.6, 0.6) then
+                o.x += dx
+                o.y += dy
+            else
+                o.dir = bxor(o.dir, 1)
+            end
         end
     end)
 end

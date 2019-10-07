@@ -33,8 +33,9 @@ function new_quest()
         },
         living = {
             { x=12, y=10, id=g_id_cat, dir=1, name="Botox" },
-            { x=14, y=8, id=g_id_raccoon, dir=0, name="Lulu" },
-            { x=15, y=3, id=g_id_person, name="Yoyo" },
+            { x=14, y=8,  id=g_id_raccoon, dir=0, name="Lulu" },
+            { x=15, y=3,  id=g_id_person, name="Yoyo" },
+            { x=6,  y=30, id=g_spr_fire, dir=3, },
         },
     }
 end
@@ -64,12 +65,14 @@ function update_quest(q)
 
 end
 
-function quest_collect(q,o)
+function quest_touch(q,o)
     if o.id==g_spr_key then
         --open_message("You found a key!", g_style_center, function()game.inventory.nkeys+=1 end)
         sfx(g_sfx_key)
         game.inventory.nkeys += 1
         del(game.specials,o)
+    elseif o.id==g_spr_fire then
+        game.player.dead = 0
     end
 end
 
