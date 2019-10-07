@@ -197,7 +197,8 @@ end
 
 function respawn()
     game.spawn = 0
-    game.player = new_player(game.quest.start.x, game.quest.start.y)
+    local s = game.quest.save or game.quest.start
+    game.player = new_player(s.x, s.y)
 end
 
 function mode.play.update()
