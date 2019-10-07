@@ -20,7 +20,7 @@ g_sfx_jump = 33
 g_sfx_push = 32
 g_sfx_loot1 = 26
 g_sfx_loot2 = 27
-g_sfx_plant = -1
+g_sfx_plant = 3
 
 g_style_center = 1
 g_style_bottom = 2
