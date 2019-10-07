@@ -101,6 +101,9 @@ function draw_person(p)
     if p.dead then
         clip(0,33,128,32) -- clip at the feet of the player
         y+=p.dead*8
+    elseif p.jump then
+        local k=sin(p.jump/4)
+        y-=8*k*k
     end
     spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), x - 4, y - 6)
     spr(66 + max(1, p.dir), x - 4, y - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
@@ -220,7 +223,7 @@ function update_player(p)
         return
     end
 
-    if is_drowning(p.x, p.y, 0.6, 0.4) then
+    if not p.jump and is_drowning(p.x, p.y, 0.6, 0.4) then
         sfx(g_sfx_drown)
         p.dead = 0
     end
@@ -228,10 +231,30 @@ function update_player(p)
     -- move player
     local dx = (btn(0) and -1 or (btn(1) and 1 or 0)) / 12
     local dy = (btn(2) and -1 or (btn(3) and 1 or 0)) / 12
-    if not block_walk(p.x + dx, p.y, 0.6, 0.4) then
+    -- handle jump
+    if p.jump then
+        p.jump -= 1/12
+        if p.jump > 0 then
+            dx = p.jdx
+            dy = p.jdy
+        else
+           p.jump = nil
+        end
+    elseif cbtnp(5) then
+        sfx(g_sfx_jump)
+        p.jump = 2
+        p.jdx = dx
+        p.jdy = dy
+    end
+    -- handle collisions
+    if block_walk(p.x + dx, p.y, 0.6, 0.4) then
+        p.jump = nil
+    else
         p.x += dx
     end
-    if not block_walk(p.x, p.y + dy, 0.6, 0.4) then
+    if block_walk(p.x, p.y + dy, 0.6, 0.4) then
+        p.jump = nil
+    else
         p.y += dy
     end
 
@@ -308,7 +331,9 @@ function update_world(w)
     -- tick collapsibles
     local tx, ty = flr(p.x)+.5, flr(p.y)+.5
     foreach(game.world.map.collapses, function(c)
-        if c.t2 then
+        if p.jump then
+            -- do nothing!
+        elseif c.t2 then
             c.t2 += 1/32
             if c.t2 >= 1 then
                 del(game.world.map.collapses, c)
