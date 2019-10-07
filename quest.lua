@@ -8,7 +8,7 @@ function new_quest()
               text="You found a ball\n for the cats" },
             { x=18, y=09, item="boots",
               text="You found a pair of boots!\nYou can now jump with ❎." },
-            { x=9, y=34, item="bathing suit",
+            { x=9, y=34, item="suit",
               text="You found a bathing suit!\nYou can now swim." },
         },
         boulders = {
