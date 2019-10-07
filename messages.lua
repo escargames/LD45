@@ -1,58 +1,72 @@
 
-messages = {}
+msg_queue = {}
 
-function messages.update()
-    -- compute stuff
-    if not game.msg.wanted_h then
-        game.msg.wanted_h = 6 + 8
-        for i=1,#game.msg.text do if sub(game.msg.text,i,i)=="\n" then game.msg.wanted_h += 8 end end
-        game.msg.cursor = ""
-        game.msg.open = 0
-        game.msg.h = 0
-    end
+-- style: 1==center 2==bottom
+function open_message(text,style)
+    local m = { text=text, style=style, h=0, cursor="", opening=true }
+    m.wanted_h = 6 + 8
+    for i=1,#text do if sub(text,i,i)=="\n" then m.wanted_h += 8 end end
+    add(msg_queue, m)
+end
 
-    if game.msg.close then
-        game.msg.close += 1/20
-        if game.msg.close > 1 then game.msg = {} return end
-        game.msg.h = game.msg.wanted_h * max(0, 1 - game.msg.close)
-    elseif game.msg.wait then
-        game.msg.wait += 1/30
-        game.msg.cursor = ""
-        if cbtnp(4) then game.msg.close = 0 end
-    elseif game.msg.display then
-        game.msg.display += (btn(4) and 1.5 or .3)
-        if game.msg.display >= #game.msg.text then game.msg.wait = 0 end
-        game.msg.cursor = game.msg.display % 6 < 4 and "█" or ""
-        game.msg.h = game.msg.wanted_h
-    elseif game.msg.open then
-        game.msg.open += 1/30
-        if game.msg.open > 1 then game.msg.display = 0 end
-        game.msg.h = game.msg.wanted_h * game.msg.open
+function has_message()
+    return #msg_queue > 0
+end
+
+function message_cam_y()
+    local m = msg_queue[1]
+    if m and m.style==2 then return max(m.h - 14, 0) / 2 end
+    return 0
+end
+
+function update_message()
+    local m = msg_queue[1]
+    if not m then return end
+    if m.close then
+        m.close += 1/20
+        if m.close > 1 then del(msg_queue, m) return end
+        m.h = m.wanted_h * max(0, 1 - m.close)
+    elseif m.wait then
+        m.wait += 1/30
+        m.cursor = ""
+        if cbtnp(4) then m.close = 0 end
+    elseif m.display then
+        m.display += (btn(4) and 1.5 or .3)
+        if m.display >= #m.text then m.wait = 0 end
+        m.cursor = m.display % 6 < 4 and "█" or ""
+        m.h = m.wanted_h
+    elseif m.opening then
+        m.h += 1
+        if m.h >= m.wanted_h then m.display = 0 end
     end
 end
 
-function messages.draw()
-    local m = 2 -- margin
-    local h = game.msg.h
+function draw_message()
+    local m = msg_queue[1]
+    if not m then return end
+    local c1 = { 0xbf, 0xba }
+    local c2 = { 14, 8 }
+    local w,h = ({92, 128 - 4})[m.style], m.h
+    local x,y = ({18, 2})[m.style], ({70 - h / 2, 127 - h - 2})[m.style]
     if h then
         fillp(0x6699)
-        smoothrectfill(m, 127 - h - m, 127 - m, 127 - m, 5, 0xbf)
+        smoothrectfill(x, y, x + w - 1, y + h, 5, c1[m.style])
         fillp()
-        smoothrect(m, 127 - h - m, 127 - m, 127 - m, 5, 1)
+        smoothrect(x, y, x + w - 1, y + h, 5, 1)
         if h >= 4 then
-            smoothrect(m + 1, 127 - h - m + 1, 127 - m - 1, 127 - m - 1, 3, 14)
+            smoothrect(x + 1, y + 1, x + w - 2, y + h - 1, 3, c2[m.style])
         end
     end
-    if game.msg.display then
-        clip(m + 2, 127 - h - m + 2, 127 - 2 * m - 4, h - 4)
-        local i = game.msg.display
-        print(sub(game.msg.text,1,i)..game.msg.cursor, m + 4, 127 - h - m + 4)
-        clip()
+    clip(x + 4, y + 4, w - 6, h - 6)
+    if m.display then
+        local i = m.display
+        print(sub(m.text,1,i)..m.cursor, x + 4, y + 4)
     end
-    if game.msg.wait then
-        if game.msg.wait % 1 > .4 then
-            print("⬇️", 127 - m - 11, 127 - m - 9)
+    if m.wait and m.style==g_style_bottom then
+        if m.wait % 1 > .4 then
+            print("⬇️", x + w - 12, y + h - 9)
         end
     end
+    clip()
 end
 

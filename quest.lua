@@ -29,12 +29,13 @@ function new_quest()
         living = {
             { x=12, y=9, id=g_id_cat, dir=1, name="Botox" },
             { x=14, y=7, id=g_id_raccoon, dir=0, name="Lulu" },
-            { x=14, y=3, id=g_id_person, name="Yoyo" },
+            { x=15, y=3, id=g_id_person, name="Yoyo" },
         },
     }
 end
 
 function init_quest(q)
+    game.inventory = {}
     foreach(q.chests, function(o)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_chest, data=o, xoff=-4, yoff=-4 })
     end)
@@ -51,5 +52,20 @@ end
 
 function update_quest(q)
 
+end
+
+-- Activate a quest object
+function quest_activate(p,o)
+    if o.id==g_spr_sign and p.dir==3 then
+        open_message("The text is on the other side\nof the sign!",g_style_center)
+    elseif o.id==g_spr_chest and not game.inventory.key then
+        open_message("The chest is locked.",g_style_center)
+    elseif o.id==g_id_cat then
+        open_message("You pet "..o.name.."\nthe cat. ♥",g_style_center)
+    elseif o.id==g_id_raccoon then
+        open_message("You pet "..o.name.."\nthe raccoon. ♥",g_style_center)
+    elseif o.id==g_spr_sign then
+        open_message(o.data.text,g_style_bottom)
+    end
 end
 

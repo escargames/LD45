@@ -13,7 +13,7 @@ do
     }
     local x0,y0 = 0,32
     local params = {}
-    local outline = 0
+    local outline = nil
 
     for i=1,#data do
         local w = widths[i]
@@ -44,9 +44,9 @@ do
             end
         end
         local old1,old2 = peek4(0x5f00),peek4(0x5f04)
-        if outline>0 then
+        if outline then
             for i=1,7 do pal(i,max(1,i-5)) end
-            pal(1,1)
+            pal(1,outline)
             local function sspr2(sx, sy, sw, sh, x, y)
                 sspr(sx, sy, sw, sh, x-1, y)
                 sspr(sx, sy, sw, sh, x+1, y)
@@ -59,6 +59,6 @@ do
         do_work(x0, y, sspr)
         poke4(0x5f00,old1)poke4(0x5f04,old2)
     end
-    function font_outline(s) outline=s or 0 end
+    function font_outline(s) outline=s end
 end
 

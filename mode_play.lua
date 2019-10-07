@@ -40,7 +40,6 @@ function init_game()
     game.quest = new_quest()
     game.player = new_player(game.quest.start.x, game.quest.start.y)
     game.specials = {}
-    game.msg = {}
     game.tick = 0 -- reference for all animations
     -- deprecated
     game.balls = {}
@@ -166,11 +165,10 @@ function mode.play.update()
     -- update animations (even if paused)
     update_anims()
     update_quest(game.quest)
+    update_message()
 
     -- if a message is displayed, update that part
-    if game.msg.text then
-        messages.update()
-    else
+    if not has_message() then
         -- otherwise update the logic
         update_balls()
         update_world(game.world)
@@ -241,19 +239,10 @@ function update_player(p)
             if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
         end)
         if s then
-            activate(s)
+            quest_activate(p,s)
         else
             shoot(p)
         end
-    end
-end
-
-function activate(o)
-    local p = game.player
-    if o.id==g_spr_sign and p.dir==3 then
-        game.msg.text = "The text is on the other side\nof the sign!"
-    elseif o.id==g_spr_sign then
-        game.msg.text = o.data.text
     end
 end
 
@@ -364,10 +353,8 @@ end
 function mode.play.draw()
     cls(0)
 
-    local cam_x, cam_y = game.player.x * 8 - 64, game.player.y * 8 - 64
-    if game.msg.h then
-        cam_y += game.msg.h / 2
-    end
+    local cam_x = game.player.x * 8 - 64
+    local cam_y = game.player.y * 8 - 64 - message_cam_y()
     camera(cam_x, cam_y)
     draw_bg()
     draw_player(game.player)
@@ -375,9 +362,6 @@ function mode.play.draw()
     draw_fg()
     camera()
     draw_ui()
-
-    if game.msg.text then
-        messages.draw()
-    end
+    draw_message()
 end
 
