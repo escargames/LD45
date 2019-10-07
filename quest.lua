@@ -4,12 +4,12 @@ function new_quest()
         start = { x=4, y=28 },
         -- a chest
         chests = {
-            --{ x=25, y=07, item="boots",
-              --text="You found a pair of boots!\nYou can now jump with ❎." },
+            { x=52, y=10, item="science book",
+              text="You found a science book!" },
             { x=18, y=09, item="boots",
               text="You found a pair of boots!\nYou can now jump with ❎." },
-            { x=9, y=34, item="",
-              text="You found" },
+            { x=9, y=34, item="bathing suit",
+              text="You found a bathing suit!\nYou can now swim." },
         },
         boulders = {
             { x=10,y=13 },
@@ -60,11 +60,13 @@ function new_quest()
             { x=12,y=43 },
             { x=23,y=7 },
             { x=57,y=23 },
+            { x=30,y=29 },
+            { x=48,y=25 },
         },
         keys = {
-            { x=11, y=19 },
             { x=18, y=21 },
             { x=22, y=38 },
+            { x=40, y=16 },
         },
         triggers = {
             { x=2, y=28, f=function()
