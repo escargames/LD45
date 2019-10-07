@@ -15,16 +15,16 @@ function new_quest()
             { x=18, y=21 },
         },
         signs = {
-            { x=13, y=5, text="Today I made my fisrt sign!⬇️Hope someone will read it.⬇️I am so exited!" },
-            { x=15, y=5, text="Oh no, there's a spelling mistake in my first sign..." },
-            { x=17, y=5, text="What kind of shorts do clouds wear?⬇️...⬇️Thunderwear." },
-            { x=19, y=5, text="If you like my funny puns, don't forget to engrave a thumb up" },
-            { x=21, y=5, text="Would you like to hear a construction joke?⬇️...⬇️Still working on it." },
-            { x=23, y=5, text="To support my work, you can also tip me." },
-            { x=25, y=5, text="Can a kangaroo jump higher than a cliff?⬇️...⬇️Of course, cliffs can't jump!" },
-            { x=27, y=5, text="To the person who invented zero: thanks for nothing." },
-            { x=29, y=5, text="I find potatoes jokes very appeeling." },
-            { x=31, y=5, text="What do you call a man with a rubber toe?⬇️...⬇️Roberto." },
+            { x=13, y=5, text={"Today I made my fisrt sign!","Hope someone will read it.","I am so exited!"} },
+            { x=15, y=5, text={"Oh no, there's a spelling mistake in my first sign..."} },
+            { x=17, y=5, text={"What kind of shorts do clouds wear?","...","Thunderwear."} },
+            { x=19, y=5, text={"If you like my funny puns, don't forget to engrave a thumb up"} },
+            { x=21, y=5, text={"Would you like to hear a construction joke?","...","Still working on it."} },
+            { x=23, y=5, text={"To support my work, you can also tip me."} },
+            { x=25, y=5, text={"Can a kangaroo jump higher than a cliff?","...","Of course, cliffs can't jump!"} },
+            { x=27, y=5, text={"To the person who invented zero: thanks for nothing."} },
+            { x=29, y=5, text={"I find potatoes jokes very appeeling."} },
+            { x=31, y=5, text={"What do you call a man with a rubber toe?","...","Roberto."} },
         },
         living = {
             { x=12, y=9, id=g_id_cat, dir=1, name="Botox" },
@@ -56,8 +56,12 @@ end
 
 -- Activate a quest object
 function quest_activate(p,o)
-    if o.id==g_spr_sign and p.dir==3 then
-        open_message("The text is on the other\nside of the sign!",g_style_center)
+    if o.id==g_spr_sign then
+        if p.dir==3 then
+            open_message("The text is on the other\nside of the sign!",g_style_center)
+        else
+            foreach(o.data.text, function(t) open_message(t,g_style_bottom) end)
+        end
     elseif o.id==g_spr_chest and not game.inventory.key then
         open_message("The chest is locked.",g_style_center)
     elseif o.id==g_id_cat then
