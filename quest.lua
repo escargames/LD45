@@ -27,8 +27,8 @@ function new_quest()
             { x=31, y=5, text={"What do you call a man with\na rubber toe?","Roberto."} },
         },
         living = {
-            { x=12, y=9, id=g_id_cat, dir=1, name="Botox" },
-            { x=14, y=7, id=g_id_raccoon, dir=0, name="Lulu" },
+            { x=12, y=10, id=g_id_cat, dir=1, name="Botox" },
+            { x=14, y=8, id=g_id_raccoon, dir=0, name="Lulu" },
             { x=15, y=3, id=g_id_person, name="Yoyo" },
         },
     }

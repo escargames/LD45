@@ -92,12 +92,18 @@ function draw_other_tiles(top)
 end
 
 function draw_person(p)
+    local x,y = p.x*8, p.y*8
     --spr(g_shadow, p.x * 8 - 4, p.y * 8 - 5)
     --if p.shot > 0 and rnd() > 0.5 then
     --    for i = 0,15 do pal(i,7) end
     --end
-    spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), p.x * 8 - 4, p.y * 8 - 6)
-    spr(66 + max(1, p.dir), p.x * 8 - 4, p.y * 8 - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
+    if p.dead then
+        clip(x-32,y-24,x+32,32)
+        y+=p.dead*6
+    end
+    spr(82 + (p.dir < 2 and 0 or 2) + flr(p.walk*4%2), x - 4, y - 6)
+    spr(66 + max(1, p.dir), x - 4, y - 11 + flr(p.anim*2.6%2), 1, 1, p.dir == 0)
+    clip()
     --for i = 0,15 do pal(i,i) end
 end
 
@@ -184,6 +190,7 @@ end
 function update_player(p)
     -- handle death conditions
     if p.dead then
+        palette(min(8,flr(p.dead*3)))
         p.dead += 1/60
         p.dir = ({0,2,1,3})[1+flr(p.dead*6)%4]
         return
