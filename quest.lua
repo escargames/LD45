@@ -18,14 +18,14 @@ function new_quest()
         signs = {
             { x=13, y=5, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
             { x=15, y=5, text={"Oh no, there's a spelling\nmistake in my first sign..."} },
-            { x=17, y=5, text={"What kind of shorts do\nclouds wear?","Thunderwear."} },
+            { x=17, y=5, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
             { x=19, y=5, text={"If you like my funny puns,\ndon't forget to engrave a\nthumb up."} },
-            { x=21, y=2, text={"Would you like to hear\na construction joke?","Still working on it."} },
+            { x=21, y=2, text={"Would you like to hear\na construction joke?","...","Still working on it."} },
             { x=23, y=2, text={"To support my work,\nyou can also tip me."} },
-            { x=25, y=2, text={"Can a kangaroo jump higher\nthan a cliff?","Of course, cliffs can't jump!"} },
+            { x=25, y=2, text={"Can a kangaroo jump higher\nthan a cliff?","...","Of course, cliffs can't jump!"} },
             { x=27, y=5, text={"To the person who invented\nzero: thanks for nothing."} },
             { x=29, y=5, text={"I find potatoes jokes\nvery appeeling."} },
-            { x=31, y=5, text={"What do you call a man with\na rubber toe?","Roberto."} },
+            { x=31, y=5, text={"What do you call a man with\na rubber toe?","...","Roberto."} },
         },
         living = {
             { x=12, y=10, id=g_id_cat, dir=1, name="Botox" },
