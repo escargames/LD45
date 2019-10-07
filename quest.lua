@@ -1,7 +1,7 @@
 
 function new_quest()
     return {
-        start = { x=23, y=29 },
+        start = { x=4, y=28 },
         -- a chest
         chests = {
             { x=25, y=07, item="boots",
