@@ -1,13 +1,13 @@
 
 function new_quest()
     return {
-        start = { x=4, y=27 },
+        start = { x=4, y=28 },
         -- a chest
         chests = {
-            { x=25, y=07, item="boots",
+            --{ x=25, y=07, item="boots",
+              --text="You found a pair of boots!\nYou can now jump with ❎." },
+            { x=18, y=09, item="boots",
               text="You found a pair of boots!\nYou can now jump with ❎." },
-            { x=18, y=09, item="rope",
-              text="You found a rope!" },
             { x=9, y=34, item="",
               text="You found" },
         },
@@ -58,6 +58,8 @@ function new_quest()
             { x=17,y=40 },
             { x=11,y=42 },
             { x=12,y=43 },
+            { x=23,y=7 },
+            { x=57,y=23 },
         },
         keys = {
             { x=11, y=19 },
