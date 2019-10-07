@@ -27,6 +27,9 @@ g_style_question = 3
 
 g_spr_ball = 64
 g_spr_boots = 6
+g_spr_gloves = 7
+g_spr_can = 8
+g_spr_suit = 9
 g_spr_sign = 16
 g_spr_chest = 32
 g_spr_chest_open = 48

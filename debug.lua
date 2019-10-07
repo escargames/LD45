@@ -8,6 +8,14 @@ do
     function _draw()
         old_draw()
 
+        if btnp(1,1) then
+            game.inventory.nkeys = 3
+            game.inventory.boots = true
+            game.inventory.gloves = true
+            game.inventory.can = true
+            game.inventory.suit = true
+            game.inventory.ball = true
+        end
         if btnp(3,1) then on = not on end
         if not on then return end
 
