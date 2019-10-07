@@ -238,23 +238,22 @@ function update_player(p)
             dx = p.jdx
             dy = p.jdy
         else
-           p.jump = nil
+            p.jump = nil
         end
     elseif cbtnp(5) then
         sfx(g_sfx_jump)
         p.jump = 2
-        p.jdx = dx
-        p.jdy = dy
+        -- find destination cell
+        local cx = flr(p.x + ({-2,2,0,0})[p.dir+1])+0.5
+        local cy = flr(p.y + ({0,0,-2,2})[p.dir+1])+0.5
+        p.jdx = (cx - p.x) / 24
+        p.jdy = (cy - p.y) / 24
     end
     -- handle collisions
-    if block_walk(p.x + dx, p.y, 0.6, 0.4) then
-        p.jump = nil
-    else
+    if not block_walk(p.x + dx, p.y, 0.6, 0.4) then
         p.x += dx
     end
-    if block_walk(p.x, p.y + dy, 0.6, 0.4) then
-        p.jump = nil
-    else
+    if not block_walk(p.x, p.y + dy, 0.6, 0.4) then
         p.y += dy
     end
 
