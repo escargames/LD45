@@ -184,8 +184,12 @@ function draw_ui()
         spr(id,x+2,4)
         x -= 14
     end
-    for i=1,game.inventory.nkeys do disp(g_spr_key) end
     if game.inventory.boots then disp(g_spr_boots) end
+    if game.inventory.gloves then disp(g_spr_gloves) end
+    if game.inventory.can then disp(g_spr_can) end
+    if game.inventory.suit then disp(g_spr_suit) end
+    if game.inventory.ball then disp(g_spr_ball) end
+    for i=1,game.inventory.nkeys do disp(g_spr_key) end
     font_outline(1)
 --[[
     for i = 1,game.player.maxlives do
