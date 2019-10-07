@@ -2,8 +2,8 @@
 msg_queue = {}
 
 -- style: 1==center 2==bottom
-function open_message(text,style)
-    local m = { text=text, style=style, h=0, cursor="", opening=true }
+function open_message(text,style,fn)
+    local m = { text=text, style=style, fn=fn, h=0, cursor="", opening=true }
     m.wanted_h = 6 + 8
     for i=1,#text do if sub(text,i,i)=="\n" then m.wanted_h += 8 end end
     m.text_width = font_width(text)
@@ -25,14 +25,23 @@ function update_message()
     if not m then return end
     if m.close then
         m.close += 1/20
-        if m.close > 1 then del(msg_queue, m) return end
+        if m.close > 1 then
+            del(msg_queue, m)
+            if m.fn then m.fn() end
+            return
+        end
         m.h = m.wanted_h * max(0, 1 - m.close)
     elseif m.wait then
         m.wait += 1/30
         m.cursor = m.style == g_style_bottom and m.wait % 1 > .4 and "⬇️" or ""
-        if cbtnp(4) then m.close = 0 end
+        if cbtnp(4) then
+            sfx(g_sfx_select)
+            m.close = 0
+        end
     elseif m.display then
+        local tmp = m.display
         m.display += (btn(4) and 1.5 or .3)
+        if flr(tmp)!=flr(m.display) then sfx(g_sfx_type) end
         if m.display >= #m.text then m.wait = 0 end
         m.cursor = m.display % 6 < 4 and "█" or ""
         m.h = m.wanted_h

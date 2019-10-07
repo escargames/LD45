@@ -212,6 +212,7 @@ function update_player(p)
     end
 
     if is_drowning(p.x, p.y, 0.6, 0.4) then
+        sfx(g_sfx_drown)
         p.dead = 0
     end
 
@@ -236,7 +237,7 @@ function update_player(p)
     if #p.movements > 0 then
         p.walk += 1/60
         p.dir = p.movements[1]
-        --if (rnd() > 0.6) sfx(g_sfx_walk)
+        if (rnd() > 0.6) sfx(g_sfx_walk)
     end
 
     -- record a trail behind the player
@@ -261,7 +262,7 @@ function update_player(p)
             if o.d<1 and p.dir==atan3(-o.dx,-o.dy) then s=o end
         end)
         if s then
-            quest_activate(p,s)
+            quest_activate(game.quest,s)
         else
             shoot(p)
         end
@@ -306,8 +307,8 @@ function update_world(w)
         elseif c.t1 then
             c.t1 += 1/64
             if c.t1 >= 1 then
+                sfx(g_sfx_crumble)
                 c.t2 = 0
-                sfx(g_sfx_collapse)
             end
         elseif c.x==tx and c.y==ty then
             c.t1 = 0
@@ -319,6 +320,10 @@ function update_world(w)
         o.dx = p.x-o.x
         o.dy = p.y-o.y
         o.d = max(abs(o.dx),abs(o.dy))
+        -- if close enough, try to collect item!
+        if o.d < 0.5 then
+            quest_collect(game.quest,o)
+        end
     end)
 end
 
@@ -355,19 +360,17 @@ function update_anims()
 
     -- scroll water
     if game.tick % 40 == 0 then
+        local p=16*64+56/2
         for y=0,7 do
-            local p=sget(56,16+y)
-            for x=0,6 do sset(56+x,16+y,sget(57+x,16+y)) end
-            sset(56+7,16+y,p)
+            poke4(p+y*64,rotr(peek4(p+y*64),4))
         end
     end
     -- scroll waterfall
     if game.tick % 3 == 0 then
-        local l=128/2
-        local p=3*8*l+56/2
-        local a,b = peek4(p+7*l),peek4(p+4+7*l)
-        for q=p+6*l,p,-l do poke4(q+l,peek4(q)) poke4(q+4+l,peek4(q+4)) end
-        poke4(p,a)poke4(p+4,b)
+        local p=24*64+56/2
+        local saved = peek4(p+7*64)
+        for q=p+6*64,p,-64 do poke4(q+64,peek4(q)) end
+        poke4(p,saved)
     end
     --for i=rnd(12),2 do sset(crnd(56,64),crnd(16,24),ccrnd({6,6,7,7,7})) end
     --for i=1,10 do sset(crnd(56,64),crnd(16,24),13) end

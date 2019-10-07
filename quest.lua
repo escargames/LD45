@@ -12,6 +12,7 @@ function new_quest()
               text="The chest was empty, lol!" },
         },
         keys = {
+            { x=11, y=19 },
             { x=18, y=21 },
         },
         signs = {
@@ -35,7 +36,9 @@ function new_quest()
 end
 
 function init_quest(q)
-    game.inventory = {}
+    game.inventory = {
+        nkeys = 0
+    }
     foreach(q.chests, function(o)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_chest, data=o, xoff=-4, yoff=-4 })
     end)
@@ -54,22 +57,40 @@ function update_quest(q)
 
 end
 
+function quest_collect(q,o)
+    if o.id==g_spr_key then
+        --open_message("You found a key!", g_style_center, function()game.inventory.nkeys+=1 end)
+        sfx(g_sfx_key)
+        game.inventory.nkeys += 1
+        del(game.specials,o)
+    end
+end
+
 -- Activate a quest object
-function quest_activate(p,o)
+function quest_activate(q,o)
     if o.id==g_spr_sign then
-        if p.dir==3 then
+        sfx(g_sfx_select)
+        if game.player.dir==3 then
             open_message("The text is on the other\nside of the sign!",g_style_center)
         else
             foreach(o.data.text, function(t) open_message(t,g_style_bottom) end)
         end
-    elseif o.id==g_spr_chest and not game.inventory.key then
-        open_message("The chest is locked.",g_style_center)
+    elseif o.id==g_spr_chest then
+        if game.inventory.nkeys>0 then
+            sfx(g_sfx_loot1)
+            sfx(g_sfx_loot2)
+            open_message(o.data.text,g_style_center)
+            o.id=g_spr_chest_open
+            game.inventory[o.data.item] = true
+        else
+            open_message("The chest is locked.",g_style_center)
+        end
     elseif o.id==g_id_cat then
+        sfx(g_sfx_pet)
         open_message("You pet "..o.name.." the\ncat. How adorable! ♥",g_style_center)
     elseif o.id==g_id_raccoon then
+        sfx(g_sfx_pet)
         open_message("You pet "..o.name.." the\nraccoon. How cute! ♥",g_style_center)
-    elseif o.id==g_spr_sign then
-        open_message(o.data.text,g_style_bottom)
     end
 end
 
