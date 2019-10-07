@@ -5,11 +5,15 @@ function new_quest()
         -- a chest
         chests = {
             { x=25, y=07, item="boots",
-              text="You found a pair of boots!" },
+              text="You found a pair of boots!\nYou can now jump." },
             { x=18, y=09, item="rope",
               text="You found a rope!" },
-            { x=34, y=15, item="",
-              text="The chest was empty, lol!" },
+        },
+        boulders = {
+            { x=10,y=13 },
+            { x=11,y=13 },
+            { x=12,y=15 },
+            { x=13,y=13 },
         },
         keys = {
             { x=11, y=19 },
@@ -44,6 +48,9 @@ function init_quest(q)
     end)
     foreach(q.keys, function(o)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_key, data=o, xoff=-4, yoff=-4 })
+    end)
+    foreach(q.boulders, function(o)
+        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_boulder, data=o, xoff=-4, yoff=-4 })
     end)
     foreach(q.signs, function(o)
         add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_sign, data=o, xoff=-4, yoff=-6 })

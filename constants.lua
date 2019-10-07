@@ -31,6 +31,7 @@ g_spr_chest = 32
 g_spr_chest_open = 48
 g_spr_key = 40
 g_spr_collapse = 52
+g_spr_boulder = 56
 
 g_id_person = -1
 g_id_cat = -2
