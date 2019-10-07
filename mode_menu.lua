@@ -14,6 +14,7 @@ function mode.menu.draw()
     font_outline(0)
     print("The Legend\n of Nothing", 14, 28, 8, 2)
     print("by Niarkou and Sam", 34, 64, 15)
+    print("Press 🅾️ to start", 35, 76, 15)
     font_outline()
 end
 
