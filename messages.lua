@@ -29,7 +29,7 @@ function update_message()
         m.h = m.wanted_h * max(0, 1 - m.close)
     elseif m.wait then
         m.wait += 1/30
-        m.cursor = ""
+        m.cursor = m.style == g_style_bottom and m.wait % 1 > .4 and "⬇️" or ""
         if cbtnp(4) then m.close = 0 end
     elseif m.display then
         m.display += (btn(4) and 1.5 or .3)
@@ -62,11 +62,6 @@ function draw_message()
     if m.display then
         local i = m.display
         print(sub(m.text,1,i)..m.cursor, x + 4, y + 4)
-    end
-    if m.wait and m.style==g_style_bottom then
-        if m.wait % 1 > .4 then
-            print("⬇️", x + w - 12, y + h - 9)
-        end
     end
     clip()
 end
