@@ -200,27 +200,6 @@ function draw_ui()
     if game.inventory.suit then disp(g_spr_suit) end
     if game.inventory.ball then disp(g_spr_ball) end
     for i=1,game.inventory.nkeys do disp(g_spr_key) end
-    font_outline(1)
---[[
-    for i = 1,game.player.maxlives do
-        if i > game.player.lives then
-            palt(2,true) palt(7,true) palt(8,true) palt(14,true)
-        end
-        sspr(7 - i % 2 * 7, 48, 7, 16, i * 7 - 4, 3)
-    end
-    palt()
-    palt(0,false) palt(5,true)
-    spr(g_coin + flr(t()*2%2), 6, 114)
-    spr(g_heart, 23, 114)
-    spr(g_sword, 80, 114)
-    palt()
-    print(game.player.maxlives / 2, 32, 114, 7)
-
-    local score = tostr(game.score)
-    while #score < 6 do score = "0"..score end
-    print(score, 90, 2, 7)
-]]--
-    font_outline()
 end
 
 function mode.play.start()
