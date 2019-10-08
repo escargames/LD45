@@ -54,7 +54,7 @@ function new_quest()
         signs = {
             { x=13, y=6, text={"Today I made my fisrt sign!\nHope someone will read it.\nI am so exited!"} },
             { x=17, y=3, text={"Oh no, there's a spelling\nmistake in my first sign..."} },
-            --{ x=96, y=7, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
+            { x=59, y=17, text={"What kind of shorts do\nclouds wear?","...","Thunderwear."} },
             { x=59, y=27, text={"If you like my funny puns,\ndon't forget to engrave a\nthumb up."} },
             { x=27, y=31, text={"Would you like to hear\na construction joke?","...","Still working on it."} },
             { x=8, y=36, text={"To support my work,\nyou can also tip me."} },
