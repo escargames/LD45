@@ -51,6 +51,7 @@ function init_game()
     end)
     game.junk = {}
     game.spawn = 0
+    game.music = 0
     game.tick = 0 -- reference for all animations
     -- deprecated
     game.balls = {}
@@ -209,7 +210,6 @@ function draw_ui()
 end
 
 function mode.play.start()
-    music(0, 300)
     init_game()
     init_quest(game.quest)
 end
@@ -478,9 +478,10 @@ function update_balls()
 end
 
 function update_music()
-    if game.tick % (60*60) == 0 and rnd()>.5 then
-        -- play music 0 or 4
-        music(4 * flr(rnd(2)), 300)
+    game.music -= 2
+    if game.music < 0 then
+        music(game.music % 2 * 4, 300)
+        game.music += flr(60 * (75 + rnd(30)))
     end
 end
 
