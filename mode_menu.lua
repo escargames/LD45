@@ -3,6 +3,7 @@ mode.menu = {}
 function mode.menu.start()
     create_maze(60,4,20,20)
     palette(0)
+    music(10, 300)
 end
 
 function mode.menu.update()

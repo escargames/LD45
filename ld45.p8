@@ -33,7 +33,6 @@ function _init()
     poke(0x5f34, 1)
     cartdata("findingcookie")
     state = "menu"
-    music(0, 300)
 end
 
 function _update60()

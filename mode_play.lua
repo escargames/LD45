@@ -209,6 +209,7 @@ function draw_ui()
 end
 
 function mode.play.start()
+    music(0, 300)
     init_game()
     init_quest(game.quest)
 end
@@ -238,6 +239,7 @@ function mode.play.update()
 
     -- update animations (even if paused)
     update_anims()
+    update_music()
     update_quest(game.quest)
     update_message()
 
@@ -473,6 +475,13 @@ function update_balls()
             end
         end
     end)
+end
+
+function update_music()
+    if game.tick % (60*60) == 0 and rnd()>.5 then
+        -- play music 0 or 4
+        music(4 * flr(rnd(2)), 300)
+    end
 end
 
 function update_anims()
