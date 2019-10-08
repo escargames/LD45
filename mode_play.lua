@@ -88,6 +88,8 @@ function draw_ground_tiles()
         if c.t2 then
             x += rnd(c.t2)-rnd(c.t2)
             y += rnd(c.t2)-rnd(c.t2)
+        else
+            y -= max(0, sin(game.tick/80 + (c.x+c.y)/4))
         end
         spr(g_spr_collapse, x-4, y-4)
         if c.t1 then

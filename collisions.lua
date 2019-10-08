@@ -22,7 +22,7 @@ end
 function on_object(list,x,y)
     for i=1,#list do
         local o = list[i]
-        if max(abs(x-o.x),abs(y-o.y)) <= 1 then return true end
+        if max(abs(x-o.x),abs(y-o.y)) <= 0.5 then return true end
     end
     return false
 end
