@@ -138,6 +138,15 @@ function new_quest()
               }
             },
 
+            { x=112, y=35, id=g_id_person, name="Claire",
+              text = { "Hi, I'm Claire. I made this\ngame with Sam here.\nThanks for trying our game,\nwe love you!"
+                     },
+            },
+            { x=113, y=35, id=g_id_person, name="Sam",
+              text = { "Hi, I'm Sam. I made this game\nwith Claire here.\nCongratulations on reaching\nthe final island!"
+                     },
+            },
+
             -- the fire puzzle
             { x=6,  y=36, id=g_spr_fire, dir=3, },
             { x=20, y=39, id=g_spr_fire, dir=1, },
@@ -147,7 +156,7 @@ function new_quest()
             { x=11, y=38, id=g_spr_fire, dir=3, },
             { x=12, y=38, id=g_spr_fire, dir=3, },
             { x=0,  y=41, id=g_spr_fire, dir=1, },
-            { x=0,  y=42, id=g_spr_fire, dir=1, },
+            --{ x=0,  y=42, id=g_spr_fire, dir=1, },
             { x=5,  y=43, id=g_spr_fire, dir=1, },
             { x=8,  y=38, id=g_spr_fire, dir=3, },
             { x=19, y=34, id=g_spr_fire, dir=1, },
@@ -160,20 +169,20 @@ function init_quest(q)
         nkeys = 0
     }
     foreach(q.chests, function(o)
-        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_chest, data=o, xoff=-4, yoff=-4 })
+        add(game.specials, { x=o.x+.5, y=o.y+.5, r=.5, id=g_spr_chest, data=o, xoff=-4, yoff=-4 })
     end)
     foreach(q.keys, function(o)
-        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_key, data=o, xoff=-4, yoff=-4, noblock=true })
+        add(game.specials, { x=o.x+.5, y=o.y+.5, r=.5, id=g_spr_key, data=o, xoff=-4, yoff=-4, noblock=true })
     end)
     foreach(q.triggers, function(o)
-        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_id_trigger, data=o, noblock=true })
+        add(game.specials, { x=o.x+.5, y=o.y+.5, r=1, id=g_id_trigger, data=o, noblock=true })
     end)
     for i=1,#q.boulders,2 do
         local o = {x=q.boulders[i], y=q.boulders[i+1]}
-        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_boulder, data=o, xoff=-4, yoff=-6 })
+        add(game.specials, { x=o.x+.5, y=o.y+.5, r=1, id=g_spr_boulder, data=o, xoff=-4, yoff=-6 })
     end
     foreach(q.signs, function(o)
-        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_sign, data=o, xoff=-4, yoff=-6 })
+        add(game.specials, { x=o.x+.5, y=o.y+.5, r=.5, id=g_spr_sign, data=o, xoff=-4, yoff=-6 })
     end)
     foreach(q.living, function(o)
         add(game.specials, new_living(o.x+.5, o.y+.5, o.dir or 3, o.id, o))
@@ -193,6 +202,7 @@ function quest_touch(q,o)
         o.data.f()
         del(game.specials,o)
     elseif o.id==g_spr_fire then
+        sfx(g_sfx_drown)
         game.player.dead = 0
     end
 end

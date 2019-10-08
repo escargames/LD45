@@ -25,6 +25,7 @@ end
 
 function new_living(x, y, dir, id, data)
     local e = new_entity(x, y, dir)
+    e.r = 0.5 -- not too much otherwise fire kills us easily
     e.id = id
     e.data = data
     return e
@@ -47,7 +48,7 @@ function init_game()
     game.player = new_player(game.quest.start.x, game.quest.start.y)
     game.specials = {}
     foreach(game.world.map.plants, function(o)
-        add(game.specials, { x=o.x+.5, y=o.y+.5, id=g_spr_plant, data=o, xoff=-4, yoff=-4 })
+        add(game.specials, { x=o.x+.5, y=o.y+.5, r=.5, id=g_spr_plant, data=o, xoff=-4, yoff=-4 })
     end)
     game.junk = {}
     game.spawn = 0
@@ -66,9 +67,10 @@ function init_game()
 end
 
 function draw_bg()
-    for n=0,5 do
+    for n=0,9 do
         map(112, 48, -128, -128 + 128*n, 16, 16)
         map(112, 48, -128 + 128*n, -128, 16, 16)
+        map(112, 48, 128*8, -128 + 128*n, 16, 16)
     end
     map(0, 0, 0, 0, 128, 64)
     draw_ground_tiles()
@@ -217,11 +219,13 @@ end
 function respawn()
     game.spawn = 0
     local s = game.quest.save or game.quest.start
-    game.player = new_player(s.x, s.y)
+    game.player.x = s.x
+    game.player.y = s.y
+    game.player.dead = nil
     reset_map(game.world.map)
     -- reset specials
     foreach(game.specials, function(o)
-        if o.id==g_spr_boulder then
+        if o.id==g_spr_boulder or o.id==g_spr_fire then
             o.x = o.data.x+.5
             o.y = o.data.y+.5
         end
@@ -384,19 +388,7 @@ function shoot(p)
     local dx, dy = vy, -vx
 
     sfx(g_sfx_shoot)
-    if p.weapon == 1 or p.weapon == 3 then
-        add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = vx, vy = vy})
-    end
-    if p.weapon == 2 or p.weapon == 3 then
-        add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = 0.8 * vx + 0.2 * dx, vy = 0.8 * vy + 0.2 * dy})
-        add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = 0.8 * vx - 0.2 * dx, vy = 0.8 * vy - 0.2 * dy})
-    end
-    for i = 1,game.cats do
-        local item = p.trail[(p.trail.off - 2 - i * 10) % #p.trail + 1]
-        if item then
-            add(game.balls, {spr = g_banana, x = item.x + crnd(-0.4,0.4), y = item.y + crnd(-0.4,0.4), vx = vx, vy = vy})
-        end
-    end
+    add(game.balls, {spr = g_spr_ball, x = bx, y = by, vx = vx, vy = vy})
 end
 
 function update_world(w)
@@ -431,7 +423,7 @@ function update_world(w)
         o.dy = p.y-o.y
         o.d = max(abs(o.dx),abs(o.dy))
         -- if close enough, try to collect item!
-        if o.d < 0.5 and not p.dead then
+        if o.d < o.r and not p.dead then
             quest_touch(game.quest,o)
         end
         -- animate

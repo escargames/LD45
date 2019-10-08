@@ -28,8 +28,8 @@ function on_object(list,x,y)
 end
 
 function block_walk(x,y,w,h)
+    if x<0 or y<0 or x>=128 or y>=64 then return true end
     local x1,x2,y1,y2 = flr(x-w/2),flr(x+w/2),flr(y-h/2),flr(y+h/2)
-    if x1<0 or y1<0 then return true end
     if x1!=x2 then
         if has_flag(x1,y1,1) or has_flag(x2,y1,0) or
            has_flag(x1,y2,1) or has_flag(x2,y2,0) then
