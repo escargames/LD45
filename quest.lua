@@ -1,7 +1,7 @@
 
 function new_quest()
     return {
-        start = { x=4, y=28 },
+        start = { x=5, y=28 },
         --start = { x=15, y=26 },
         -- a chest
         chests = {
@@ -89,7 +89,6 @@ function new_quest()
                            sfx(g_sfx_loot1)
                            sfx(g_sfx_loot2)
                            open_message("You received a\nwatering can!",g_style_center)
-                           game.inventory.nkeys -= 1
                            game.inventory.can = true
                        end,
               },
@@ -139,11 +138,11 @@ function new_quest()
               }
             },
 
-            { x=112, y=35, id=g_id_person, name="Claire",
+            { x=112, y=33, id=g_id_person, name="Claire",
               text = { "Hi, I'm Claire. I made this\ngame with Sam here.\nThanks for trying our game,\nwe love you!"
                      },
             },
-            { x=113, y=35, id=g_id_person, name="Sam",
+            { x=113, y=33, id=g_id_person, name="Sam",
               text = { "Hi, I'm Sam. I made this game\nwith Claire here.\nCongratulations on reaching\nthe final island!"
                      },
             },
