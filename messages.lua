@@ -60,7 +60,7 @@ function draw_message()
     local c1 = { 0xbf, 0xba, 0xba }
     local c2 = { 14, 8, 8 }
     local w,h = ({m.text_width+8, 128 - 4, 128 - 4})[m.style], m.h
-    local x,y = ({64-m.text_width/2, 2, 2})[m.style], ({80 - h / 2, 127 - h - 2, 127 - h - 2})[m.style]
+    local x,y = ({60-m.text_width/2, 2, 2})[m.style], ({80 - h / 2, 127 - h - 2, 127 - h - 2})[m.style]
     if h then
         fillp(0x6699)
         smoothrectfill(x, y, x + w - 1, y + h, 5, c1[m.style])

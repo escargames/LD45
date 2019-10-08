@@ -314,14 +314,19 @@ function update_player(p)
         else
             p.jump = nil
         end
-    elseif cbtnp(5) and game.inventory.boots then
-        sfx(g_sfx_jump)
-        p.jump = 2
-        -- find destination cell
-        local cx = flr(p.x + ({-2,2,0,0})[p.dir+1])+0.5
-        local cy = flr(p.y + ({0,0,-2,2})[p.dir+1])+0.5
-        p.jdx = (cx - p.x) / 24
-        p.jdy = (cy - p.y) / 24
+    elseif cbtnp(5) then
+        if game.inventory.boots then
+            sfx(g_sfx_jump)
+            p.jump = 2
+            -- find destination cell
+            local cx = flr(p.x + ({-2,2,0,0})[p.dir+1])+0.5
+            local cy = flr(p.y + ({0,0,-2,2})[p.dir+1])+0.5
+            p.jdx = (cx - p.x) / 24
+            p.jdy = (cy - p.y) / 24
+        elseif not p.warned then
+            open_message("I cannot jump without\nmy boots...\nI really have nothing!",g_style_center)
+            p.warned = true
+        end
     end
 
     -- handle pushing
