@@ -4,6 +4,7 @@ DIR = nothing_html
 
 all:
 	cat ld45.p8 |\
+	  grep -v 'include.*debug' |\
 	  awk '{ if (/^ *#include/) { system("cat "$$2) } else { print $$0 } }' |\
 	  grep . | sed 's/^  *//; s/--.*//' \
 	  > tmp.p8
