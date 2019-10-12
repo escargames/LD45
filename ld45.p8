@@ -1,7 +1,7 @@
 pico-8 cartridge // http://www.pico-8.com
 version 18
 __lua__
--- finding cookie
+-- the legend of nothing
 -- by niarkou and sam
 
 #include escarlib/p8u.lua
@@ -31,7 +31,7 @@ mode = {}
 function _init()
     poke(0x5f2e, 1) -- preserve palette
     poke(0x5f34, 1)
-    cartdata("findingcookie")
+    cartdata("nothing")
     state = "menu"
 end
 
